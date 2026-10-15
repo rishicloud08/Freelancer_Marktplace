@@ -8,7 +8,7 @@ const paymentSchema = new mongoose.Schema({
   amount: { type: Number, required: true },
   paymentMethod: { 
     type: String, 
-    enum: ['gpay_number', 'upi_qr', 'escrow_wallet'], 
+    enum: ['gpay_number', 'upi_qr', 'direct_upi', 'escrow_wallet'], 
     default: 'upi_qr' 
   },
   gpayNumber: { type: String },

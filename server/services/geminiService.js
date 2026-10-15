@@ -303,7 +303,7 @@ export const inspectMilestoneDeliverable = async (project, milestone, deliverabl
 
       Evaluate the delivery and return a JSON object with:
       - score: integer from 70 to 99 representing compliance/quality percentage
-      - verdict: string (e.g. "Approved & Verified by AI", "Ready for Escrow Release", "Minor Revisions Suggested")
+      - verdict: string (e.g. "Approved & Verified by AI", "Ready for Direct Payment", "Minor Revisions Suggested")
       - feedback: detailed 2-3 sentence executive audit summary for the client
       - securityPassed: boolean
       - checklist: array of 3 bullet points confirming verified criteria
@@ -454,8 +454,8 @@ export const generateContractAgreement = async (project, client, freelancer, mil
         contractTitle: `Freelance Software Services & IP Agreement: ${project.title}`,
         totalBudget: totalAmount,
         currency: 'INR',
-        slaTerms: `1. SCOPE OF SERVICES: The Freelancer (${freelancer.name}) agrees to perform engineering deliverables for "${project.title}" as detailed in the project specifications.\n\n2. MILESTONE COMPENSATION: The total compensation is ₹${totalAmount.toLocaleString()} INR, payable through Escrow upon client approval of deliverables.\n\n3. INTELLECTUAL PROPERTY: Upon 100% milestone payment release, all copyrights, code repositories, patents, and source code transfer exclusively to the Client (${client.name}).\n\n4. CONFIDENTIALITY: Both parties agree to maintain strict confidentiality regarding proprietary business logic and proprietary keys.\n\n5. DISPUTE ARBITRATION: Any disagreement shall be arbitrated neutrally via FreelanceHub's AI Arbitration Engine.`,
-        ipClauses: 'Exclusive commercial transfer of all source code, assets, and documentation to Client upon full milestone escrow settlement.'
+        slaTerms: `1. SCOPE OF SERVICES: The Freelancer (${freelancer.name}) agrees to perform engineering deliverables for "${project.title}" as detailed in the project specifications.\n\n2. MILESTONE COMPENSATION: The total compensation is ₹${totalAmount.toLocaleString()} INR, payable directly via Google Pay / UPI upon client approval of deliverables.\n\n3. INTELLECTUAL PROPERTY: Upon 100% milestone payment release, all copyrights, code repositories, patents, and source code transfer exclusively to the Client (${client.name}).\n\n4. CONFIDENTIALITY: Both parties agree to maintain strict confidentiality regarding proprietary business logic and proprietary keys.\n\n5. DISPUTE ARBITRATION: Any disagreement shall be arbitrated neutrally via FreelanceHub's AI Arbitration Engine.`,
+        ipClauses: 'Exclusive commercial transfer of all source code, assets, and documentation to Client upon full milestone direct payment settlement.'
       };
     }
 
@@ -474,8 +474,8 @@ export const generateContractAgreement = async (project, client, freelancer, mil
       - contractTitle: string
       - totalBudget: number in INR
       - currency: "INR"
-      - slaTerms: formatted multi-paragraph string with numbered legal clauses (Scope, Payment Escrow, Delivery Acceptance, Confidentiality, AI Arbitration)
-      - ipClauses: string summarizing intellectual property ownership transfer upon escrow payout
+      - slaTerms: formatted multi-paragraph string with numbered legal clauses (Scope, Direct Payment, Delivery Acceptance, Confidentiality, AI Arbitration)
+      - ipClauses: string summarizing intellectual property ownership transfer upon direct payout
 
       Output ONLY valid JSON inside \`\`\`json blocks.
     `;
@@ -491,7 +491,7 @@ export const generateContractAgreement = async (project, client, freelancer, mil
       totalBudget: totalAmount,
       currency: 'INR',
       slaTerms: `Standard Freelance Engineering Agreement between ${client.name} and ${freelancer.name} for ₹${totalAmount.toLocaleString()} INR milestone delivery.`,
-      ipClauses: 'Full IP transfer to Client upon escrow settlement.'
+      ipClauses: 'Full IP transfer to Client upon direct payment settlement.'
     };
   }
 };
@@ -513,7 +513,7 @@ export const arbitrateDispute = async (project, milestone, disputeDetails) => {
 
     const prompt = `
       You are an impartial Supreme AI Dispute Arbitrator for freelance software contracts.
-      Analyze this dispute between Client and Freelancer over a milestone delivery and produce a fair, balanced escrow allocation verdict.
+      Analyze this dispute between Client and Freelancer over a milestone delivery and produce a fair, balanced direct payment allocation verdict.
 
       Project: ${JSON.stringify({ title: project?.title, description: project?.description })}
       Milestone: ${JSON.stringify({ title: milestone?.title, amount: milestone?.amount, deliverableNotes: milestone?.deliverableNotes, repoUrl: milestone?.repoUrl })}
@@ -538,7 +538,7 @@ export const arbitrateDispute = async (project, milestone, disputeDetails) => {
       verdict: 'Mutual Milestone Settlement',
       freelancerShare: 65,
       clientRefundShare: 35,
-      summary: 'Automated arbitration determined partial deliverable completion, recommending a 65/35 escrow allocation to conclude the dispute amicably.',
+      summary: 'Automated arbitration determined partial deliverable completion, recommending a 65/35 direct payment allocation to conclude the dispute amicably.',
       confidenceScore: 88
     };
   }
