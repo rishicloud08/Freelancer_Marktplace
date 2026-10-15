@@ -2,8 +2,14 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import http from 'http';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 import { Server } from 'socket.io';
 import connectDB from './config/db.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Routes
 import authRoutes from './routes/auth.js';
@@ -27,8 +33,8 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173',
-    methods: ['GET', 'POST']
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
   }
 });
 
@@ -36,7 +42,7 @@ const io = new Server(server, {
 app.set('io', io);
 socketHandler(io);
 
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({ origin: '*' }));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
@@ -52,6 +58,18 @@ app.use('/api/wallet', walletRoutes);
 app.use('/api/contracts', contractRoutes);
 app.use('/api/disputes', disputeRoutes);
 app.use('/api/tasks', taskRoutes);
+
+// Serve Frontend Static Build in Production
+const clientDist = path.join(__dirname, '../client/dist');
+if (fs.existsSync(clientDist)) {
+  app.use(express.static(clientDist));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api') || req.path.startsWith('/socket.io')) {
+      return next();
+    }
+    res.sendFile(path.join(clientDist, 'index.html'));
+  });
+}
 
 // Global Error Handler
 app.use((err, req, res, next) => {

@@ -1,0 +1,23 @@
+{
+  "name": "freelancer-marketplace-fullstack",
+  "version": "1.0.0",
+  "description": "AI-Powered Autonomous Freelance Marketplace Platform with Direct UPI Settlement & Automated Code Quality Auditing",
+  "type": "module",
+  "scripts": {
+    "build": "npm install --prefix client && npm run build --prefix client && npm install --prefix server",
+    "start": "node server/server.js",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client"
+  },
+  "keywords": [
+    "freelance",
+    "ai",
+    "gemini",
+    "react",
+    "nodejs",
+    "express",
+    "socketio"
+  ],
+  "author": "Rishikesh",
+  "license": "ISC"
+}
