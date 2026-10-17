@@ -52,12 +52,30 @@ export default function Profile() {
   const [resumeFileBase64, setResumeFileBase64] = useState('');
   const [resumeTextInput, setResumeTextInput] = useState('');
   const [parsingResume, setParsingResume] = useState(false);
-  const [resumeData, setResumeData] = useState(user?.resumeData || {
-    summary: '',
-    education: [],
-    experience: [],
-    certifications: []
-  });
+  const normalizeResumeData = (data, bio = '') => {
+    if (!data || typeof data !== 'object') {
+      return {
+        summary: bio || '',
+        education: [],
+        experience: [],
+        certifications: [],
+        skills: []
+      };
+    }
+    return {
+      summary: typeof data.summary === 'string' ? data.summary : (bio || ''),
+      education: Array.isArray(data.education) ? data.education : [],
+      experience: Array.isArray(data.experience) ? data.experience : [],
+      certifications: Array.isArray(data.certifications) ? data.certifications : [],
+      skills: Array.isArray(data.skills) 
+        ? data.skills 
+        : (typeof data.skills === 'string' && data.skills ? data.skills.split(',').map(s => s.trim()).filter(Boolean) : []),
+      fileName: data.fileName || '',
+      uploadedAt: data.uploadedAt
+    };
+  };
+
+  const [resumeData, setResumeData] = useState(() => normalizeResumeData(user?.resumeData, user?.bio));
   const [isEditingResume, setIsEditingResume] = useState(false);
 
   // SKILL QUIZ STATE
@@ -76,12 +94,7 @@ export default function Profile() {
       setProfileData(user);
       setQrPreview(user.upiQrCode || '');
       setGithubInput(user.githubUsername || 'rishicloud08');
-      setResumeData(user.resumeData || {
-        summary: user.bio || '',
-        education: [],
-        experience: [],
-        certifications: []
-      });
+      setResumeData(normalizeResumeData(user.resumeData, user.bio));
     }
   }, [user]);
 
@@ -389,10 +402,10 @@ export default function Profile() {
       <div className="max-w-5xl mx-auto space-y-6">
         
         {/* Profile Glass Card */}
-        <div className="glass-card rounded-3xl overflow-hidden relative border border-white/70">
-          <div className="h-36 bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 relative">
+        <div className="bg-slate-900/90 rounded-3xl overflow-hidden relative border border-slate-800/80 shadow-2xl">
+          <div className="h-36 bg-gradient-to-r from-slate-950 via-indigo-950 to-purple-950 relative">
             {profileData.githubUsername && (
-              <div className="absolute top-4 right-4 bg-black/40 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/20 text-white text-xs font-bold flex items-center gap-1.5">
+              <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-slate-700/60 text-white text-xs font-bold flex items-center gap-1.5">
                 <FiGithub /> @{profileData.githubUsername}
               </div>
             )}
@@ -412,8 +425,9 @@ export default function Profile() {
                     <>
                       {/* 1-Click GitHub Extract Button */}
                       <button
+                        type="button"
                         onClick={() => setIsGitHubModalOpen(true)}
-                        className="px-4 py-2.5 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 transition flex items-center text-xs shadow-md border border-slate-700 cursor-pointer"
+                        className="px-4 py-2.5 bg-slate-800 text-white rounded-2xl font-bold hover:bg-slate-700 transition flex items-center text-xs shadow-md border border-slate-700 cursor-pointer"
                       >
                         <FiGithub className="w-4 h-4 mr-1.5 text-purple-400" />
                         Extract GitHub Repos & Skills
@@ -421,6 +435,7 @@ export default function Profile() {
 
                       {/* PDF Resume Upload Button */}
                       <button
+                        type="button"
                         onClick={() => setIsResumeModalOpen(true)}
                         className="px-4 py-2.5 bg-purple-500/20 text-purple-300 rounded-2xl font-bold hover:bg-purple-500/30 transition flex items-center text-xs border border-purple-500/30 cursor-pointer"
                       >
@@ -431,6 +446,7 @@ export default function Profile() {
                   )}
 
                   <button 
+                    type="button"
                     onClick={() => setIsEditing(true)}
                     className="px-4 py-2.5 bg-indigo-500/20 text-indigo-300 rounded-2xl font-bold hover:bg-indigo-500/30 transition flex items-center text-xs border border-indigo-500/30 cursor-pointer"
                   >
@@ -674,13 +690,13 @@ export default function Profile() {
                 </div>
 
                 {/* Verified AI Expert Badges */}
-                {isFreelancer && profileData.verifiedBadges?.length > 0 && (
+                {isFreelancer && Array.isArray(profileData.verifiedBadges) && profileData.verifiedBadges.length > 0 && (
                   <div className="mb-6 p-5 bg-gradient-to-r from-amber-500/10 via-yellow-500/10 to-amber-500/10 rounded-2xl border border-amber-500/30">
                     <h3 className="text-xs font-bold uppercase tracking-wider text-amber-300 mb-3 flex items-center gap-1.5">
                       <FiAward className="text-yellow-400" /> Verified AI Expert Credentials
                     </h3>
                     <div className="flex flex-wrap gap-2.5">
-                      {profileData.verifiedBadges.map((badge, idx) => (
+                      {(Array.isArray(profileData.verifiedBadges) ? profileData.verifiedBadges : []).map((badge, idx) => (
                         <div key={idx} className="bg-slate-800 px-3.5 py-2 rounded-xl border border-amber-500/30 flex items-center gap-2 shadow-xs">
                           <span className="text-base">🌟</span>
                           <div>
@@ -694,18 +710,19 @@ export default function Profile() {
                 )}
 
                 {/* Skills & Take AI Skill Quiz */}
-                {isFreelancer && profileData.skills?.length > 0 && (
+                {isFreelancer && Array.isArray(profileData.skills) && profileData.skills.length > 0 && (
                   <div className="mb-6">
                     <div className="flex items-center justify-between mb-2.5">
                       <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Extracted Skills & Tech Stack</h3>
                       <span className="text-[11px] text-indigo-400 font-semibold">Click any skill to verify with AI Quiz ⚡</span>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      {profileData.skills.map((skill, index) => {
-                        const isVerified = profileData.verifiedBadges?.some(b => b.skill.toLowerCase() === skill.toLowerCase());
+                      {(Array.isArray(profileData.skills) ? profileData.skills : []).map((skill, index) => {
+                        const isVerified = Array.isArray(profileData.verifiedBadges) && profileData.verifiedBadges.some(b => b.skill.toLowerCase() === skill.toLowerCase());
                         return (
                           <button 
                             key={index} 
+                            type="button"
                             onClick={() => handleStartSkillQuiz(skill)}
                             className={`px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${
                               isVerified 
@@ -770,123 +787,129 @@ export default function Profile() {
 
         {/* PROFILE SUB-SECTION TABS: Projects | Editable Resume | Reviews */}
         {isFreelancer && (
-          <div className="flex border-b border-white/60 glass rounded-t-3xl px-6 gap-6 shadow-xs overflow-x-auto">
+          <div className="bg-slate-900/90 border border-slate-700/80 rounded-2xl p-1.5 flex gap-2 overflow-x-auto shadow-lg">
             <button
+              type="button"
               onClick={() => setProfileTab('projects')}
-              className={`py-4 font-bold text-xs md:text-sm border-b-2 transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
+              className={`py-3 px-4 font-bold text-xs md:text-sm rounded-xl transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
                 profileTab === 'projects' || profileTab === 'overview'
-                  ? 'border-indigo-600 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-800'
+                  ? 'bg-gradient-to-r from-indigo-600/30 to-purple-600/30 border border-indigo-400 text-indigo-200 shadow-sm'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60 border border-transparent'
               }`}
             >
-              <FiFolder /> Extracted GitHub & Portfolio Projects ({profileData.portfolioProjects?.length || 0})
+              <FiFolder className="text-base text-indigo-400" /> Extracted GitHub & Portfolio Projects ({(Array.isArray(profileData.portfolioProjects) ? profileData.portfolioProjects : []).length})
             </button>
 
             <button
+              type="button"
               onClick={() => setProfileTab('resume')}
-              className={`py-4 font-bold text-xs md:text-sm border-b-2 transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
+              className={`py-3 px-4 font-bold text-xs md:text-sm rounded-xl transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
                 profileTab === 'resume'
-                  ? 'border-indigo-600 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-800'
+                  ? 'bg-gradient-to-r from-purple-600/30 to-indigo-600/30 border border-purple-400 text-purple-200 shadow-sm'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60 border border-transparent'
               }`}
             >
-              <FiFileText /> Editable Resume & Experience Profile
+              <FiFileText className="text-base text-purple-400" /> Editable Resume & Experience Profile
             </button>
 
             <button
+              type="button"
               onClick={() => setProfileTab('reviews')}
-              className={`py-4 font-bold text-xs md:text-sm border-b-2 transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
+              className={`py-3 px-4 font-bold text-xs md:text-sm rounded-xl transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
                 profileTab === 'reviews'
-                  ? 'border-indigo-600 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-800'
+                  ? 'bg-gradient-to-r from-amber-600/30 to-yellow-600/30 border border-amber-400 text-amber-200 shadow-sm'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60 border border-transparent'
               }`}
             >
-              <FiAward /> Reviews ({reviews.length})
+              <FiAward className="text-base text-amber-400" /> Reviews ({(Array.isArray(reviews) ? reviews : []).length})
             </button>
           </div>
         )}
 
         {/* SECTION 1: EXTRACTED GITHUB & PORTFOLIO PROJECTS */}
         {(profileTab === 'projects' || profileTab === 'overview') && isFreelancer && (
-          <div className="glass-card rounded-3xl p-6 md:p-8 space-y-6">
+          <div className="bg-slate-900/90 border border-slate-800/80 rounded-3xl p-6 md:p-8 space-y-6 text-white shadow-xl">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                  <FiGithub className="text-slate-900" /> Extracted GitHub & Portfolio Projects
+                <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                  <FiGithub className="text-purple-400" /> Extracted GitHub & Portfolio Projects
                 </h3>
-                <p className="text-xs text-gray-500">Live projects synced from @{profileData.githubUsername || 'rishicloud08'} with tech stacks and links.</p>
+                <p className="text-xs text-slate-400">Live projects synced from @{profileData.githubUsername || 'rishicloud08'} with tech stacks and links.</p>
               </div>
 
               <div className="flex items-center gap-2">
                 <button
+                  type="button"
                   onClick={() => setIsGitHubModalOpen(true)}
-                  className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-2xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                  className="bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 px-4 py-2 rounded-2xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
                 >
                   <FiZap className="text-yellow-400" /> Sync GitHub Repos
                 </button>
                 <button
+                  type="button"
                   onClick={handleAddProject}
-                  className="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3.5 py-2 rounded-2xl text-xs font-bold flex items-center gap-1 border border-indigo-200 cursor-pointer"
+                  className="bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 px-3.5 py-2 rounded-2xl text-xs font-bold flex items-center gap-1 border border-indigo-500/30 cursor-pointer"
                 >
                   <FiPlus /> Add Project
                 </button>
               </div>
             </div>
 
-            {(!profileData.portfolioProjects || profileData.portfolioProjects.length === 0) ? (
-              <div className="text-center py-12 bg-white/40 rounded-3xl border border-dashed border-gray-300 space-y-3">
-                <FiGithub className="w-12 h-12 mx-auto text-gray-400 opacity-60" />
-                <h4 className="text-sm font-bold text-gray-800">No Projects Synced Yet</h4>
-                <p className="text-xs text-gray-500 max-w-sm mx-auto">
+            {(!Array.isArray(profileData.portfolioProjects) || profileData.portfolioProjects.length === 0) ? (
+              <div className="text-center py-12 bg-slate-800/40 rounded-3xl border border-dashed border-slate-700 space-y-3">
+                <FiGithub className="w-12 h-12 mx-auto text-slate-500 opacity-60" />
+                <h4 className="text-sm font-bold text-slate-200">No Projects Synced Yet</h4>
+                <p className="text-xs text-slate-400 max-w-sm mx-auto">
                   Click "Extract GitHub Repos & Skills" above to automatically pull your repositories.
                 </p>
                 <button
+                  type="button"
                   onClick={() => setIsGitHubModalOpen(true)}
-                  className="bg-indigo-600 text-white px-5 py-2.5 rounded-2xl text-xs font-bold shadow-md cursor-pointer"
+                  className="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-2xl text-xs font-bold shadow-md cursor-pointer"
                 >
-                  Sync GitHub @rishicloud08 Now
+                  Sync GitHub @{profileData.githubUsername || 'rishicloud08'} Now
                 </button>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {profileData.portfolioProjects.map((proj, idx) => (
+                {(Array.isArray(profileData.portfolioProjects) ? profileData.portfolioProjects : []).map((proj, idx) => (
                   <div 
                     key={idx} 
-                    className="glass-card p-5 rounded-3xl border border-white/80 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group"
+                    className="bg-slate-800/80 p-5 rounded-2xl border border-slate-700/80 shadow-xs hover:border-indigo-500/50 transition-all flex flex-col justify-between group"
                   >
                     <div>
                       <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-bold text-sm text-gray-900 group-hover:text-indigo-600 transition-colors">
+                        <h4 className="font-bold text-sm text-white group-hover:text-indigo-400 transition-colors">
                           {proj.title}
                         </h4>
                         {proj.stars > 0 && (
-                          <span className="bg-amber-100 text-amber-900 text-[10px] font-bold px-2 py-0.5 rounded-md border border-amber-200 flex items-center gap-0.5">
+                          <span className="bg-amber-500/20 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-md border border-amber-500/30 flex items-center gap-0.5">
                             ★ {proj.stars}
                           </span>
                         )}
                       </div>
 
-                      <p className="text-xs text-gray-600 leading-relaxed mb-4 line-clamp-3">
+                      <p className="text-xs text-slate-300 leading-relaxed mb-4 line-clamp-3">
                         {proj.description}
                       </p>
 
                       <div className="flex flex-wrap gap-1.5 mb-4">
-                        {(proj.techStack || []).map((t, ti) => (
-                          <span key={ti} className="text-[10px] font-bold bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-lg border border-indigo-100">
+                        {(Array.isArray(proj.techStack) ? proj.techStack : []).map((t, ti) => (
+                          <span key={ti} className="text-[10px] font-bold bg-indigo-500/20 text-indigo-300 px-2.5 py-1 rounded-lg border border-indigo-500/30">
                             {t}
                           </span>
                         ))}
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between pt-3 border-t border-gray-100 text-xs">
+                    <div className="flex items-center justify-between pt-3 border-t border-slate-700/60 text-xs">
                       <div className="flex items-center gap-3">
                         {proj.repoUrl && (
                           <a 
                             href={proj.repoUrl} 
                             target="_blank" 
                             rel="noreferrer" 
-                            className="text-gray-700 hover:text-indigo-600 font-bold flex items-center gap-1"
+                            className="text-slate-300 hover:text-indigo-400 font-bold flex items-center gap-1"
                           >
                             <FiGithub /> Source Code
                           </a>
@@ -896,7 +919,7 @@ export default function Profile() {
                             href={proj.liveUrl} 
                             target="_blank" 
                             rel="noreferrer" 
-                            className="text-emerald-700 hover:text-emerald-900 font-bold flex items-center gap-1"
+                            className="text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1"
                           >
                             <FiExternalLink /> Live Demo
                           </a>
@@ -904,8 +927,9 @@ export default function Profile() {
                       </div>
 
                       <button
+                        type="button"
                         onClick={() => handleDeleteProject(idx)}
-                        className="text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-1 cursor-pointer"
+                        className="text-slate-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity p-1 cursor-pointer"
                       >
                         <FiTrash2 />
                       </button>
@@ -919,41 +943,44 @@ export default function Profile() {
 
         {/* SECTION 2: DEDICATED EDITABLE RESUME & EXPERIENCE */}
         {profileTab === 'resume' && isFreelancer && (
-          <div className="glass-card rounded-3xl p-6 md:p-8 space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/60 pb-4">
+          <div className="bg-slate-900/90 border border-slate-800/80 rounded-3xl p-6 md:p-8 space-y-6 text-white shadow-xl">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                    <FiFileText className="text-purple-600" /> Editable Resume & Experience Profile
+                  <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                    <FiFileText className="text-purple-400" /> Editable Resume & Experience Profile
                   </h3>
                   {resumeData.fileName && (
-                    <span className="bg-purple-100 text-purple-800 text-[11px] font-bold px-3 py-1 rounded-full border border-purple-200 flex items-center gap-1">
+                    <span className="bg-purple-500/20 text-purple-300 text-[11px] font-bold px-3 py-1 rounded-full border border-purple-500/30 flex items-center gap-1">
                       <FiFile /> {resumeData.fileName}
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-gray-500 mt-1">Upload PDF resumes or edit and customize your work experience, education, and certifications anytime.</p>
+                <p className="text-xs text-slate-400 mt-1">Upload PDF resumes or edit and customize your work experience, education, and certifications anytime.</p>
               </div>
 
               <div className="flex items-center gap-2">
                 <button
+                  type="button"
                   onClick={() => setIsResumeModalOpen(true)}
-                  className="bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 px-4 py-2 rounded-2xl text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+                  className="bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 border border-purple-500/30 px-4 py-2 rounded-2xl text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-colors"
                 >
                   <FiUpload /> Upload PDF Resume
                 </button>
 
                 {!isEditingResume ? (
                   <button
+                    type="button"
                     onClick={() => setIsEditingResume(true)}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-2xl text-xs font-bold flex items-center gap-1.5 shadow-sm cursor-pointer"
+                    className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-2xl text-xs font-bold flex items-center gap-1.5 shadow-sm cursor-pointer transition-colors"
                   >
                     <FiEdit2 /> Edit Resume Fields
                   </button>
                 ) : (
                   <button
+                    type="button"
                     onClick={handleSaveResumeSection}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-2xl text-xs font-bold flex items-center gap-1.5 shadow-md cursor-pointer"
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2 rounded-2xl text-xs font-bold flex items-center gap-1.5 shadow-md cursor-pointer transition-colors"
                   >
                     <FiCheck /> Save Resume
                   </button>
@@ -963,19 +990,19 @@ export default function Profile() {
 
             {/* Resume Summary */}
             <div className="space-y-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 flex items-center gap-1.5">
-                <FiBriefcase className="text-indigo-600" /> Career Summary
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                <FiBriefcase className="text-indigo-400" /> Career Summary
               </h4>
               {isEditingResume ? (
                 <textarea
                   rows={3}
-                  className="w-full p-3 rounded-xl glass-input text-xs"
+                  className="w-full p-3 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs outline-none focus:ring-2 focus:ring-purple-500"
                   value={resumeData.summary || ''}
                   onChange={(e) => setResumeData({ ...resumeData, summary: e.target.value })}
                 />
               ) : (
-                <p className="text-xs md:text-sm text-gray-700 bg-white/60 p-4 rounded-2xl border border-white/80 leading-relaxed">
-                  {resumeData.summary || profileData.bio || "No summary provided."}
+                <p className="text-xs md:text-sm text-slate-300 bg-slate-800/70 p-4 rounded-2xl border border-slate-700/70 leading-relaxed">
+                  {resumeData.summary || profileData.bio || "No summary provided. Upload a resume or click Edit Resume Fields to add your career summary."}
                 </p>
               )}
             </div>
@@ -983,61 +1010,62 @@ export default function Profile() {
             {/* Work Experience */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 flex items-center gap-1.5">
-                  <FiBriefcase className="text-indigo-600" /> Work Experience
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                  <FiBriefcase className="text-indigo-400" /> Work Experience
                 </h4>
                 {isEditingResume && (
                   <button
+                    type="button"
                     onClick={() => setResumeData({
                       ...resumeData,
-                      experience: [...(resumeData.experience || []), { role: 'Software Engineer', company: 'Company Name', duration: '2023 - Present', description: 'Engineered web applications...' }]
+                      experience: [...(Array.isArray(resumeData.experience) ? resumeData.experience : []), { role: 'Software Engineer', company: 'Company Name', duration: '2023 - Present', description: 'Engineered web applications...' }]
                     })}
-                    className="text-[11px] text-indigo-600 font-bold hover:underline cursor-pointer"
+                    className="text-[11px] text-indigo-400 font-bold hover:underline cursor-pointer"
                   >
                     + Add Experience
                   </button>
                 )}
               </div>
 
-              {(!resumeData.experience || resumeData.experience.length === 0) ? (
-                <p className="text-xs text-gray-400 italic">No work experience entries added.</p>
+              {(!Array.isArray(resumeData.experience) || resumeData.experience.length === 0) ? (
+                <p className="text-xs text-slate-500 italic">No work experience entries added.</p>
               ) : (
                 <div className="space-y-3">
-                  {resumeData.experience.map((exp, idx) => (
-                    <div key={idx} className="p-4 rounded-2xl bg-white/70 border border-white/80 space-y-2 shadow-2xs">
+                  {(Array.isArray(resumeData.experience) ? resumeData.experience : []).map((exp, idx) => (
+                    <div key={idx} className="p-4 rounded-2xl bg-slate-800/80 border border-slate-700/80 space-y-2 shadow-xs">
                       {isEditingResume ? (
                         <div className="space-y-2">
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                             <input
                               type="text"
                               placeholder="Role"
-                              className="p-2 rounded-xl glass-input text-xs"
+                              className="p-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs"
                               value={exp.role || ''}
                               onChange={(e) => {
-                                const newExp = [...resumeData.experience];
-                                newExp[idx].role = e.target.value;
+                                const newExp = [...(Array.isArray(resumeData.experience) ? resumeData.experience : [])];
+                                newExp[idx] = { ...newExp[idx], role: e.target.value };
                                 setResumeData({ ...resumeData, experience: newExp });
                               }}
                             />
                             <input
                               type="text"
                               placeholder="Company"
-                              className="p-2 rounded-xl glass-input text-xs"
+                              className="p-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs"
                               value={exp.company || ''}
                               onChange={(e) => {
-                                const newExp = [...resumeData.experience];
-                                newExp[idx].company = e.target.value;
+                                const newExp = [...(Array.isArray(resumeData.experience) ? resumeData.experience : [])];
+                                newExp[idx] = { ...newExp[idx], company: e.target.value };
                                 setResumeData({ ...resumeData, experience: newExp });
                               }}
                             />
                             <input
                               type="text"
                               placeholder="Duration"
-                              className="p-2 rounded-xl glass-input text-xs"
+                              className="p-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs"
                               value={exp.duration || ''}
                               onChange={(e) => {
-                                const newExp = [...resumeData.experience];
-                                newExp[idx].duration = e.target.value;
+                                const newExp = [...(Array.isArray(resumeData.experience) ? resumeData.experience : [])];
+                                newExp[idx] = { ...newExp[idx], duration: e.target.value };
                                 setResumeData({ ...resumeData, experience: newExp });
                               }}
                             />
@@ -1045,21 +1073,21 @@ export default function Profile() {
                           <textarea
                             rows={2}
                             placeholder="Description"
-                            className="w-full p-2 rounded-xl glass-input text-xs"
+                            className="w-full p-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs"
                             value={exp.description || ''}
                             onChange={(e) => {
-                              const newExp = [...resumeData.experience];
-                              newExp[idx].description = e.target.value;
+                              const newExp = [...(Array.isArray(resumeData.experience) ? resumeData.experience : [])];
+                              newExp[idx] = { ...newExp[idx], description: e.target.value };
                               setResumeData({ ...resumeData, experience: newExp });
                             }}
                           />
                           <button
                             type="button"
                             onClick={() => {
-                              const newExp = resumeData.experience.filter((_, i) => i !== idx);
+                              const newExp = (Array.isArray(resumeData.experience) ? resumeData.experience : []).filter((_, i) => i !== idx);
                               setResumeData({ ...resumeData, experience: newExp });
                             }}
-                            className="text-[10px] text-red-500 hover:text-red-700 font-semibold cursor-pointer"
+                            className="text-[10px] text-red-400 hover:text-red-300 font-semibold cursor-pointer"
                           >
                             Remove Entry
                           </button>
@@ -1067,10 +1095,10 @@ export default function Profile() {
                       ) : (
                         <div>
                           <div className="flex justify-between items-start">
-                            <h5 className="font-bold text-xs text-gray-900">{exp.role} • <span className="text-indigo-600">{exp.company}</span></h5>
-                            <span className="text-[11px] text-gray-400 font-semibold">{exp.duration}</span>
+                            <h5 className="font-bold text-xs text-white">{exp.role} • <span className="text-indigo-400">{exp.company}</span></h5>
+                            <span className="text-[11px] text-slate-400 font-semibold">{exp.duration}</span>
                           </div>
-                          <p className="text-xs text-gray-600 mt-1 leading-relaxed">{exp.description}</p>
+                          <p className="text-xs text-slate-300 mt-1 leading-relaxed">{exp.description}</p>
                         </div>
                       )}
                     </div>
@@ -1082,79 +1110,80 @@ export default function Profile() {
             {/* Education */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 flex items-center gap-1.5">
-                  <FiBookOpen className="text-indigo-600" /> Education
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                  <FiBookOpen className="text-indigo-400" /> Education
                 </h4>
                 {isEditingResume && (
                   <button
+                    type="button"
                     onClick={() => setResumeData({
                       ...resumeData,
-                      education: [...(resumeData.education || []), { institution: 'University', degree: 'Degree', year: '2020 - 2024' }]
+                      education: [...(Array.isArray(resumeData.education) ? resumeData.education : []), { institution: 'University', degree: 'Degree', year: '2020 - 2024' }]
                     })}
-                    className="text-[11px] text-indigo-600 font-bold hover:underline cursor-pointer"
+                    className="text-[11px] text-indigo-400 font-bold hover:underline cursor-pointer"
                   >
                     + Add Education
                   </button>
                 )}
               </div>
 
-              {(!resumeData.education || resumeData.education.length === 0) ? (
-                <p className="text-xs text-gray-400 italic">No education entries added.</p>
+              {(!Array.isArray(resumeData.education) || resumeData.education.length === 0) ? (
+                <p className="text-xs text-slate-500 italic">No education entries added.</p>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {resumeData.education.map((edu, idx) => (
-                    <div key={idx} className="p-4 rounded-2xl bg-white/70 border border-white/80 space-y-1 shadow-2xs">
+                  {(Array.isArray(resumeData.education) ? resumeData.education : []).map((edu, idx) => (
+                    <div key={idx} className="p-4 rounded-2xl bg-slate-800/80 border border-slate-700/80 space-y-1 shadow-xs">
                       {isEditingResume ? (
                         <div className="space-y-2">
                           <input
                             type="text"
                             placeholder="Degree"
-                            className="w-full p-2 rounded-xl glass-input text-xs font-bold"
+                            className="w-full p-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs font-bold"
                             value={edu.degree || ''}
                             onChange={(e) => {
-                              const newEdu = [...resumeData.education];
-                              newEdu[idx].degree = e.target.value;
+                              const newEdu = [...(Array.isArray(resumeData.education) ? resumeData.education : [])];
+                              newEdu[idx] = { ...newEdu[idx], degree: e.target.value };
                               setResumeData({ ...resumeData, education: newEdu });
                             }}
                           />
                           <input
                             type="text"
                             placeholder="Institution"
-                            className="w-full p-2 rounded-xl glass-input text-xs"
+                            className="w-full p-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs"
                             value={edu.institution || ''}
                             onChange={(e) => {
-                              const newEdu = [...resumeData.education];
-                              newEdu[idx].institution = e.target.value;
+                              const newEdu = [...(Array.isArray(resumeData.education) ? resumeData.education : [])];
+                              newEdu[idx] = { ...newEdu[idx], institution: e.target.value };
                               setResumeData({ ...resumeData, education: newEdu });
                             }}
                           />
                           <input
                             type="text"
                             placeholder="Year"
-                            className="w-full p-2 rounded-xl glass-input text-xs"
+                            className="w-full p-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs"
                             value={edu.year || ''}
                             onChange={(e) => {
-                              const newEdu = [...resumeData.education];
-                              newEdu[idx].year = e.target.value;
+                              const newEdu = [...(Array.isArray(resumeData.education) ? resumeData.education : [])];
+                              newEdu[idx] = { ...newEdu[idx], year: e.target.value };
                               setResumeData({ ...resumeData, education: newEdu });
                             }}
                           />
                           <button
                             type="button"
                             onClick={() => {
-                              const newEdu = resumeData.education.filter((_, i) => i !== idx);
+                              const newEdu = (Array.isArray(resumeData.education) ? resumeData.education : []).filter((_, i) => i !== idx);
                               setResumeData({ ...resumeData, education: newEdu });
                             }}
-                            className="text-[10px] text-red-500 hover:text-red-700 font-semibold cursor-pointer"
+                            className="text-[10px] text-red-400 hover:text-red-300 font-semibold cursor-pointer"
                           >
                             Remove Entry
                           </button>
                         </div>
                       ) : (
                         <div>
-                          <h5 className="font-bold text-xs text-gray-900">{edu.degree}</h5>
-                          <p className="text-xs text-indigo-600 font-medium">{edu.institution}</p>
-                          <span className="text-[10px] text-gray-400">{edu.year}</span>
+                          <h5 className="font-bold text-xs text-white">{edu.degree}</h5>
+                          <p className="text-xs text-indigo-400 font-medium">{edu.institution}</p>
+                          <span className="text-[10px] text-slate-400">{edu.year}</span>
                         </div>
                       )}
                     </div>
@@ -1166,11 +1195,11 @@ export default function Profile() {
             {/* Extracted Resume Skills & Core Competencies */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 flex items-center gap-1.5">
-                  <FiCode className="text-indigo-600" /> Extracted Resume Skills & Core Competencies ({((resumeData.skills?.length > 0 ? resumeData.skills : profileData.skills) || []).length})
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                  <FiCode className="text-indigo-400" /> Extracted Resume Skills & Core Competencies ({((Array.isArray(resumeData.skills) && resumeData.skills.length > 0 ? resumeData.skills : (Array.isArray(profileData.skills) ? profileData.skills : [])) || []).length})
                 </h4>
                 {isEditingResume && (
-                  <span className="text-[11px] text-gray-400">Edit skills separated by commas below</span>
+                  <span className="text-[11px] text-slate-400">Edit skills separated by commas below</span>
                 )}
               </div>
 
@@ -1179,7 +1208,7 @@ export default function Profile() {
                   <input
                     type="text"
                     placeholder="e.g. React, Node.js, Python, MongoDB, Tailwind CSS"
-                    className="w-full p-3 rounded-xl glass-input text-xs font-semibold"
+                    className="w-full p-3 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs font-semibold outline-none focus:ring-2 focus:ring-purple-500"
                     value={Array.isArray(resumeData.skills) ? resumeData.skills.join(', ') : (Array.isArray(profileData.skills) ? profileData.skills.join(', ') : '')}
                     onChange={(e) => {
                       const skillArr = e.target.value.split(',').map(s => s.trim()).filter(Boolean);
@@ -1187,19 +1216,19 @@ export default function Profile() {
                       setProfileData({ ...profileData, skills: skillArr });
                     }}
                   />
-                  <p className="text-[10px] text-gray-400">These skills are synced with your primary freelancer profile and visible to all clients.</p>
+                  <p className="text-[10px] text-slate-400">These skills are synced with your primary freelancer profile and visible to all clients.</p>
                 </div>
               ) : (
                 <div className="flex flex-wrap gap-2">
-                  {((resumeData.skills?.length > 0 ? resumeData.skills : profileData.skills) || []).length === 0 ? (
-                    <p className="text-xs text-gray-400 italic">No skills extracted yet. Upload a resume to automatically extract skills.</p>
+                  {((Array.isArray(resumeData.skills) && resumeData.skills.length > 0 ? resumeData.skills : (Array.isArray(profileData.skills) ? profileData.skills : [])) || []).length === 0 ? (
+                    <p className="text-xs text-slate-500 italic">No skills extracted yet. Upload a resume to automatically extract skills.</p>
                   ) : (
-                    ((resumeData.skills?.length > 0 ? resumeData.skills : profileData.skills) || []).map((skill, idx) => (
+                    ((Array.isArray(resumeData.skills) && resumeData.skills.length > 0 ? resumeData.skills : (Array.isArray(profileData.skills) ? profileData.skills : [])) || []).map((skill, idx) => (
                       <span
                         key={idx}
-                        className="bg-indigo-50 text-indigo-800 border border-indigo-200 px-3 py-1 rounded-xl text-xs font-bold flex items-center gap-1 shadow-2xs"
+                        className="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-3 py-1 rounded-xl text-xs font-bold flex items-center gap-1 shadow-2xs"
                       >
-                        <FiCheck className="text-indigo-500 text-[10px]" /> {skill}
+                        <FiCheck className="text-indigo-400 text-[10px]" /> {skill}
                       </span>
                     ))
                   )}
@@ -1209,14 +1238,14 @@ export default function Profile() {
 
             {/* Certifications */}
             <div className="space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
                 Certifications & Accreditations
               </h4>
               {isEditingResume ? (
                 <input
                   type="text"
                   placeholder="e.g. AWS Certified Practitioner, Google Cloud Architect (comma-separated)"
-                  className="w-full p-3 rounded-xl glass-input text-xs"
+                  className="w-full p-3 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs outline-none focus:ring-2 focus:ring-purple-500"
                   value={Array.isArray(resumeData.certifications) ? resumeData.certifications.join(', ') : ''}
                   onChange={(e) => {
                     const certArr = e.target.value.split(',').map(c => c.trim()).filter(Boolean);
@@ -1225,11 +1254,11 @@ export default function Profile() {
                 />
               ) : (
                 <div className="flex flex-wrap gap-2">
-                  {(resumeData.certifications || []).length === 0 ? (
-                    <p className="text-xs text-gray-400 italic">No certifications listed.</p>
+                  {(Array.isArray(resumeData.certifications) ? resumeData.certifications : []).length === 0 ? (
+                    <p className="text-xs text-slate-500 italic">No certifications listed.</p>
                   ) : (
-                    (resumeData.certifications || []).map((cert, idx) => (
-                      <span key={idx} className="bg-purple-50 text-purple-900 border border-purple-200 px-3 py-1.5 rounded-xl text-xs font-semibold">
+                    (Array.isArray(resumeData.certifications) ? resumeData.certifications : []).map((cert, idx) => (
+                      <span key={idx} className="bg-purple-500/20 text-purple-300 border border-purple-500/30 px-3 py-1.5 rounded-xl text-xs font-semibold">
                         📜 {cert}
                       </span>
                     ))
@@ -1242,25 +1271,25 @@ export default function Profile() {
 
         {/* SECTION 3: REVIEWS */}
         {(profileTab === 'reviews' || !isFreelancer) && (
-          <div className="glass-card rounded-3xl p-6 md:p-8 border border-white/70">
-            <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-              <FiAward className="text-yellow-500" /> Client Reviews & Feedback ({reviews.length})
+          <div className="bg-slate-900/90 border border-slate-800/80 rounded-3xl p-6 md:p-8 text-white shadow-xl">
+            <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+              <FiAward className="text-yellow-400" /> Client Reviews & Feedback ({(Array.isArray(reviews) ? reviews : []).length})
             </h2>
             
-            {reviews.length === 0 ? (
-              <div className="text-center py-8 text-gray-400 text-xs">
-                <FiStar className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+            {(Array.isArray(reviews) ? reviews : []).length === 0 ? (
+              <div className="text-center py-8 text-slate-500 text-xs">
+                <FiStar className="w-8 h-8 mx-auto mb-2 text-slate-600" />
                 <p>No verified project reviews yet. Complete your first milestone to receive a rating!</p>
               </div>
             ) : (
               <div className="space-y-4">
-                {reviews.map((review) => (
-                  <div key={review._id} className="p-4 rounded-xl glass border border-gray-100">
+                {(Array.isArray(reviews) ? reviews : []).map((review) => (
+                  <div key={review._id} className="p-4 rounded-xl bg-slate-800/80 border border-slate-700/80">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="font-bold text-sm text-gray-900">{review.reviewer?.name || 'Verified Client'}</span>
+                      <span className="font-bold text-sm text-white">{review.reviewer?.name || 'Verified Client'}</span>
                       <StarRating value={review.rating} readOnly size="sm" />
                     </div>
-                    <p className="text-xs text-gray-700">{review.comment}</p>
+                    <p className="text-xs text-slate-300">{review.comment}</p>
                   </div>
                 ))}
               </div>

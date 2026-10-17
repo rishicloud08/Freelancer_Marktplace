@@ -193,8 +193,12 @@ export default function Messages() {
             ) : filteredConversations.length === 0 ? (
               <div className="text-center p-8 text-slate-500 text-xs">
                 <FiLock className="w-10 h-10 mx-auto mb-2 text-slate-600" />
-                <p className="font-bold text-slate-300 mb-1">No Conversations Yet</p>
-                <p>Submit a proposal to a project or post a project to start chatting with clients and freelancers.</p>
+                <p className="font-bold text-slate-300 mb-1">No Active Collaborations Yet</p>
+                <p className="text-slate-400 leading-relaxed">
+                  {user?.role === 'freelancer'
+                    ? 'You will be able to chat with clients here once they accept your project proposal.'
+                    : 'Accept a freelancer’s proposal on one of your projects to start chatting and collaborating.'}
+                </p>
               </div>
             ) : (
               filteredConversations.map((conv, idx) => {

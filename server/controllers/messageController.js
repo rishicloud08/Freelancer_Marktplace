@@ -43,6 +43,27 @@ export const sendMessage = async (req, res) => {
       return res.status(400).json({ message: 'Receiver and content are required' });
     }
 
+    // Restriction: Freelancers can only chat with clients if the client has accepted their proposal
+    if (req.user.role === 'freelancer') {
+      const isAssigned = await Project.exists({
+        client: receiverId,
+        assignedFreelancer: req.user._id
+      });
+
+      const acceptedProposal = await Proposal.findOne({
+        freelancer: req.user._id,
+        status: 'accepted'
+      }).populate('project');
+
+      const isAcceptedClient = acceptedProposal && acceptedProposal.project?.client?.toString() === receiverId.toString();
+
+      if (!isAssigned && !isAcceptedClient) {
+        return res.status(403).json({ 
+          message: 'You can only message clients who have accepted your proposal for their project.' 
+        });
+      }
+    }
+
     const message = new Message({
       sender: req.user._id,
       receiver: receiverId,
@@ -72,45 +93,73 @@ export const sendMessage = async (req, res) => {
 export const getConversations = async (req, res) => {
   try {
     const userId = req.user._id;
+    const isFreelancer = req.user.role === 'freelancer';
     const userIds = new Set();
     
-    // 1. Get from existing messages
-    const messages = await Message.find({
-      $or: [{ sender: userId }, { receiver: userId }]
-    });
+    if (isFreelancer) {
+      // FREELANCER: Only show clients who have ACCEPTED this freelancer's proposal or assigned them
+      const acceptedProposals = await Proposal.find({ 
+        freelancer: userId, 
+        status: 'accepted' 
+      }).populate('project');
 
-    messages.forEach(msg => {
-      if (msg.sender && msg.sender.toString() !== userId.toString()) userIds.add(msg.sender.toString());
-      if (msg.receiver && msg.receiver.toString() !== userId.toString()) userIds.add(msg.receiver.toString());
-    });
+      acceptedProposals.forEach(pr => {
+        if (pr.project?.client) {
+          userIds.add(pr.project.client.toString());
+        }
+      });
 
-    // 2. If client, also add all freelancers who applied to their projects or are assigned
-    const clientProjects = await Project.find({ client: userId });
-    const projectIds = clientProjects.map(p => p._id);
-    
-    clientProjects.forEach(p => {
-      if (p.assignedFreelancer) userIds.add(p.assignedFreelancer.toString());
-    });
+      const assignedProjects = await Project.find({ assignedFreelancer: userId });
+      assignedProjects.forEach(p => {
+        if (p.client) {
+          userIds.add(p.client.toString());
+        }
+      });
 
-    const clientProposals = await Proposal.find({ project: { $in: projectIds } });
-    clientProposals.forEach(pr => {
-      if (pr.freelancer) userIds.add(pr.freelancer.toString());
-    });
+      // Existing message history with authorized clients
+      const messages = await Message.find({
+        $or: [{ sender: userId }, { receiver: userId }]
+      });
+      messages.forEach(msg => {
+        const otherId = msg.sender.toString() === userId.toString() 
+          ? msg.receiver.toString() 
+          : msg.sender.toString();
+        if (userIds.has(otherId)) {
+          userIds.add(otherId);
+        }
+      });
+    } else {
+      // CLIENT: Show freelancers whose proposals have been accepted or are assigned to their projects
+      const clientProjects = await Project.find({ client: userId });
+      const projectIds = clientProjects.map(p => p._id);
+      
+      clientProjects.forEach(p => {
+        if (p.assignedFreelancer) userIds.add(p.assignedFreelancer.toString());
+      });
 
-    // 3. If freelancer, also add all clients of projects they applied to or are assigned to
-    const freelancerProposals = await Proposal.find({ freelancer: userId }).populate('project');
-    freelancerProposals.forEach(pr => {
-      if (pr.project?.client) userIds.add(pr.project.client.toString());
-    });
+      const acceptedProposals = await Proposal.find({ 
+        project: { $in: projectIds },
+        status: 'accepted'
+      });
+      acceptedProposals.forEach(pr => {
+        if (pr.freelancer) userIds.add(pr.freelancer.toString());
+      });
 
-    const assignedProjects = await Project.find({ assignedFreelancer: userId });
-    assignedProjects.forEach(p => {
-      if (p.client) userIds.add(p.client.toString());
-    });
+      // Existing message history
+      const messages = await Message.find({
+        $or: [{ sender: userId }, { receiver: userId }]
+      });
+      messages.forEach(msg => {
+        const otherId = msg.sender.toString() === userId.toString() 
+          ? msg.receiver.toString() 
+          : msg.sender.toString();
+        userIds.add(otherId);
+      });
+    }
 
-    // 4. Always include other active users in system so contacts are always accessible
-    const otherUsers = await User.find({ _id: { $ne: userId } });
-    otherUsers.forEach(u => userIds.add(u._id.toString()));
+    if (userIds.size === 0) {
+      return res.json([]);
+    }
 
     const users = await User.find({ _id: { $in: Array.from(userIds) } }).select('name email role rating skills hourlyRate');
     

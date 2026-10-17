@@ -762,9 +762,24 @@ export const extractTextFromAnyDocument = async (base64Data, mimeType = '', file
   // 2. PDF Document (.pdf)
   if (lowerName.endsWith('.pdf') || mimeType.includes('pdf')) {
     try {
-      const pdfData = await pdfParse(buffer);
-      if (pdfData && pdfData.text && pdfData.text.trim().length > 10) {
-        return pdfData.text.trim();
+      if (typeof pdfParse === 'function') {
+        const pdfData = await pdfParse(buffer);
+        if (pdfData && pdfData.text && pdfData.text.trim().length > 10) {
+          return pdfData.text.trim();
+        }
+      } else if (pdfParse?.PDFParse) {
+        const parser = new pdfParse.PDFParse({ data: buffer });
+        const res = await parser.getText();
+        await parser.destroy?.();
+        const text = typeof res === 'string' ? res : (res?.text || '');
+        if (text && text.trim().length > 10) {
+          return text.trim();
+        }
+      } else if (typeof pdfParse?.default === 'function') {
+        const pdfData = await pdfParse.default(buffer);
+        if (pdfData && pdfData.text && pdfData.text.trim().length > 10) {
+          return pdfData.text.trim();
+        }
       }
     } catch (err) {
       console.log('pdf-parse extraction notice:', err.message);
