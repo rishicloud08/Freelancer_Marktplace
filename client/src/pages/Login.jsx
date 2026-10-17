@@ -118,7 +118,7 @@ const Login = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder={isClient ? 'alice@example.com' : 'diana@example.com'}
+                placeholder="you@example.com"
                 className="mt-1 block w-full px-3.5 py-2.5 bg-slate-800/80 text-white border border-slate-700 rounded-xl shadow-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
@@ -162,27 +162,6 @@ const Login = () => {
               Create account
             </Link>
           </div>
-        </div>
-
-        {/* Demo credentials hint & 1-Click Fill */}
-        <div className="mt-4 mx-4 sm:mx-0 glass bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-sm space-y-2">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-bold text-slate-300">Quick Demo {isClient ? 'Client' : 'Freelancer'} Account:</p>
-            <button
-              type="button"
-              onClick={() => {
-                setEmail(isClient ? 'kesh@gmail.com' : 'freelancer@example.com');
-                setPassword('password123');
-              }}
-              className="text-xs font-bold px-2.5 py-1 rounded-lg bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30 transition-colors cursor-pointer"
-            >
-              ⚡ 1-Click Autofill
-            </button>
-          </div>
-          <p className="text-xs text-slate-400">
-            Email: <code className="bg-slate-800 text-indigo-300 font-bold px-1.5 py-0.5 rounded">{isClient ? 'kesh@gmail.com' : 'freelancer@example.com'}</code> &nbsp;
-            Password: <code className="bg-slate-800 text-indigo-300 font-bold px-1.5 py-0.5 rounded">password123</code>
-          </p>
         </div>
       </div>
     </div>

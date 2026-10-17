@@ -1,4 +1,13 @@
 import User from '../models/User.js';
+import Project from '../models/Project.js';
+import Proposal from '../models/Proposal.js';
+import Milestone from '../models/Milestone.js';
+import Payment from '../models/Payment.js';
+import Message from '../models/Message.js';
+import Review from '../models/Review.js';
+import Contract from '../models/Contract.js';
+import Dispute from '../models/Dispute.js';
+import Task from '../models/Task.js';
 import jwt from 'jsonwebtoken';
 
 const generateToken = (id) => {
@@ -48,39 +57,27 @@ export const login = async (req, res) => {
     }
 
     const cleanEmail = email.trim().toLowerCase();
-    let user = await User.findOne({ 
+    const user = await User.findOne({ 
       email: { $regex: new RegExp(`^${cleanEmail}$`, 'i') } 
     });
 
-    // If user doesn't exist yet in the database, automatically provision client/freelancer account
     if (!user) {
-      const isClient = cleanEmail.includes('client') || cleanEmail.includes('kesh');
-      user = await User.create({
-        name: cleanEmail.includes('kesh') ? 'Kesh' : isClient ? 'Verified Client' : 'Rishi (Freelancer)',
-        email: cleanEmail,
-        password: password || 'password123',
-        role: isClient ? 'client' : 'freelancer',
-        bio: isClient ? 'Verified Client on FreelanceHub.' : 'Full-stack software engineer.',
-        skills: isClient ? [] : ['React', 'Node.js', 'MongoDB', 'Python'],
-        hourlyRate: isClient ? 0 : 500,
-        gpayNumber: isClient ? '9840827712' : '9840827712',
-        upiId: isClient ? 'kesh@okaxis' : 'rishikesh2006.gr@okaxis'
-      });
+      return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    // Verify password (or allow match)
+    // Verify password
     const isMatch = await user.matchPassword(password);
-    if (isMatch || password === 'password123') {
-      const token = generateToken(user._id);
-      const userObj = user.toObject();
-      delete userObj.password;
-      return res.json({
-        token,
-        user: userObj
-      });
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    res.status(401).json({ message: 'Invalid email or password' });
+    const token = generateToken(user._id);
+    const userObj = user.toObject();
+    delete userObj.password;
+    return res.json({
+      token,
+      user: userObj
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -131,3 +128,45 @@ export const updateProfile = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const resetDatabase = async (req, res) => {
+  try {
+    const { confirm } = req.query;
+    if (confirm !== 'yes' && req.body?.confirm !== 'yes') {
+      return res.status(400).json({ 
+        message: 'Please provide query parameter confirm=yes to clear all database collections.' 
+      });
+    }
+
+    const resUser = await User.deleteMany({});
+    const resProj = await Project.deleteMany({});
+    const resProp = await Proposal.deleteMany({});
+    const resMile = await Milestone.deleteMany({});
+    const resPay = await Payment.deleteMany({});
+    const resMsg = await Message.deleteMany({});
+    const resRev = await Review.deleteMany({});
+    const resCont = await Contract.deleteMany({});
+    const resDisp = await Dispute.deleteMany({});
+    const resTask = await Task.deleteMany({});
+
+    return res.json({
+      success: true,
+      message: 'All data of email, saved clients, freelancers, and projects removed successfully. Ready for fresh registrations!',
+      deletedCounts: {
+        users: resUser.deletedCount,
+        projects: resProj.deletedCount,
+        proposals: resProp.deletedCount,
+        milestones: resMile.deletedCount,
+        payments: resPay.deletedCount,
+        messages: resMsg.deletedCount,
+        reviews: resRev.deletedCount,
+        contracts: resCont.deletedCount,
+        disputes: resDisp.deletedCount,
+        tasks: resTask.deletedCount
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+

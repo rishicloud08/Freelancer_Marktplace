@@ -45,33 +45,6 @@ export default function Landing() {
     }
   };
 
-  const handleOneClickLogin = async (role) => {
-    setLoadingLogin(true);
-    try {
-      if (role === 'client') {
-        // Try user's client account first, fallback to demo client
-        try {
-          await login('kesh@gmail.com', 'password123');
-        } catch (e) {
-          await login('client@example.com', 'password123');
-        }
-      } else {
-        // Try user's freelancer account first, fallback to demo freelancer
-        try {
-          await login('freelancer@example.com', 'password123');
-        } catch (e) {
-          await login('rishi@example.com', 'password123');
-        }
-      }
-      toast.success(`Signed in as ${role === 'client' ? 'Client' : 'Freelancer'}!`);
-      navigate('/dashboard');
-    } catch (err) {
-      toast.error('Quick login failed. Please enter credentials below.');
-    } finally {
-      setLoadingLogin(false);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-[#0b0f19] flex flex-col font-sans text-slate-100">
       <Navbar />
@@ -141,52 +114,12 @@ export default function Landing() {
                         <FiLogIn className="text-purple-400" /> Quick Sign In
                       </h3>
                       <p className="text-[11px] text-gray-300 mt-0.5">
-                        1-Click instant demo login or enter your account credentials.
+                        Sign in to your account or register a new one to get started.
                       </p>
                     </div>
                     <span className="bg-purple-500/30 text-purple-200 border border-purple-400/30 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase">
                       Fast Access
                     </span>
-                  </div>
-
-                  {/* 1-Click Instant Demo Login Buttons */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <button
-                      type="button"
-                      onClick={() => handleOneClickLogin('client')}
-                      disabled={loadingLogin}
-                      className="bg-white/10 hover:bg-white/20 border border-white/20 hover:border-emerald-400/50 p-3.5 rounded-2xl text-left transition-all cursor-pointer group shadow-sm flex items-center gap-3"
-                    >
-                      <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-400/30 flex items-center justify-center font-bold text-lg group-hover:scale-105 transition-transform flex-shrink-0">
-                        <FiBriefcase />
-                      </div>
-                      <div>
-                        <span className="text-[10px] font-black text-emerald-400 uppercase tracking-wider block">1-Click Sign In</span>
-                        <h4 className="text-xs font-bold text-white group-hover:text-emerald-300">Client Account</h4>
-                      </div>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => handleOneClickLogin('freelancer')}
-                      disabled={loadingLogin}
-                      className="bg-white/10 hover:bg-white/20 border border-white/20 hover:border-purple-400/50 p-3.5 rounded-2xl text-left transition-all cursor-pointer group shadow-sm flex items-center gap-3"
-                    >
-                      <div className="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-400/30 flex items-center justify-center font-bold text-lg group-hover:scale-105 transition-transform flex-shrink-0">
-                        <FiUser />
-                      </div>
-                      <div>
-                        <span className="text-[10px] font-black text-purple-400 uppercase tracking-wider block">1-Click Sign In</span>
-                        <h4 className="text-xs font-bold text-white group-hover:text-purple-300">Freelancer Account</h4>
-                      </div>
-                    </button>
-                  </div>
-
-                  {/* Divider */}
-                  <div className="relative flex py-1 items-center">
-                    <div className="flex-grow border-t border-white/10"></div>
-                    <span className="flex-shrink mx-3 text-[11px] text-gray-400 font-semibold uppercase">Or Sign In with Email</span>
-                    <div className="flex-grow border-t border-white/10"></div>
                   </div>
 
                   {/* Inline Email / Password Form */}
@@ -196,7 +129,7 @@ export default function Landing() {
                       <input
                         type="email"
                         required
-                        placeholder="Your email address (e.g. kesh@gmail.com)"
+                        placeholder="Your email address (e.g. you@example.com)"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         className="w-full pl-9 pr-3.5 py-2.5 text-xs bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-purple-400 outline-none text-white placeholder-gray-400"
