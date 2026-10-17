@@ -186,9 +186,10 @@ const Register = () => {
               <input
                 type="text"
                 required
+                autoComplete="off"
                 value={formData.name}
                 onChange={handleChange('name')}
-                placeholder={isClient ? 'John Smith' : 'Jane Developer'}
+                placeholder={isClient ? 'Your Name or Company' : 'Your Full Name'}
                 className="mt-1 block w-full px-3.5 py-2.5 bg-slate-800/80 text-white border border-slate-700 rounded-xl shadow-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
@@ -198,6 +199,7 @@ const Register = () => {
               <input
                 type="email"
                 required
+                autoComplete="off"
                 value={formData.email}
                 onChange={handleChange('email')}
                 placeholder="you@example.com"

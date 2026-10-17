@@ -1,8 +1,7 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { AuthContext } from '../context/AuthContext';
-import toast from 'react-hot-toast';
 import { 
   FiCpu, 
   FiMessageCircle, 
@@ -13,37 +12,13 @@ import {
   FiArrowRight, 
   FiCheck,
   FiUser,
-  FiLock,
-  FiMail,
-  FiLogIn,
   FiSmartphone,
   FiBriefcase
 } from 'react-icons/fi';
 
 export default function Landing() {
-  const { user, login, logout } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
-
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loadingLogin, setLoadingLogin] = useState(false);
-
-  const handleQuickLogin = async (e) => {
-    e?.preventDefault();
-    if (!email || !password) {
-      return toast.error('Please enter your email and password');
-    }
-    setLoadingLogin(true);
-    try {
-      await login(email, password);
-      toast.success('Logged in successfully!');
-      navigate('/dashboard');
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Invalid email or password');
-    } finally {
-      setLoadingLogin(false);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-[#0b0f19] flex flex-col font-sans text-slate-100">
@@ -66,7 +41,7 @@ export default function Landing() {
             </p>
             
             {/* Primary Action Buttons */}
-            <div className="flex flex-col sm:flex-row justify-center gap-4 mb-10">
+            <div className="flex flex-col sm:flex-row justify-center gap-4 mb-6">
               <Link to="/register" className="px-8 py-4 bg-white text-indigo-900 font-bold rounded-full shadow-lg hover:bg-gray-50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                 Hire Freelancers
               </Link>
@@ -75,100 +50,41 @@ export default function Landing() {
               </Link>
             </div>
 
-            {/* CENTERED EASY 1-CLICK LOGIN & QUICK ACCESS MODULE */}
-            <div className="max-w-xl mx-auto glass-dark p-6 sm:p-8 rounded-3xl border border-white/20 shadow-2xl backdrop-blur-xl text-left animate-in fade-in zoom-in-95 duration-300">
-              {user ? (
-                /* Already Logged In Card */
-                <div className="text-center space-y-4">
-                  <div className="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-3.5 py-1 rounded-full text-xs font-bold">
-                    <FiCheckCircle className="text-emerald-400" /> Active Session
-                  </div>
-                  <h3 className="text-xl font-bold text-white">
-                    Logged in as <span className="text-emerald-300">{user.name}</span>
-                  </h3>
-                  <p className="text-xs text-gray-300">
-                    Role: <strong className="uppercase text-white tracking-wider">{user.role}</strong> ({user.email})
-                  </p>
-                  
-                  <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                    <button
-                      onClick={() => navigate('/dashboard')}
-                      className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold py-3 px-6 rounded-2xl shadow-lg transition-all text-xs flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      <FiZap className="text-yellow-300" /> Go to Your Dashboard →
-                    </button>
-                    <button
-                      onClick={logout}
-                      className="bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white font-semibold py-3 px-5 rounded-2xl border border-white/10 transition-all text-xs cursor-pointer"
-                    >
-                      Switch Account
-                    </button>
-                  </div>
+            {user ? (
+              /* Already Logged In Session Banner */
+              <div className="max-w-md mx-auto glass-dark p-5 rounded-3xl border border-white/20 shadow-xl backdrop-blur-xl text-center">
+                <div className="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-3.5 py-1 rounded-full text-xs font-bold mb-3">
+                  <FiCheckCircle className="text-emerald-400" /> Active Session
                 </div>
-              ) : (
-                /* Instant 1-Click Login Form */
-                <div className="space-y-5">
-                  <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                    <div>
-                      <h3 className="text-base sm:text-lg font-black text-white flex items-center gap-2">
-                        <FiLogIn className="text-purple-400" /> Quick Sign In
-                      </h3>
-                      <p className="text-[11px] text-gray-300 mt-0.5">
-                        Sign in to your account or register a new one to get started.
-                      </p>
-                    </div>
-                    <span className="bg-purple-500/30 text-purple-200 border border-purple-400/30 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase">
-                      Fast Access
-                    </span>
-                  </div>
-
-                  {/* Inline Email / Password Form */}
-                  <form onSubmit={handleQuickLogin} className="space-y-3">
-                    <div className="relative">
-                      <FiMail className="absolute left-3.5 top-3 text-gray-400 text-sm" />
-                      <input
-                        type="email"
-                        required
-                        placeholder="Your email address (e.g. you@example.com)"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full pl-9 pr-3.5 py-2.5 text-xs bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-purple-400 outline-none text-white placeholder-gray-400"
-                      />
-                    </div>
-
-                    <div className="relative">
-                      <FiLock className="absolute left-3.5 top-3 text-gray-400 text-sm" />
-                      <input
-                        type="password"
-                        required
-                        placeholder="Your password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="w-full pl-9 pr-3.5 py-2.5 text-xs bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-purple-400 outline-none text-white placeholder-gray-400"
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-between pt-1">
-                      <button
-                        type="submit"
-                        disabled={loadingLogin}
-                        className="w-full bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-all text-xs flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                      >
-                        <FiLogIn />
-                        {loadingLogin ? 'Signing In...' : 'Sign In to Account →'}
-                      </button>
-                    </div>
-                  </form>
-
-                  <div className="text-center pt-1 border-t border-white/10 text-[11px] text-gray-300">
-                    Don't have an account yet?{' '}
-                    <Link to="/register" className="text-purple-300 font-bold hover:underline">
-                      Create Free Account
-                    </Link>
-                  </div>
+                <h3 className="text-base font-bold text-white mb-1">
+                  Logged in as <span className="text-emerald-300">{user.name}</span>
+                </h3>
+                <p className="text-xs text-gray-300 mb-4">
+                  Role: <strong className="uppercase text-white tracking-wider">{user.role}</strong> ({user.email})
+                </p>
+                <div className="flex gap-2 justify-center">
+                  <button
+                    onClick={() => navigate('/dashboard')}
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-5 rounded-xl shadow text-xs flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <FiZap className="text-yellow-300" /> Go to Dashboard →
+                  </button>
+                  <button
+                    onClick={logout}
+                    className="bg-white/10 hover:bg-white/20 text-gray-300 font-medium py-2.5 px-4 rounded-xl border border-white/10 text-xs cursor-pointer"
+                  >
+                    Switch Account
+                  </button>
                 </div>
-              )}
-            </div>
+              </div>
+            ) : (
+              <div className="mt-4 flex items-center justify-center gap-2 text-sm text-indigo-200">
+                <span>Already have an account?</span>
+                <Link to="/login" className="font-bold text-white hover:text-purple-300 underline underline-offset-4">
+                  Sign in here →
+                </Link>
+              </div>
+            )}
 
           </div>
         </section>
