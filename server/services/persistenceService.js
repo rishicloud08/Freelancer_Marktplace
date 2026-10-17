@@ -63,6 +63,17 @@ export const defaultClient = {
   bio: 'Founder and Technical Product Lead at Tech Innovations Ltd. Hiring top full-stack and cloud software engineering talent.'
 };
 
+export const defaultClientGmail = {
+  name: 'John Client',
+  email: 'john@gmail.com',
+  password: 'password123',
+  role: 'client',
+  balance: 50000,
+  rating: 5,
+  totalReviews: 4,
+  bio: 'Founder and Technical Product Lead at Tech Innovations Ltd. Hiring top full-stack and cloud software engineering talent.'
+};
+
 export const defaultProjects = [
   {
     title: 'Full-Stack React & Node.js Web Application',
@@ -234,7 +245,22 @@ export const syncDatabaseToPersistentState = async () => {
 export const ensurePersistentDataInDB = async () => {
   try {
     const state = getPersistentState();
-    const usersToEnsure = state.users && state.users.length > 0 ? state.users : [defaultFreelancer, defaultClient];
+    const rawUsers = [
+      ...(Array.isArray(state.users) ? state.users : []),
+      defaultFreelancer,
+      defaultClient,
+      defaultClientGmail
+    ];
+
+    const seenEmails = new Set();
+    const usersToEnsure = [];
+    for (const u of rawUsers) {
+      const em = (u.email || '').trim().toLowerCase();
+      if (em && !seenEmails.has(em)) {
+        seenEmails.add(em);
+        usersToEnsure.push({ ...u, email: em });
+      }
+    }
 
     const emailToUserMap = {};
 
@@ -268,8 +294,11 @@ export const ensurePersistentDataInDB = async () => {
     for (const projData of projectsToEnsure) {
       const existingProj = await Project.findOne({ title: projData.title });
       if (!existingProj) {
-        const clientEmail = (projData.clientEmail || 'john@example.com').trim().toLowerCase();
-        const clientDoc = emailToUserMap[clientEmail] || await User.findOne({ email: clientEmail });
+        const clientEmail = (projData.clientEmail || 'john@gmail.com').trim().toLowerCase();
+        let clientDoc = emailToUserMap[clientEmail] || await User.findOne({ email: clientEmail });
+        if (!clientDoc) {
+          clientDoc = emailToUserMap['john@gmail.com'] || emailToUserMap['john@example.com'] || await User.findOne({ role: 'client' });
+        }
 
         if (clientDoc) {
           console.log(`📦 Restoring persistent project: "${projData.title}" for client ${clientDoc.name}`);

@@ -93,6 +93,29 @@
     },
     {
       "name": "John Client",
+      "email": "john@gmail.com",
+      "password": "$2a$10$YHcXu1P585yZgYGxXU8/yO6RnjaF1eU66LgffBSh5GhEVjqG77KWy",
+      "role": "client",
+      "balance": 50000,
+      "bio": "Founder and Technical Product Lead at Tech Innovations Ltd. Hiring top software engineering talent.",
+      "resumeData": {
+        "summary": "",
+        "skills": [],
+        "education": [],
+        "experience": [],
+        "certifications": []
+      },
+      "skills": [],
+      "hourlyRate": 500,
+      "rating": 5,
+      "totalReviews": 4,
+      "portfolioProjects": [],
+      "verifiedBadges": [],
+      "createdAt": "2026-10-17T06:31:25.388Z",
+      "updatedAt": "2026-10-17T06:46:49.271Z"
+    },
+    {
+      "name": "John Client",
       "email": "john@example.com",
       "password": "$2a$10$WDhYtv/6odb.JaqzrlsfjeqC1wYr3u/jjySs8uIpvc8ZUSlaXq9Ae",
       "role": "client",
