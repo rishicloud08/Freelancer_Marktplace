@@ -159,9 +159,10 @@ const Login = () => {
             </button>
             <Link
               to={isClient ? '/register/client' : '/register/freelancer'}
+              state={{ email }}
               className="text-sm font-medium text-indigo-400 hover:text-indigo-300"
             >
-              Create account
+              Create account →
             </Link>
           </div>
         </div>

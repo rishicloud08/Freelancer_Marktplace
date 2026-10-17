@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import { FiBriefcase, FiUser, FiCode, FiDollarSign, FiStar } from 'react-icons/fi';
@@ -7,11 +7,12 @@ import StarRating from '../components/StarRating';
 
 const Register = () => {
   const { role: urlRole } = useParams();
+  const location = useLocation();
   const normalizedUrlRole = (urlRole === 'client' || urlRole === 'freelancer') ? urlRole : null;
   const [role, setRole] = useState(normalizedUrlRole); // null = selection screen
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
+    email: location.state?.email || '',
     password: '',
     confirmPassword: '',
     skills: '',

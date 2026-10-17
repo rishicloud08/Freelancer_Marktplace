@@ -62,13 +62,15 @@ export const login = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(404).json({ 
+        message: `No account found with "${cleanEmail}". Please click "Create account" below to register.` 
+      });
     }
 
     // Verify password
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: 'Incorrect password. Please try again.' });
     }
 
     const token = generateToken(user._id);
