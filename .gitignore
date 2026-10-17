@@ -7,7 +7,8 @@ server/node_modules/
 client/dist/
 
 # Database data & tmp files
-server/data/
+server/data/db/
+!server/data/persistent_state.json
 *.lock
 
 # Environment variables

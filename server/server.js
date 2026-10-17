@@ -7,6 +7,7 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { Server } from 'socket.io';
 import connectDB from './config/db.js';
+import { ensurePersistentDataInDB } from './services/persistenceService.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -81,6 +82,7 @@ const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   await connectDB();
+  await ensurePersistentDataInDB();
 
   server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

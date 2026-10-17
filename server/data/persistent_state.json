@@ -1,0 +1,148 @@
+{
+  "users": [
+    {
+      "name": "Rishi kesh.V",
+      "email": "rishikesh2006.gr@gmail.com",
+      "password": "$2a$10$9ILQZ6JBt3v4YjB5c9s0U.o0IGO4RnRWdfYPzwtCm1MVL9tluXcRS",
+      "role": "freelancer",
+      "skills": [
+        "React",
+        "Node.js",
+        "JavaScript",
+        "Python",
+        "Cloud Architecture",
+        "MongoDB",
+        "Git",
+        "Tailwind CSS",
+        "REST APIs",
+        "Express.js"
+      ],
+      "hourlyRate": 750,
+      "bio": "Full-Stack Software Engineer with expertise in React, Node.js, Python, Cloud Architecture, and modern web application development.",
+      "githubUsername": "rishicloud08",
+      "githubUrl": "https://github.com/rishicloud08",
+      "balance": 15000,
+      "portfolioProjects": [
+        {
+          "title": "Freelancer AI Marketplace",
+          "description": "Real-time AI matching, escrow milestones, and dynamic proposal enhancements.",
+          "techStack": [
+            "React",
+            "Node.js",
+            "MongoDB",
+            "Socket.IO",
+            "Gemini AI"
+          ],
+          "stars": 0,
+          "_id": "6ad3163dfb9bfca092f9cfbd"
+        },
+        {
+          "title": "Cloud Infrastructure & Microservices",
+          "description": "Scalable cloud deployment architecture with automated pipelines.",
+          "techStack": [
+            "Docker",
+            "Cloud Architecture",
+            "Node.js"
+          ],
+          "stars": 0,
+          "_id": "6ad3163dfb9bfca092f9cfbe"
+        }
+      ],
+      "resumeData": {
+        "summary": "Full-Stack Software Engineer with expertise in React, Node.js, Python, Cloud Architecture, and modern web application development.",
+        "skills": [
+          "React",
+          "Node.js",
+          "JavaScript",
+          "Python",
+          "Cloud Architecture",
+          "MongoDB",
+          "Git",
+          "Tailwind CSS",
+          "REST APIs",
+          "Express.js"
+        ],
+        "education": [
+          {
+            "institution": "Department of Computer Science & Engineering",
+            "degree": "Bachelor of Technology in Computer Science",
+            "year": "2020 - 2024",
+            "_id": "6ad3163dfb9bfca092f9cfbf"
+          }
+        ],
+        "experience": [
+          {
+            "role": "Full-Stack Software Engineer",
+            "company": "Software Engineering & Cloud Projects",
+            "duration": "2023 - Present",
+            "description": "Engineered web applications and cloud solutions.",
+            "_id": "6ad3163dfb9bfca092f9cfc0"
+          }
+        ],
+        "certifications": [
+          "Full Stack Web Developer Certification",
+          "Cloud & Software Engineering"
+        ],
+        "fileName": "Rishikesh_Resume.pdf"
+      },
+      "rating": 5,
+      "totalReviews": 0,
+      "verifiedBadges": [],
+      "createdAt": "2026-10-17T06:31:25.240Z",
+      "updatedAt": "2026-10-17T06:33:33.740Z"
+    },
+    {
+      "name": "John Client",
+      "email": "john@example.com",
+      "password": "$2a$10$WDhYtv/6odb.JaqzrlsfjeqC1wYr3u/jjySs8uIpvc8ZUSlaXq9Ae",
+      "role": "client",
+      "balance": 50000,
+      "bio": "Founder and Technical Product Lead hiring top software engineering talent.",
+      "resumeData": {
+        "summary": "",
+        "skills": [],
+        "certifications": [],
+        "education": [],
+        "experience": []
+      },
+      "skills": [],
+      "hourlyRate": 500,
+      "rating": 5,
+      "totalReviews": 0,
+      "portfolioProjects": [],
+      "verifiedBadges": [],
+      "createdAt": "2026-10-17T06:31:25.388Z",
+      "updatedAt": "2026-10-17T06:31:25.388Z"
+    }
+  ],
+  "projects": [
+    {
+      "title": "Full-Stack React & Node.js Web Application",
+      "description": "Looking for an expert full-stack developer to build a modern responsive web application with real-time updates and cloud deployment.",
+      "skills": [
+        "React",
+        "Node.js",
+        "MongoDB",
+        "JavaScript"
+      ],
+      "budgetMin": 30000,
+      "budgetMax": 60000,
+      "duration": "3-4 weeks",
+      "status": "open"
+    },
+    {
+      "title": "Cloud Architecture & API Integration",
+      "description": "Need a skilled engineer to build secure RESTful APIs, integrate external cloud services, and optimize database queries.",
+      "skills": [
+        "Node.js",
+        "Python",
+        "Cloud Architecture",
+        "REST APIs"
+      ],
+      "budgetMin": 25000,
+      "budgetMax": 50000,
+      "duration": "2-3 weeks",
+      "status": "open"
+    }
+  ]
+}
