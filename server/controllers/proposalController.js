@@ -3,6 +3,7 @@ import Project from '../models/Project.js';
 import User from '../models/User.js';
 import Milestone from '../models/Milestone.js';
 import { matchFreelancersToProject } from '../services/geminiService.js';
+import { syncDatabaseToPersistentState } from '../services/persistenceService.js';
 
 export const submitProposal = async (req, res) => {
   try {
@@ -62,6 +63,7 @@ export const submitProposal = async (req, res) => {
       console.error('Socket emission error for proposalReceived:', socketErr.message);
     }
 
+    syncDatabaseToPersistentState();
     res.status(201).json(createdProposal);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -137,6 +139,7 @@ export const acceptProposal = async (req, res) => {
       });
     }
 
+    syncDatabaseToPersistentState();
     res.json(proposal);
   } catch (error) {
     res.status(500).json({ message: error.message });

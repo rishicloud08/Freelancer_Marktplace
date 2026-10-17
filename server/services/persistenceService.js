@@ -4,12 +4,14 @@ import { fileURLToPath } from 'url';
 import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
 import Project from '../models/Project.js';
+import Proposal from '../models/Proposal.js';
+import Milestone from '../models/Milestone.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const STATE_FILE = path.join(__dirname, '../data/persistent_state.json');
 
-const defaultFreelancer = {
+export const defaultFreelancer = {
   name: 'Rishi kesh.V',
   email: 'rishikesh2006.gr@gmail.com',
   password: 'password123',
@@ -20,6 +22,8 @@ const defaultFreelancer = {
   githubUsername: 'rishicloud08',
   githubUrl: 'https://github.com/rishicloud08',
   balance: 15000,
+  rating: 5,
+  totalReviews: 6,
   portfolioProjects: [
     { 
       title: 'Freelancer AI Marketplace', 
@@ -33,6 +37,7 @@ const defaultFreelancer = {
     }
   ],
   resumeData: {
+    name: 'Rishi kesh.V',
     summary: 'Full-Stack Software Engineer with expertise in React, Node.js, Python, Cloud Architecture, and modern web application development.',
     skills: ['React', 'Node.js', 'JavaScript', 'Python', 'Cloud Architecture', 'MongoDB', 'Git', 'Tailwind CSS', 'REST APIs', 'Express.js'],
     hourlyRate: 750,
@@ -47,19 +52,22 @@ const defaultFreelancer = {
   }
 };
 
-const defaultClient = {
+export const defaultClient = {
   name: 'John Client',
   email: 'john@example.com',
   password: 'password123',
   role: 'client',
   balance: 50000,
-  bio: 'Founder and Technical Product Lead hiring top software engineering talent.'
+  rating: 5,
+  totalReviews: 4,
+  bio: 'Founder and Technical Product Lead at Tech Innovations Ltd. Hiring top full-stack and cloud software engineering talent.'
 };
 
-const defaultProjects = [
+export const defaultProjects = [
   {
     title: 'Full-Stack React & Node.js Web Application',
     description: 'Looking for an expert full-stack developer to build a modern responsive web application with real-time updates and cloud deployment.',
+    clientEmail: 'john@example.com',
     skills: ['React', 'Node.js', 'MongoDB', 'JavaScript'],
     budgetMin: 30000,
     budgetMax: 60000,
@@ -69,6 +77,7 @@ const defaultProjects = [
   {
     title: 'Cloud Architecture & API Integration',
     description: 'Need a skilled engineer to build secure RESTful APIs, integrate external cloud services, and optimize database queries.',
+    clientEmail: 'john@example.com',
     skills: ['Node.js', 'Python', 'Cloud Architecture', 'REST APIs'],
     budgetMin: 25000,
     budgetMax: 50000,
@@ -82,14 +91,18 @@ export const getPersistentState = () => {
   try {
     if (fs.existsSync(STATE_FILE)) {
       const raw = fs.readFileSync(STATE_FILE, 'utf8');
-      return JSON.parse(raw);
+      const parsed = JSON.parse(raw);
+      if (parsed && Array.isArray(parsed.users)) {
+        return parsed;
+      }
     }
   } catch (err) {
     console.error('Error reading persistent state file:', err.message);
   }
   return {
     users: [defaultFreelancer, defaultClient],
-    projects: defaultProjects
+    projects: defaultProjects,
+    proposals: []
   };
 };
 
@@ -130,13 +143,100 @@ export const saveUserToPersistentState = (userDoc) => {
   }
 };
 
+// Save a project to persistent state
+export const saveProjectToPersistentState = async (projectDoc) => {
+  try {
+    if (!projectDoc) return;
+    const state = getPersistentState();
+    if (!Array.isArray(state.projects)) state.projects = [];
+
+    let clientEmail = 'john@example.com';
+    if (projectDoc.client) {
+      if (typeof projectDoc.client === 'object' && projectDoc.client.email) {
+        clientEmail = projectDoc.client.email;
+      } else {
+        const clientUser = await User.findById(projectDoc.client);
+        if (clientUser) clientEmail = clientUser.email;
+      }
+    }
+
+    const projObj = {
+      title: projectDoc.title,
+      description: projectDoc.description,
+      clientEmail,
+      skills: projectDoc.skills,
+      budgetMin: projectDoc.budgetMin,
+      budgetMax: projectDoc.budgetMax,
+      duration: projectDoc.duration,
+      status: projectDoc.status || 'open'
+    };
+
+    const existingIdx = state.projects.findIndex(p => p.title === projObj.title && p.clientEmail === clientEmail);
+    if (existingIdx >= 0) {
+      state.projects[existingIdx] = { ...state.projects[existingIdx], ...projObj };
+    } else {
+      state.projects.push(projObj);
+    }
+
+    savePersistentState(state);
+  } catch (err) {
+    console.error('Error in saveProjectToPersistentState:', err.message);
+  }
+};
+
+// Synchronize entire DB state to persistent file
+export const syncDatabaseToPersistentState = async () => {
+  try {
+    const users = await User.find({}).lean();
+    const projects = await Project.find({}).populate('client', 'email').populate('assignedFreelancer', 'email').lean();
+    const proposals = await Proposal.find({}).populate('freelancer', 'email').populate('project', 'title').lean();
+
+    const cleanUsers = users.map(u => {
+      const copy = { ...u };
+      delete copy._id;
+      delete copy.__v;
+      return copy;
+    });
+
+    const cleanProjects = projects.map(p => ({
+      title: p.title,
+      description: p.description,
+      clientEmail: p.client?.email || 'john@example.com',
+      assignedFreelancerEmail: p.assignedFreelancer?.email || null,
+      skills: p.skills,
+      budgetMin: p.budgetMin,
+      budgetMax: p.budgetMax,
+      duration: p.duration,
+      status: p.status
+    }));
+
+    const cleanProposals = proposals.map(pr => ({
+      projectTitle: pr.project?.title,
+      freelancerEmail: pr.freelancer?.email,
+      coverLetter: pr.coverLetter,
+      bidAmount: pr.bidAmount,
+      estimatedDuration: pr.estimatedDuration,
+      status: pr.status,
+      aiMatchScore: pr.aiMatchScore
+    }));
+
+    savePersistentState({
+      users: cleanUsers,
+      projects: cleanProjects,
+      proposals: cleanProposals
+    });
+  } catch (err) {
+    console.error('Error syncing DB to persistent state:', err.message);
+  }
+};
+
 // Ensure users and projects exist in MongoDB
 export const ensurePersistentDataInDB = async () => {
   try {
     const state = getPersistentState();
     const usersToEnsure = state.users && state.users.length > 0 ? state.users : [defaultFreelancer, defaultClient];
 
-    let clientUserDoc = null;
+    const emailToUserMap = {};
 
     for (const userData of usersToEnsure) {
       const cleanEmail = userData.email.trim().toLowerCase();
@@ -148,28 +248,53 @@ export const ensurePersistentDataInDB = async () => {
           ...userData,
           email: cleanEmail
         });
+      } else {
+        // Sync any updated fields like bio, balance, or rating
+        if (userData.balance !== undefined && (user.balance === undefined || user.balance === 0)) {
+          user.balance = userData.balance;
+        }
+        if (userData.bio && !user.bio) {
+          user.bio = userData.bio;
+        }
+        await user.save();
       }
 
-      if (user.role === 'client') {
-        clientUserDoc = user;
-      }
+      emailToUserMap[cleanEmail] = user;
     }
 
     // Ensure sample projects exist for Client
-    if (clientUserDoc) {
-      const projectCount = await Project.countDocuments();
-      if (projectCount === 0) {
-        console.log('📦 Restoring persistent projects for Client...');
-        for (const proj of defaultProjects) {
+    const projectsToEnsure = Array.isArray(state.projects) && state.projects.length > 0 ? state.projects : defaultProjects;
+
+    for (const projData of projectsToEnsure) {
+      const existingProj = await Project.findOne({ title: projData.title });
+      if (!existingProj) {
+        const clientEmail = (projData.clientEmail || 'john@example.com').trim().toLowerCase();
+        const clientDoc = emailToUserMap[clientEmail] || await User.findOne({ email: clientEmail });
+
+        if (clientDoc) {
+          console.log(`📦 Restoring persistent project: "${projData.title}" for client ${clientDoc.name}`);
+          let assignedFreelancerId = null;
+          if (projData.assignedFreelancerEmail) {
+            const fDoc = emailToUserMap[projData.assignedFreelancerEmail.trim().toLowerCase()];
+            if (fDoc) assignedFreelancerId = fDoc._id;
+          }
+
           await Project.create({
-            ...proj,
-            client: clientUserDoc._id
+            title: projData.title,
+            description: projData.description,
+            client: clientDoc._id,
+            skills: projData.skills,
+            budgetMin: projData.budgetMin,
+            budgetMax: projData.budgetMax,
+            duration: projData.duration,
+            status: projData.status || 'open',
+            assignedFreelancer: assignedFreelancerId
           });
         }
       }
     }
 
-    console.log('✅ Persistent user accounts and projects verified in database.');
+    console.log('✅ Persistent user accounts (Rishi & John Client) and projects verified in database.');
   } catch (err) {
     console.error('Error ensuring persistent data in DB:', err.message);
   }

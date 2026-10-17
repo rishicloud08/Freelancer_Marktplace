@@ -2,6 +2,7 @@ import Project from '../models/Project.js';
 import Milestone from '../models/Milestone.js';
 import Payment from '../models/Payment.js';
 import Proposal from '../models/Proposal.js';
+import { saveProjectToPersistentState, syncDatabaseToPersistentState } from '../services/persistenceService.js';
 
 export const getProjects = async (req, res) => {
   try {
@@ -55,6 +56,7 @@ export const createProject = async (req, res) => {
       duration,
     });
     const createdProject = await project.save();
+    saveProjectToPersistentState(createdProject);
     res.status(201).json(createdProject);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -80,6 +82,7 @@ export const updateProject = async (req, res) => {
     project.status = status || project.status;
     
     const updatedProject = await project.save();
+    saveProjectToPersistentState(updatedProject);
     res.json(updatedProject);
   } catch (error) {
     res.status(500).json({ message: error.message });
