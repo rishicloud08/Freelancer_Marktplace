@@ -59,18 +59,56 @@ export default function Profile() {
         education: [],
         experience: [],
         certifications: [],
-        skills: []
+        skills: [],
+        fileName: ''
       };
     }
+
+    const safeSkills = Array.isArray(data.skills)
+      ? data.skills.map(s => typeof s === 'string' ? s.trim() : (s?.name || s?.skill || String(s || '')).trim()).filter(Boolean)
+      : (typeof data.skills === 'string' && data.skills ? data.skills.split(',').map(s => s.trim()).filter(Boolean) : []);
+
+    const safeEducation = Array.isArray(data.education)
+      ? data.education.map(e => ({
+          institution: typeof e?.institution === 'string' ? e.institution : (e?.institution?.name || String(e?.institution || 'Institution')),
+          degree: typeof e?.degree === 'string' ? e.degree : (e?.degree?.name || String(e?.degree || 'Degree')),
+          year: typeof e?.year === 'string' || typeof e?.year === 'number' ? String(e.year) : '2020 - 2024'
+        }))
+      : [];
+
+    const safeExperience = Array.isArray(data.experience)
+      ? data.experience.map(exp => ({
+          role: typeof exp?.role === 'string' ? exp.role : (exp?.role?.title || String(exp?.role || 'Software Engineer')),
+          company: typeof exp?.company === 'string' ? exp.company : (exp?.company?.name || String(exp?.company || 'Company')),
+          duration: typeof exp?.duration === 'string' || typeof exp?.duration === 'number' ? String(exp.duration) : '2023 - Present',
+          description: typeof exp?.description === 'string'
+            ? exp.description
+            : (Array.isArray(exp?.description) 
+                ? exp.description.map(d => typeof d === 'string' ? d : JSON.stringify(d)).join(' • ') 
+                : String(exp?.description || ''))
+        }))
+      : [];
+
+    const safeCerts = Array.isArray(data.certifications)
+      ? data.certifications.map(c => typeof c === 'string' ? c.trim() : (c?.name || c?.title || String(c || '')).trim()).filter(Boolean)
+      : (typeof data.certifications === 'string' && data.certifications ? data.certifications.split(',').map(c => c.trim()).filter(Boolean) : []);
+
+    let cleanSummary = '';
+    if (typeof data.summary === 'string') {
+      cleanSummary = data.summary;
+    } else if (data.summary && typeof data.summary === 'object') {
+      cleanSummary = data.summary.text || data.summary.summary || JSON.stringify(data.summary);
+    } else {
+      cleanSummary = bio || '';
+    }
+
     return {
-      summary: typeof data.summary === 'string' ? data.summary : (bio || ''),
-      education: Array.isArray(data.education) ? data.education : [],
-      experience: Array.isArray(data.experience) ? data.experience : [],
-      certifications: Array.isArray(data.certifications) ? data.certifications : [],
-      skills: Array.isArray(data.skills) 
-        ? data.skills 
-        : (typeof data.skills === 'string' && data.skills ? data.skills.split(',').map(s => s.trim()).filter(Boolean) : []),
-      fileName: data.fileName || '',
+      summary: cleanSummary,
+      skills: safeSkills,
+      education: safeEducation,
+      experience: safeExperience,
+      certifications: safeCerts,
+      fileName: typeof data.fileName === 'string' ? data.fileName : '',
       uploadedAt: data.uploadedAt
     };
   };
@@ -182,7 +220,7 @@ export default function Profile() {
           fileName: resumeFile?.name || 'resume.pdf'
         });
 
-        applyParsedResume(res.data, resumeFile?.name);
+        await applyParsedResume(res.data, resumeFile?.name);
       } catch (err) {
         toast.error('Failed to parse PDF resume');
       } finally {
@@ -196,7 +234,7 @@ export default function Profile() {
       setParsingResume(true);
       try {
         const res = await api.ai.parseProfile({ rawText: resumeTextInput });
-        applyParsedResume(res.data, 'Pasted Resume');
+        await applyParsedResume(res.data, 'Pasted Resume');
       } catch (err) {
         toast.error('Failed to parse resume text');
       } finally {
@@ -206,40 +244,49 @@ export default function Profile() {
   };
 
   const applyParsedResume = async (parsed, fileName) => {
-    const extractedSkills = parsed.skills || [];
-    const mergedSkills = Array.from(new Set([...(profileData.skills || []), ...extractedSkills]));
+    try {
+      const normalized = normalizeResumeData(parsed, profileData.bio || '');
+      normalized.fileName = fileName || 'Uploaded Resume.pdf';
 
-    const newResumeObj = {
-      summary: parsed.summary || profileData.bio || '',
-      skills: extractedSkills,
-      education: parsed.education || [],
-      experience: parsed.experience || [],
-      certifications: parsed.certifications || [],
-      fileName: fileName || 'Uploaded Resume.pdf',
-      uploadedAt: new Date()
-    };
+      const mergedSkills = Array.from(new Set([
+        ...(Array.isArray(profileData.skills) ? profileData.skills : []),
+        ...(normalized.skills || [])
+      ]));
 
-    setResumeData(newResumeObj);
+      setResumeData(normalized);
 
-    const updated = {
-      ...profileData,
-      bio: parsed.summary || profileData.bio,
-      skills: mergedSkills,
-      hourlyRate: parsed.hourlyRate || profileData.hourlyRate,
-      resumeData: newResumeObj
-    };
+      const updated = {
+        ...profileData,
+        bio: normalized.summary || profileData.bio,
+        skills: mergedSkills,
+        hourlyRate: Number(parsed?.hourlyRate) || profileData.hourlyRate || 750,
+        resumeData: normalized
+      };
 
-    setProfileData(updated);
+      setProfileData(updated);
 
-    const saveRes = await api.auth.updateProfile(updated);
-    if (updateUser) updateUser(saveRes.data);
+      try {
+        const saveRes = await api.auth.updateProfile(updated);
+        if (saveRes?.data) {
+          setProfileData(saveRes.data);
+          if (saveRes.data.resumeData) {
+            setResumeData(normalizeResumeData(saveRes.data.resumeData));
+          }
+        }
+      } catch (saveErr) {
+        console.warn('Auto-save profile notice:', saveErr.message);
+      }
 
-    setIsResumeModalOpen(false);
-    setResumeFile(null);
-    setResumeFileBase64('');
-    setResumeTextInput('');
-    setProfileTab('resume');
-    toast.success('🎉 Resume parsed, skills extracted, and saved to your profile!');
+      setIsResumeModalOpen(false);
+      setResumeFile(null);
+      setResumeFileBase64('');
+      setResumeTextInput('');
+      setProfileTab('resume');
+      toast.success('🎉 Resume parsed, skills extracted, and populated successfully!');
+    } catch (err) {
+      console.error('Error applying parsed resume:', err);
+      toast.error('Failed to apply parsed resume: ' + err.message);
+    }
   };
 
   // Save Resume Section Edits
@@ -1095,10 +1142,18 @@ export default function Profile() {
                       ) : (
                         <div>
                           <div className="flex justify-between items-start">
-                            <h5 className="font-bold text-xs text-white">{exp.role} • <span className="text-indigo-400">{exp.company}</span></h5>
-                            <span className="text-[11px] text-slate-400 font-semibold">{exp.duration}</span>
+                            <h5 className="font-bold text-xs text-white">
+                              {typeof exp.role === 'string' ? exp.role : (exp.role?.title || String(exp.role || 'Software Engineer'))} • <span className="text-indigo-400">{typeof exp.company === 'string' ? exp.company : (exp.company?.name || String(exp.company || 'Company'))}</span>
+                            </h5>
+                            <span className="text-[11px] text-slate-400 font-semibold">{typeof exp.duration === 'string' || typeof exp.duration === 'number' ? exp.duration : String(exp.duration || '')}</span>
                           </div>
-                          <p className="text-xs text-slate-300 mt-1 leading-relaxed">{exp.description}</p>
+                          <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                            {typeof exp.description === 'string' 
+                              ? exp.description 
+                              : (Array.isArray(exp.description) 
+                                  ? exp.description.map(d => typeof d === 'string' ? d : JSON.stringify(d)).join(' • ') 
+                                  : String(exp.description || ''))}
+                          </p>
                         </div>
                       )}
                     </div>
@@ -1181,9 +1236,15 @@ export default function Profile() {
                         </div>
                       ) : (
                         <div>
-                          <h5 className="font-bold text-xs text-white">{edu.degree}</h5>
-                          <p className="text-xs text-indigo-400 font-medium">{edu.institution}</p>
-                          <span className="text-[10px] text-slate-400">{edu.year}</span>
+                          <h5 className="font-bold text-xs text-white">
+                            {typeof edu.degree === 'string' ? edu.degree : (edu.degree?.name || String(edu.degree || ''))}
+                          </h5>
+                          <p className="text-xs text-indigo-400 font-medium">
+                            {typeof edu.institution === 'string' ? edu.institution : (edu.institution?.name || String(edu.institution || ''))}
+                          </p>
+                          <span className="text-[10px] text-slate-400">
+                            {typeof edu.year === 'string' || typeof edu.year === 'number' ? edu.year : String(edu.year || '')}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -1228,7 +1289,7 @@ export default function Profile() {
                         key={idx}
                         className="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-3 py-1 rounded-xl text-xs font-bold flex items-center gap-1 shadow-2xs"
                       >
-                        <FiCheck className="text-indigo-400 text-[10px]" /> {skill}
+                        <FiCheck className="text-indigo-400 text-[10px]" /> {typeof skill === 'string' ? skill : (skill?.name || skill?.skill || String(skill || ''))}
                       </span>
                     ))
                   )}
@@ -1259,7 +1320,7 @@ export default function Profile() {
                   ) : (
                     (Array.isArray(resumeData.certifications) ? resumeData.certifications : []).map((cert, idx) => (
                       <span key={idx} className="bg-purple-500/20 text-purple-300 border border-purple-500/30 px-3 py-1.5 rounded-xl text-xs font-semibold">
-                        📜 {cert}
+                        📜 {typeof cert === 'string' ? cert : (cert?.name || cert?.title || String(cert || ''))}
                       </span>
                     ))
                   )}

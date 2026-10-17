@@ -727,18 +727,110 @@ export const parseResumeToSections = async (resumeText) => {
 
     const result = await model.generateContent(prompt);
     const responseText = result.response.text();
-    return extractJSON(responseText);
+    return sanitizeParsedResume(extractJSON(responseText), '', 'Pasted Resume');
   } catch (error) {
     console.error('Gemini API Error in parseResumeToSections:', error.message);
-    return {
+    return sanitizeParsedResume({
       summary: 'Full-stack software developer with experience in end-to-end web engineering.',
       skills: ['React', 'Node.js', 'JavaScript', 'Tailwind CSS'],
       hourlyRate: 600,
       education: [{ institution: 'Computer Science Department', degree: 'B.Tech / B.E.', year: '2024' }],
       experience: [{ role: 'Software Developer', company: 'Freelance & Independent Projects', duration: '2023 - Present', description: 'Developed custom web applications and REST APIs.' }],
       certifications: ['Full Stack Web Development']
-    };
+    }, '', 'Pasted Resume');
   }
+};
+
+// SANITIZE & NORMALIZE PARSED RESUME DATA
+export const sanitizeParsedResume = (data, defaultName = '', fileName = 'resume.docx') => {
+  if (!data || typeof data !== 'object') {
+    data = {};
+  }
+
+  let summary = typeof data.summary === 'string' ? data.summary.trim() : '';
+  if (!summary && typeof data.bio === 'string') summary = data.bio.trim();
+  if (!summary) summary = 'Software Engineer with experience in full-stack web development and software engineering.';
+
+  let skills = [];
+  if (Array.isArray(data.skills)) {
+    skills = data.skills.map(s => {
+      if (typeof s === 'string') return s.trim();
+      if (s && typeof s === 'object') return (s.name || s.skill || s.title || '').trim();
+      return String(s || '').trim();
+    }).filter(Boolean);
+  } else if (typeof data.skills === 'string') {
+    skills = data.skills.split(',').map(s => s.trim()).filter(Boolean);
+  }
+  if (skills.length === 0) {
+    skills = ['React', 'Node.js', 'JavaScript', 'MongoDB', 'Tailwind CSS'];
+  }
+
+  let education = [];
+  if (Array.isArray(data.education)) {
+    education = data.education.map(edu => {
+      if (!edu || typeof edu !== 'object') {
+        return { institution: String(edu || 'University'), degree: 'Bachelor Degree', year: '2024' };
+      }
+      return {
+        institution: typeof edu.institution === 'string' ? edu.institution : (edu.institution?.name || edu.school || 'University'),
+        degree: typeof edu.degree === 'string' ? edu.degree : (edu.degree?.name || edu.degree?.title || 'Bachelor of Technology'),
+        year: typeof edu.year === 'string' || typeof edu.year === 'number' ? String(edu.year) : (edu.dates || '2020 - 2024')
+      };
+    });
+  }
+  if (education.length === 0) {
+    education = [{ institution: 'Department of Computer Science', degree: 'Bachelor of Technology', year: '2020 - 2024' }];
+  }
+
+  let experience = [];
+  if (Array.isArray(data.experience)) {
+    experience = data.experience.map(exp => {
+      if (!exp || typeof exp !== 'object') {
+        return { role: 'Software Engineer', company: 'Company', duration: '2023 - Present', description: String(exp || '') };
+      }
+      
+      let desc = '';
+      if (typeof exp.description === 'string') {
+        desc = exp.description;
+      } else if (Array.isArray(exp.description)) {
+        desc = exp.description.map(d => typeof d === 'string' ? d : JSON.stringify(d)).join(' • ');
+      } else if (exp.description && typeof exp.description === 'object') {
+        desc = exp.description.summary || exp.description.text || JSON.stringify(exp.description);
+      }
+
+      return {
+        role: typeof exp.role === 'string' ? exp.role : (exp.role?.title || exp.title || 'Software Engineer'),
+        company: typeof exp.company === 'string' ? exp.company : (exp.company?.name || exp.organization || 'Tech Solutions'),
+        duration: typeof exp.duration === 'string' || typeof exp.duration === 'number' ? String(exp.duration) : (exp.dates || '2023 - Present'),
+        description: desc || 'Engineered web applications and software solutions.'
+      };
+    });
+  }
+  if (experience.length === 0) {
+    experience = [{ role: 'Full-Stack Developer', company: 'Freelance & Independent Projects', duration: '2023 - Present', description: 'Developed modern web applications, RESTful APIs, and user interfaces.' }];
+  }
+
+  let certifications = [];
+  if (Array.isArray(data.certifications)) {
+    certifications = data.certifications.map(c => {
+      if (typeof c === 'string') return c.trim();
+      if (c && typeof c === 'object') return (c.name || c.title || c.certificate || '').trim();
+      return String(c || '').trim();
+    }).filter(Boolean);
+  } else if (typeof data.certifications === 'string') {
+    certifications = data.certifications.split(',').map(c => c.trim()).filter(Boolean);
+  }
+
+  return {
+    name: typeof data.name === 'string' && data.name.trim() ? data.name.trim() : (defaultName || 'Rishi kesh.V'),
+    summary,
+    skills,
+    hourlyRate: Number(data.hourlyRate) || 750,
+    education,
+    experience,
+    certifications,
+    fileName: fileName || 'Uploaded Resume.pdf'
+  };
 };
 
 // EXTRACT TEXT FROM ANY DOCUMENT (WORD .docx/.doc, PDF .pdf, TXT)
@@ -837,7 +929,7 @@ export const parseResumePDF = async (base64Data, mimeType = '', fileName = 'resu
 
       const result = await model.generateContent(prompt);
       const responseText = result.response.text();
-      return extractJSON(responseText);
+      return sanitizeParsedResume(extractJSON(responseText), '', fileName);
     }
 
     // Multimodal PDF fallback if Gemini supports it and it is a PDF
@@ -851,7 +943,7 @@ export const parseResumePDF = async (base64Data, mimeType = '', fileName = 'resu
         { inlineData: { mimeType: 'application/pdf', data: cleanBase64 } },
         prompt
       ]);
-      return extractJSON(result.response.text());
+      return sanitizeParsedResume(extractJSON(result.response.text()), '', fileName);
     }
 
     // Heuristic parser on extracted text if Gemini API key is not present
@@ -859,7 +951,7 @@ export const parseResumePDF = async (base64Data, mimeType = '', fileName = 'resu
       const lines = extractedText.split('\n').map(l => l.trim()).filter(Boolean);
       const candidateName = lines[0] || 'Rishi kesh.V';
 
-      return {
+      return sanitizeParsedResume({
         name: candidateName,
         summary: `${candidateName} - Software Engineer with verified background extracted directly from ${fileName}. Experienced in modern software engineering and project delivery.`,
         skills: ['React', 'Node.js', 'JavaScript', 'Python', 'Cloud Architecture', 'MongoDB', 'Git'],
@@ -871,27 +963,27 @@ export const parseResumePDF = async (base64Data, mimeType = '', fileName = 'resu
           { role: 'Full-Stack Software Engineer', company: 'Software Engineering & Cloud Projects', duration: '2023 - Present', description: extractedText.slice(0, 250) }
         ],
         certifications: ['Full Stack Web Developer Certification']
-      };
+      }, candidateName, fileName);
     }
 
-    return {
+    return sanitizeParsedResume({
       summary: `Software Developer profile extracted from ${fileName}.`,
       skills: ['React', 'Node.js', 'Python', 'JavaScript', 'Tailwind CSS'],
       hourlyRate: 700,
       education: [{ institution: 'Computer Science Department', degree: 'B.Tech / B.E.', year: '2024' }],
       experience: [{ role: 'Software Developer', company: 'Independent Engineering', duration: '2023 - Present', description: 'Developed full stack applications.' }],
       certifications: ['Web Development Certification']
-    };
+    }, '', fileName);
   } catch (error) {
     console.error('Error in parseResumePDF:', error.message);
-    return {
+    return sanitizeParsedResume({
       summary: `Profile extracted from ${fileName}.`,
       skills: ['React', 'Node.js', 'JavaScript', 'Tailwind CSS'],
       hourlyRate: 650,
       education: [{ institution: 'Engineering College', degree: 'B.Tech', year: '2024' }],
       experience: [{ role: 'Developer', company: 'Software Projects', duration: '2023 - Present', description: 'Built web applications.' }],
       certifications: ['Software Engineering']
-    };
+    }, '', fileName);
   }
 };
 
