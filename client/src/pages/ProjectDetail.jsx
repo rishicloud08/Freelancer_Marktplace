@@ -510,7 +510,7 @@ export default function ProjectDetail() {
         <div className="flex items-center justify-between">
           <Link 
             to="/projects" 
-            className="inline-flex items-center gap-2 text-xs font-bold text-gray-600 hover:text-indigo-600 transition-colors"
+            className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-indigo-400 transition-colors"
           >
             <FiArrowLeft /> Back to Projects
           </Link>
@@ -521,10 +521,10 @@ export default function ProjectDetail() {
                 type="button"
                 onClick={handleResetProject}
                 disabled={resettingProject}
-                className="bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 px-3.5 py-1.5 rounded-2xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/30 px-3.5 py-1.5 rounded-2xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
                 title="Reset project lifecycle back to Step 1"
               >
-                <FiZap className="text-purple-600" />
+                <FiZap className="text-purple-400" />
                 {resettingProject ? 'Resetting...' : '🔄 Reset to Step 1'}
               </button>
             )}
@@ -532,16 +532,16 @@ export default function ProjectDetail() {
             {project.assignedFreelancer && (
               <button
                 onClick={() => setIsContractModalOpen(true)}
-                className="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 px-3.5 py-1.5 rounded-2xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-500/30 px-3.5 py-1.5 rounded-2xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
               >
                 <FiFileText /> Smart Contract SLA
               </button>
             )}
 
             <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
-              project.status === 'open' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
-              project.status === 'in-progress' ? 'bg-blue-100 text-blue-800 border border-blue-300' :
-              'bg-gray-100 text-gray-800'
+              project.status === 'open' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' :
+              project.status === 'in-progress' ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30' :
+              'bg-slate-800 text-slate-300 border border-slate-700'
             }`}>
               Status: {project.status}
             </span>
@@ -551,7 +551,7 @@ export default function ProjectDetail() {
                 type="button"
                 onClick={handleDeleteProject}
                 title="Delete project"
-                className="text-gray-400 hover:text-red-600 p-1.5 hover:bg-red-50 rounded-xl transition-colors cursor-pointer"
+                className="text-slate-400 hover:text-red-400 p-1.5 hover:bg-red-500/10 rounded-xl transition-colors cursor-pointer"
               >
                 <FiX className="w-4 h-4" />
               </button>
@@ -560,37 +560,37 @@ export default function ProjectDetail() {
         </div>
 
         {/* Main Project Glass Header Card */}
-        <div className="glass-card rounded-3xl p-6 md:p-8">
+        <div className="glass-card rounded-3xl p-6 md:p-8 border border-slate-800">
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
             <div className="flex-1">
-              <h1 className="text-2xl md:text-3xl font-black text-gray-900 leading-tight">
+              <h1 className="text-2xl md:text-3xl font-black text-white leading-tight">
                 {project.title}
               </h1>
               
-              <div className="flex flex-wrap items-center gap-4 mt-3 text-xs md:text-sm text-gray-500">
-                <span className="flex items-center gap-1.5 font-bold text-gray-800">
-                  <FiUser className="text-indigo-600" />
+              <div className="flex flex-wrap items-center gap-4 mt-3 text-xs md:text-sm text-slate-400">
+                <span className="flex items-center gap-1.5 font-bold text-slate-200">
+                  <FiUser className="text-indigo-400" />
                   Client: {project.client?.name || 'Client User'}
                 </span>
                 <span className="flex items-center gap-1.5 font-medium">
-                  <FiCalendar className="text-gray-400" />
+                  <FiCalendar className="text-slate-500" />
                   Posted: {new Date(project.createdAt).toLocaleDateString()}
                 </span>
                 <span className="flex items-center gap-1.5 font-medium">
-                  <FiClock className="text-gray-400" />
+                  <FiClock className="text-slate-500" />
                   Duration: {project.duration || '1-3 months'}
                 </span>
               </div>
             </div>
 
             {/* Budget Box in Rupees & Direct GPay Payment */}
-            <div className="bg-gradient-to-br from-indigo-50/80 to-purple-50/80 p-5 rounded-2xl border border-indigo-100 min-w-[240px] text-right shadow-xs flex flex-col justify-between">
+            <div className="bg-gradient-to-br from-indigo-950/60 to-purple-950/60 p-5 rounded-2xl border border-indigo-500/30 min-w-[240px] text-right shadow-md flex flex-col justify-between">
               <div>
-                <span className="text-xs font-bold text-indigo-700 uppercase tracking-wider">Project Budget (INR)</span>
-                <div className="text-2xl font-black text-indigo-900 mt-0.5">
+                <span className="text-xs font-bold text-indigo-300 uppercase tracking-wider">Project Budget (INR)</span>
+                <div className="text-2xl font-black text-white mt-0.5">
                   ₹{(project.budgetMin ?? 5000).toLocaleString()} - ₹{(project.budgetMax ?? 25000).toLocaleString()}
                 </div>
-                <span className="text-[11px] text-gray-500 block mb-2">Direct UPI / GPay to Freelancer</span>
+                <span className="text-[11px] text-slate-400 block mb-2">Direct UPI / GPay to Freelancer</span>
               </div>
 
               {isClientOwner && milestones.length > 0 && (
@@ -603,7 +603,7 @@ export default function ProjectDetail() {
                     setSelectedMilestoneForPayment(firstUnfunded);
                     setIsPaymentModalOpen(true);
                   }}
-                  className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold px-3.5 py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer mt-1"
+                  className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold px-3.5 py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md transition-all cursor-pointer mt-1"
                 >
                   <FiSmartphone /> 📱 Pay Freelancer via GPay
                 </button>
@@ -612,15 +612,15 @@ export default function ProjectDetail() {
           </div>
 
           {/* Required Skills Badges */}
-          <div className="mt-6 pt-6 border-t border-white/60">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2.5">
+          <div className="mt-6 pt-6 border-t border-slate-800">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5">
               Required Skills & Technologies:
             </h4>
             <div className="flex flex-wrap gap-2">
               {(project.skills || []).map((skill, index) => (
                 <span 
                   key={index}
-                  className="bg-white/80 text-indigo-700 font-bold text-xs px-3 py-1.5 rounded-xl border border-indigo-100 shadow-2xs"
+                  className="bg-slate-800/80 text-indigo-300 font-bold text-xs px-3 py-1.5 rounded-xl border border-indigo-500/20"
                 >
                   {skill}
                 </span>
@@ -645,9 +645,9 @@ export default function ProjectDetail() {
           return (
             <div className="space-y-4">
               {/* Step Pipeline Progress Bar */}
-              <div className="glass-card rounded-3xl p-5 md:p-6 border border-white/80">
+              <div className="glass-card rounded-3xl p-5 md:p-6 border border-slate-800">
                 <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
                     Project Lifecycle & Completion Pipeline
                   </h4>
                   <div className="flex items-center gap-2">
@@ -657,7 +657,7 @@ export default function ProjectDetail() {
                           type="button"
                           onClick={handleResetProject}
                           disabled={resettingProject}
-                          className="text-[11px] font-bold text-purple-700 hover:text-purple-800 bg-purple-50 hover:bg-purple-100 border border-purple-200 px-3 py-1 rounded-full transition-colors flex items-center gap-1 cursor-pointer"
+                          className="text-[11px] font-bold text-purple-300 hover:text-purple-200 bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/30 px-3 py-1 rounded-full transition-colors flex items-center gap-1 cursor-pointer"
                         >
                           <FiZap className="text-[10px]" />
                           {resettingProject ? 'Resetting...' : '🔄 Reset to Step 1'}
@@ -665,13 +665,13 @@ export default function ProjectDetail() {
                         <button
                           type="button"
                           onClick={handleDeleteProject}
-                          className="text-[11px] font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 px-3 py-1 rounded-full transition-colors flex items-center gap-1 cursor-pointer"
+                          className="text-[11px] font-bold text-red-300 hover:text-red-200 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 px-3 py-1 rounded-full transition-colors flex items-center gap-1 cursor-pointer"
                         >
                           <FiTrash2 className="text-[10px]" /> Delete Project
                         </button>
                       </>
                     )}
-                    <span className="text-xs font-black text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">
+                    <span className="text-xs font-black text-indigo-300 bg-indigo-500/20 px-3 py-1 rounded-full border border-indigo-500/30">
                       Stage {currentStep} of 4: {
                         currentStep === 1 ? 'Open for Proposals' :
                         currentStep === 2 ? 'In Progress & Assigned' :
@@ -684,7 +684,7 @@ export default function ProjectDetail() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {/* Step 1 */}
                   <div className={`p-3.5 rounded-2xl border transition-all ${
-                    currentStep >= 1 ? 'bg-indigo-50/80 border-indigo-200 text-indigo-950' : 'bg-gray-50/50 border-gray-200 text-gray-400'
+                    currentStep >= 1 ? 'bg-indigo-500/15 border-indigo-500/30 text-indigo-200' : 'bg-slate-900/40 border-slate-800 text-slate-500'
                   }`}>
                     <div className="flex items-center gap-2 mb-1">
                       <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
@@ -692,54 +692,54 @@ export default function ProjectDetail() {
                       }`}>
                         {currentStep > 1 ? '✓' : '1'}
                       </span>
-                      <span className="text-xs font-bold">1. Open & Bidding</span>
+                      <span className="text-xs font-bold text-white">1. Open & Bidding</span>
                     </div>
-                    <p className="text-[10px] text-gray-500">Clients review proposals and select talent</p>
+                    <p className="text-[10px] text-slate-400">Clients review proposals and select talent</p>
                   </div>
 
                   {/* Step 2 */}
                   <div className={`p-3.5 rounded-2xl border transition-all ${
-                    currentStep >= 2 ? 'bg-indigo-50/80 border-indigo-200 text-indigo-950' : 'bg-gray-50/50 border-gray-200 text-gray-400'
+                    currentStep >= 2 ? 'bg-indigo-500/15 border-indigo-500/30 text-indigo-200' : 'bg-slate-900/40 border-slate-800 text-slate-500'
                   }`}>
                     <div className="flex items-center gap-2 mb-1">
                       <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                        currentStep > 2 ? 'bg-emerald-500 text-white' : currentStep === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-300 text-gray-600'
+                        currentStep > 2 ? 'bg-emerald-500 text-white' : currentStep === 2 ? 'bg-indigo-600 text-white' : 'bg-slate-700 text-slate-400'
                       }`}>
                         {currentStep > 2 ? '✓' : '2'}
                       </span>
-                      <span className="text-xs font-bold">2. Work in Progress</span>
+                      <span className="text-xs font-bold text-white">2. Work in Progress</span>
                     </div>
-                    <p className="text-[10px] text-gray-500">Freelancer assigned & building deliverables</p>
+                    <p className="text-[10px] text-slate-400">Freelancer assigned & building deliverables</p>
                   </div>
 
                   {/* Step 3 */}
                   <div className={`p-3.5 rounded-2xl border transition-all ${
-                    currentStep >= 3 ? 'bg-purple-50/80 border-purple-300 text-purple-950 shadow-xs' : 'bg-gray-50/50 border-gray-200 text-gray-400'
+                    currentStep >= 3 ? 'bg-purple-500/15 border-purple-500/30 text-purple-200 shadow-sm' : 'bg-slate-900/40 border-slate-800 text-slate-500'
                   }`}>
                     <div className="flex items-center gap-2 mb-1">
                       <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                        currentStep > 3 ? 'bg-emerald-500 text-white' : currentStep === 3 ? 'bg-purple-600 text-white animate-pulse' : 'bg-gray-300 text-gray-600'
+                        currentStep > 3 ? 'bg-emerald-500 text-white' : currentStep === 3 ? 'bg-purple-600 text-white animate-pulse' : 'bg-slate-700 text-slate-400'
                       }`}>
                         {currentStep > 3 ? '✓' : '3'}
                       </span>
-                      <span className="text-xs font-bold">3. Work Submitted</span>
+                      <span className="text-xs font-bold text-white">3. Work Submitted</span>
                     </div>
-                    <p className="text-[10px] text-purple-700">Code/Deliverable verified by AI Inspector</p>
+                    <p className="text-[10px] text-purple-300">Code/Deliverable verified by AI Inspector</p>
                   </div>
 
                   {/* Step 4 */}
                   <div className={`p-3.5 rounded-2xl border transition-all ${
-                    currentStep >= 4 ? 'bg-emerald-50/90 border-emerald-300 text-emerald-950 shadow-xs' : 'bg-gray-50/50 border-gray-200 text-gray-400'
+                    currentStep >= 4 ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-200 shadow-sm' : 'bg-slate-900/40 border-slate-800 text-slate-500'
                   }`}>
                     <div className="flex items-center gap-2 mb-1">
                       <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                        currentStep === 4 ? 'bg-emerald-600 text-white' : 'bg-gray-300 text-gray-600'
+                        currentStep === 4 ? 'bg-emerald-600 text-white' : 'bg-slate-700 text-slate-400'
                       }`}>
                         {currentStep === 4 ? '✓' : '4'}
                       </span>
-                      <span className="text-xs font-bold">4. Paid via GPay & Done</span>
+                      <span className="text-xs font-bold text-white">4. Paid via GPay & Done</span>
                     </div>
-                    <p className="text-[10px] text-emerald-700">Client approves & pays direct to GPay</p>
+                    <p className="text-[10px] text-emerald-300">Client approves & pays direct to GPay</p>
                   </div>
                 </div>
               </div>
@@ -799,13 +799,13 @@ export default function ProjectDetail() {
         })()}
 
         {/* Glass Navigation Tabs */}
-        <div className="flex border-b border-white/60 glass rounded-t-3xl px-6 gap-6 shadow-xs overflow-x-auto">
+        <div className="flex border-b border-slate-800 glass-dark rounded-t-3xl px-6 gap-6 shadow-md overflow-x-auto">
           <button
             onClick={() => setActiveTab('overview')}
             className={`py-4 font-bold text-xs md:text-sm border-b-2 transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
               activeTab === 'overview'
-                ? 'border-indigo-600 text-indigo-600'
-                : 'border-transparent text-gray-500 hover:text-gray-800'
+                ? 'border-indigo-500 text-indigo-400'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
             <FiBriefcase /> Requirements & Scope
@@ -815,8 +815,8 @@ export default function ProjectDetail() {
             onClick={() => setActiveTab('proposals')}
             className={`py-4 font-bold text-xs md:text-sm border-b-2 transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
               activeTab === 'proposals'
-                ? 'border-indigo-600 text-indigo-600'
-                : 'border-transparent text-gray-500 hover:text-gray-800'
+                ? 'border-indigo-500 text-indigo-400'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
             <FiAward /> Proposals ({proposals.length})
@@ -826,22 +826,22 @@ export default function ProjectDetail() {
             onClick={() => setActiveTab('payments')}
             className={`py-4 font-bold text-xs md:text-sm border-b-2 transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
               activeTab === 'payments'
-                ? 'border-indigo-600 text-indigo-600'
-                : 'border-transparent text-gray-500 hover:text-gray-800'
+                ? 'border-indigo-500 text-indigo-400'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
-            <FiSmartphone className="text-emerald-600" /> 📱 Direct Payment & Deliverables
+            <FiSmartphone className="text-emerald-400" /> 📱 Direct Payment & Deliverables
           </button>
 
           <button
             onClick={() => setActiveTab('messages')}
             className={`py-4 font-bold text-xs md:text-sm border-b-2 transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
               activeTab === 'messages'
-                ? 'border-indigo-600 text-indigo-600'
-                : 'border-transparent text-gray-500 hover:text-gray-800'
+                ? 'border-indigo-500 text-indigo-400'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
-            <FiLock className="text-emerald-600" /> Live Chat & Sync Call
+            <FiLock className="text-emerald-400" /> Live Chat & Sync Call
           </button>
         </div>
 
@@ -849,26 +849,26 @@ export default function ProjectDetail() {
         {activeTab === 'overview' && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
-              <div className="glass-card p-7 rounded-3xl">
-                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <FiBriefcase className="text-indigo-600" /> Detailed Project Specifications
+              <div className="glass-card p-7 rounded-3xl border border-slate-800">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <FiBriefcase className="text-indigo-400" /> Detailed Project Specifications
                 </h3>
-                <div className="prose text-gray-700 text-xs md:text-sm leading-relaxed whitespace-pre-line">
+                <div className="prose text-slate-300 text-xs md:text-sm leading-relaxed whitespace-pre-line">
                   {project.description}
                 </div>
               </div>
 
               {project.assignedFreelancer && (
-                <div className="bg-emerald-50/80 border border-emerald-200 p-6 rounded-3xl space-y-4 shadow-xs">
+                <div className="bg-gradient-to-br from-emerald-950/60 to-teal-950/60 border border-emerald-500/30 p-6 rounded-3xl space-y-4 shadow-md">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center font-black text-lg">
+                      <div className="w-12 h-12 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full flex items-center justify-center font-black text-lg">
                         ✓
                       </div>
                       <div>
-                        <h4 className="font-bold text-emerald-900 text-base">Project Assigned & In Progress</h4>
-                        <p className="text-xs text-emerald-700">
-                          Assigned to: <strong>{project.assignedFreelancer.name}</strong> ({project.assignedFreelancer.email})
+                        <h4 className="font-bold text-emerald-300 text-base">Project Assigned & In Progress</h4>
+                        <p className="text-xs text-emerald-400/80">
+                          Assigned to: <strong className="text-white">{project.assignedFreelancer.name}</strong> ({project.assignedFreelancer.email})
                         </p>
                       </div>
                     </div>

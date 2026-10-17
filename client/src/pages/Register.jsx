@@ -69,13 +69,13 @@ const Register = () => {
   // Role selection screen
   if (!role) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-[#0b0f19] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-lg">
           <Link to="/" className="flex justify-center mb-6">
-            <span className="text-3xl font-extrabold text-primary-600">FreelanceHub</span>
+            <span className="text-3xl font-extrabold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">FreelanceHub</span>
           </Link>
-          <h2 className="text-center text-2xl font-bold text-gray-900">Join FreelanceHub</h2>
-          <p className="mt-2 text-center text-sm text-gray-600">How do you want to use the platform?</p>
+          <h2 className="text-center text-2xl font-bold text-white">Join FreelanceHub</h2>
+          <p className="mt-2 text-center text-sm text-slate-400">How do you want to use the platform?</p>
         </div>
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-lg">
@@ -83,28 +83,28 @@ const Register = () => {
             {/* Client Card */}
             <button
               onClick={() => setRole('client')}
-              className="group bg-white rounded-2xl shadow-md hover:shadow-xl border-2 border-transparent hover:border-primary-500 transition-all duration-300 p-8 text-left cursor-pointer"
+              className="group glass-card bg-slate-900/80 rounded-2xl border border-slate-800 hover:border-indigo-500/50 shadow-xl transition-all duration-300 p-8 text-left cursor-pointer"
             >
-              <div className="w-14 h-14 bg-primary-100 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-primary-200 transition-colors">
-                <FiBriefcase className="w-7 h-7 text-primary-600" />
+              <div className="w-14 h-14 bg-indigo-500/20 text-indigo-400 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-indigo-500/30 transition-colors">
+                <FiBriefcase className="w-7 h-7" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">I'm a Client</h3>
-              <p className="text-sm text-gray-500 mb-4">Hire talented freelancers for your projects</p>
-              <ul className="space-y-2 text-xs text-gray-500">
+              <h3 className="text-xl font-bold text-white mb-2">I'm a Client</h3>
+              <p className="text-sm text-slate-400 mb-4">Hire talented freelancers for your projects</p>
+              <ul className="space-y-2 text-xs text-slate-400">
                 <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 bg-primary-400 rounded-full"></span>
+                  <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full"></span>
                   Post projects & get proposals
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 bg-primary-400 rounded-full"></span>
+                  <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full"></span>
                   AI-powered freelancer matching
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 bg-primary-400 rounded-full"></span>
+                  <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full"></span>
                   Milestone-based payments
                 </li>
               </ul>
-              <div className="mt-5 w-full py-2 text-center bg-primary-50 text-primary-600 rounded-lg font-semibold text-sm group-hover:bg-primary-100 transition-colors">
+              <div className="mt-5 w-full py-2.5 text-center bg-indigo-500/20 text-indigo-300 rounded-xl font-bold text-sm group-hover:bg-indigo-600 group-hover:text-white transition-colors">
                 Register as Client →
               </div>
             </button>
@@ -112,37 +112,37 @@ const Register = () => {
             {/* Freelancer Card */}
             <button
               onClick={() => setRole('freelancer')}
-              className="group bg-white rounded-2xl shadow-md hover:shadow-xl border-2 border-transparent hover:border-green-500 transition-all duration-300 p-8 text-left cursor-pointer"
+              className="group glass-card bg-slate-900/80 rounded-2xl border border-slate-800 hover:border-emerald-500/50 shadow-xl transition-all duration-300 p-8 text-left cursor-pointer"
             >
-              <div className="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-green-200 transition-colors">
-                <FiCode className="w-7 h-7 text-green-600" />
+              <div className="w-14 h-14 bg-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-emerald-500/30 transition-colors">
+                <FiCode className="w-7 h-7" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">I'm a Freelancer</h3>
-              <p className="text-sm text-gray-500 mb-4">Find projects that match your skills</p>
-              <ul className="space-y-2 text-xs text-gray-500">
+              <h3 className="text-xl font-bold text-white mb-2">I'm a Freelancer</h3>
+              <p className="text-sm text-slate-400 mb-4">Find projects that match your skills</p>
+              <ul className="space-y-2 text-xs text-slate-400">
                 <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 bg-green-400 rounded-full"></span>
+                  <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
                   ⭐ Yellow Star Experience Rating
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 bg-green-400 rounded-full"></span>
+                  <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
                   AI-matched project recommendations
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 bg-green-400 rounded-full"></span>
-                  Secure encrypted chat & payments
+                  <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
+                  Direct Google Pay (0% Fee)
                 </li>
               </ul>
-              <div className="mt-5 w-full py-2 text-center bg-green-50 text-green-600 rounded-lg font-semibold text-sm group-hover:bg-green-100 transition-colors">
+              <div className="mt-5 w-full py-2.5 text-center bg-emerald-500/20 text-emerald-300 rounded-xl font-bold text-sm group-hover:bg-emerald-600 group-hover:text-white transition-colors">
                 Register as Freelancer →
               </div>
             </button>
           </div>
 
           <div className="mt-8 text-center">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-slate-400">
               Already have an account?{' '}
-              <Link to="/login" className="font-medium text-primary-600 hover:text-primary-500">Sign in</Link>
+              <Link to="/login" className="font-medium text-indigo-400 hover:text-indigo-300">Sign in</Link>
             </p>
           </div>
         </div>
@@ -154,78 +154,78 @@ const Register = () => {
   const isClient = role === 'client';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#0b0f19] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <Link to="/" className="flex justify-center mb-4">
-          <span className="text-3xl font-extrabold text-primary-600">FreelanceHub</span>
+          <span className="text-3xl font-extrabold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">FreelanceHub</span>
         </Link>
 
         <div className="flex justify-center mb-3">
-          <div className={`w-12 h-12 ${isClient ? 'bg-primary-100' : 'bg-green-100'} rounded-full flex items-center justify-center`}>
+          <div className={`w-12 h-12 ${isClient ? 'bg-indigo-500/20 text-indigo-400' : 'bg-emerald-500/20 text-emerald-400'} rounded-full flex items-center justify-center`}>
             {isClient
-              ? <FiBriefcase className="w-6 h-6 text-primary-600" />
-              : <FiCode className="w-6 h-6 text-green-600" />
+              ? <FiBriefcase className="w-6 h-6" />
+              : <FiCode className="w-6 h-6" />
             }
           </div>
         </div>
 
-        <h2 className="text-center text-2xl font-bold text-gray-900">
+        <h2 className="text-center text-2xl font-bold text-white">
           {isClient ? 'Client' : 'Freelancer'} Registration
         </h2>
-        <p className="mt-1 text-center text-sm text-gray-500">
+        <p className="mt-1 text-center text-sm text-slate-400">
           {isClient ? 'Start hiring talented freelancers today' : 'Showcase your skills and find great projects'}
         </p>
       </div>
 
       <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-6 shadow-lg rounded-2xl sm:px-10">
+        <div className="glass-card bg-slate-900/90 py-8 px-6 shadow-2xl rounded-3xl border border-slate-800 sm:px-10">
           <form className="space-y-4" onSubmit={handleSubmit}>
             {/* Common fields */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">Full Name</label>
+              <label className="block text-sm font-medium text-slate-300">Full Name</label>
               <input
                 type="text"
                 required
                 value={formData.name}
                 onChange={handleChange('name')}
                 placeholder={isClient ? 'John Smith' : 'Jane Developer'}
-                className="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="mt-1 block w-full px-3.5 py-2.5 bg-slate-800/80 text-white border border-slate-700 rounded-xl shadow-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Email Address</label>
+              <label className="block text-sm font-medium text-slate-300">Email Address</label>
               <input
                 type="email"
                 required
                 value={formData.email}
                 onChange={handleChange('email')}
                 placeholder="you@example.com"
-                className="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="mt-1 block w-full px-3.5 py-2.5 bg-slate-800/80 text-white border border-slate-700 rounded-xl shadow-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Password</label>
+                <label className="block text-sm font-medium text-slate-300">Password</label>
                 <input
                   type="password"
                   required
                   value={formData.password}
                   onChange={handleChange('password')}
                   placeholder="Min 6 chars"
-                  className="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="mt-1 block w-full px-3.5 py-2.5 bg-slate-800/80 text-white border border-slate-700 rounded-xl shadow-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Confirm</label>
+                <label className="block text-sm font-medium text-slate-300">Confirm</label>
                 <input
                   type="password"
                   required
                   value={formData.confirmPassword}
                   onChange={handleChange('confirmPassword')}
                   placeholder="Re-enter"
-                  className="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="mt-1 block w-full px-3.5 py-2.5 bg-slate-800/80 text-white border border-slate-700 rounded-xl shadow-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
             </div>
@@ -233,13 +233,13 @@ const Register = () => {
             {/* Client-specific fields */}
             {isClient && (
               <div>
-                <label className="block text-sm font-medium text-gray-700">Company / Organization <span className="text-gray-400">(optional)</span></label>
+                <label className="block text-sm font-medium text-slate-300">Company / Organization <span className="text-slate-500">(optional)</span></label>
                 <input
                   type="text"
                   value={formData.company}
                   onChange={handleChange('company')}
                   placeholder="Your company name"
-                  className="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="mt-1 block w-full px-3.5 py-2.5 bg-slate-800/80 text-white border border-slate-700 rounded-xl shadow-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
             )}
@@ -248,11 +248,11 @@ const Register = () => {
             {!isClient && (
               <>
                 {/* Yellow Star Experience Level Selector */}
-                <div className="bg-amber-50/70 p-4 rounded-xl border border-amber-200">
-                  <label className="block text-xs font-bold text-amber-900 mb-1">
+                <div className="bg-amber-950/30 p-4 rounded-xl border border-amber-500/30">
+                  <label className="block text-xs font-bold text-amber-400 mb-1">
                     ⭐ Select Your Professional Experience Level:
                   </label>
-                  <p className="text-[11px] text-amber-700 mb-2">
+                  <p className="text-[11px] text-amber-300/80 mb-2">
                     Click yellow stars (1 = Beginner, 5 = Expert)
                   </p>
                   <StarRating
@@ -264,8 +264,8 @@ const Register = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Skills <span className="text-gray-400">(comma separated)</span>
+                  <label className="block text-sm font-medium text-slate-300">
+                    Skills <span className="text-slate-500">(comma separated)</span>
                   </label>
                   <input
                     type="text"
@@ -273,17 +273,17 @@ const Register = () => {
                     value={formData.skills}
                     onChange={handleChange('skills')}
                     placeholder="React, Node.js, Python, UI/UX"
-                    className="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    className="mt-1 block w-full px-3.5 py-2.5 bg-slate-800/80 text-white border border-slate-700 rounded-xl shadow-xs focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-slate-300">
                     Hourly Rate (₹/hr)
                   </label>
-                  <div className="mt-1 relative rounded-lg shadow-sm">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <span className="text-gray-500 font-bold text-sm">₹</span>
+                  <div className="mt-1 relative rounded-xl shadow-xs">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                      <span className="text-emerald-400 font-bold text-sm">₹</span>
                     </div>
                     <input
                       type="number"
@@ -291,24 +291,24 @@ const Register = () => {
                       value={formData.hourlyRate}
                       onChange={handleChange('hourlyRate')}
                       placeholder="500"
-                      className="block w-full pl-8 pr-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      className="block w-full pl-9 pr-3.5 py-2.5 bg-slate-800/80 text-white border border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     />
-                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                      <span className="text-gray-400 text-sm">/hr</span>
+                    <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none">
+                      <span className="text-slate-400 text-sm">/hr</span>
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Bio <span className="text-gray-400">(tell clients about yourself)</span>
+                  <label className="block text-sm font-medium text-slate-300">
+                    Bio <span className="text-slate-500">(tell clients about yourself)</span>
                   </label>
                   <textarea
                     value={formData.bio}
                     onChange={handleChange('bio')}
                     rows={3}
                     placeholder="I'm a full-stack developer with 5 years of experience specializing in..."
-                    className="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    className="mt-1 block w-full px-3.5 py-2.5 bg-slate-800/80 text-white border border-slate-700 rounded-xl shadow-xs focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                 </div>
               </>
@@ -318,11 +318,11 @@ const Register = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className={`w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white ${
+                className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-white ${
                   isClient
-                    ? 'bg-primary-600 hover:bg-primary-700 focus:ring-primary-500'
-                    : 'bg-green-600 hover:bg-green-700 focus:ring-green-500'
-                } focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 transition-colors`}
+                    ? 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700'
+                    : 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700'
+                } focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 transition-all cursor-pointer`}
               >
                 {loading ? 'Creating account...' : `Create ${isClient ? 'Client' : 'Freelancer'} Account`}
               </button>
@@ -331,12 +331,12 @@ const Register = () => {
 
           <div className="mt-5 flex items-center justify-between">
             <button
-              onClick={() => setRole('null')}
-              className="text-sm text-gray-500 hover:text-gray-700 font-medium"
+              onClick={() => setRole(null)}
+              className="text-sm text-slate-400 hover:text-white font-medium cursor-pointer"
             >
               ← Switch role
             </button>
-            <Link to="/login" className="text-sm font-medium text-primary-600 hover:text-primary-500">
+            <Link to="/login" className="text-sm font-medium text-indigo-400 hover:text-indigo-300">
               Already registered? Sign in
             </Link>
           </div>

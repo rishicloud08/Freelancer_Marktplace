@@ -70,13 +70,13 @@ export default function Sidebar({ isOpen, setIsOpen }) {
         to={link.path}
         className={`flex items-center justify-between px-4 py-3 mb-2 rounded-2xl transition-all ${
           isActive 
-            ? 'bg-white text-indigo-700 font-extrabold shadow-md border border-indigo-100/80 scale-102' 
-            : 'text-gray-600 hover:bg-white/60 hover:text-indigo-600 font-semibold'
+            ? 'bg-indigo-600/20 text-indigo-400 font-extrabold shadow-lg border border-indigo-500/40 scale-102' 
+            : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-100 font-semibold'
         }`}
         onClick={() => setIsOpen && setIsOpen(false)}
       >
         <div className="flex items-center">
-          <div className={`w-8 h-8 rounded-xl flex items-center justify-center mr-3 ${isActive ? 'bg-indigo-50 text-indigo-600' : 'bg-gray-100/70 text-gray-500'}`}>
+          <div className={`w-8 h-8 rounded-xl flex items-center justify-center mr-3 ${isActive ? 'bg-indigo-500/20 text-indigo-400' : 'bg-slate-800 text-slate-400'}`}>
             <Icon className="w-4 h-4" />
           </div>
           <span className="text-xs">{link.name}</span>
@@ -102,15 +102,15 @@ export default function Sidebar({ isOpen, setIsOpen }) {
       )}
 
       {/* Glass Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-30 w-64 glass border-r border-white/60 shadow-xl lg:shadow-none transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'} flex flex-col`}>
-        <div className="flex items-center justify-between h-20 px-6 border-b border-white/50 bg-white/30">
+      <div className={`fixed inset-y-0 left-0 z-30 w-64 glass border-r border-slate-800 shadow-2xl lg:shadow-none transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'} flex flex-col`}>
+        <div className="flex items-center justify-between h-20 px-6 border-b border-slate-800/80 bg-slate-900/60">
           <Link to="/" className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center font-bold shadow-md shadow-indigo-500/20">
               <FiBriefcase className="text-lg" />
             </div>
-            <span className="text-xl font-black text-gray-900 tracking-tight">Freelance<span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Hub</span></span>
+            <span className="text-xl font-black text-white tracking-tight">Freelance<span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">Hub</span></span>
           </Link>
-          <button className="lg:hidden text-gray-400 hover:text-gray-700 p-1" onClick={() => setIsOpen(false)}>
+          <button className="lg:hidden text-gray-400 hover:text-gray-200 p-1" onClick={() => setIsOpen(false)}>
             <FiX className="w-6 h-6" />
           </button>
         </div>
@@ -123,7 +123,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
           </nav>
         </div>
 
-        <div className="p-4 border-t border-white/50 bg-white/40 backdrop-blur-md">
+        <div className="p-4 border-t border-slate-800/80 bg-slate-900/60 backdrop-blur-md">
           <div className="flex items-center mb-3">
             <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white font-bold text-base shadow-sm">
               {user?.name?.charAt(0).toUpperCase() || 'U'}

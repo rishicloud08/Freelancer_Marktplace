@@ -3,72 +3,265 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    color-scheme: dark;
+  }
+
   body {
-    background-color: #f1f5f9;
+    background-color: #0b0f19;
     background-image: 
-      radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.12) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.1) 0px, transparent 50%),
-      radial-gradient(at 0% 100%, rgba(16, 185, 129, 0.08) 0px, transparent 50%);
+      radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.18) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.18) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.14) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(16, 185, 129, 0.12) 0px, transparent 50%);
     background-attachment: fixed;
     min-height: 100vh;
-    color: #1e293b;
+    color: #f1f5f9;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   }
 }
 
 @layer utilities {
-  /* Ultra-smooth Frosted Glassmorphism Styles */
+  /* Ultra-sleek Dark Glassmorphism Styles */
   .glass {
-    background: rgba(255, 255, 255, 0.72);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.65);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.06);
+    background: rgba(17, 24, 39, 0.8) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
   }
 
   .glass-card {
-    background: rgba(255, 255, 255, 0.75);
+    background: rgba(19, 27, 46, 0.85) !important;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04), 0 20px 25px -5px rgba(99, 102, 241, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.4);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .glass-card:hover {
-    background: rgba(255, 255, 255, 0.88);
-    border-color: rgba(99, 102, 241, 0.3);
-    box-shadow: 0 20px 35px -10px rgba(99, 102, 241, 0.12), 0 1px 3px rgba(0,0,0,0.05);
+    background: rgba(26, 36, 60, 0.95) !important;
+    border-color: rgba(99, 102, 241, 0.45) !important;
+    box-shadow: 0 20px 35px -10px rgba(99, 102, 241, 0.25);
     transform: translateY(-2px);
   }
 
   .glass-dark {
-    background: rgba(15, 23, 42, 0.85);
+    background: rgba(11, 15, 25, 0.9) !important;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
   }
 
   .glass-pill {
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(30, 41, 59, 0.7) !important;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #e2e8f0 !important;
   }
 
   .glass-input {
-    background: rgba(255, 255, 255, 0.65) !important;
+    background: rgba(15, 23, 42, 0.8) !important;
+    color: #f8fafc !important;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(203, 213, 225, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
     transition: all 0.2s ease;
   }
 
   .glass-input:focus {
-    background: rgba(255, 255, 255, 0.95) !important;
+    background: rgba(20, 30, 52, 0.95) !important;
     border-color: rgba(99, 102, 241, 0.8) !important;
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15) !important;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25) !important;
   }
+}
+
+/* ========================================================
+   GLOBAL COMPREHENSIVE DARK THEME OVERRIDES (NO WHITE UI)
+   ======================================================== */
+
+/* Surface & Card Containers */
+.bg-white {
+  background-color: #131b2e !important;
+  color: #f1f5f9;
+}
+
+.bg-gray-50, .bg-slate-50 {
+  background-color: #0b0f19 !important;
+}
+
+.bg-gray-100, .bg-slate-100 {
+  background-color: #1a2338 !important;
+  color: #f1f5f9;
+}
+
+.bg-gray-200, .bg-slate-200 {
+  background-color: #243048 !important;
+}
+
+/* Translucent white overrides */
+[class*="bg-white/"] {
+  background-color: rgba(19, 27, 46, 0.75) !important;
+}
+
+[class*="border-white/"] {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+[class*="hover:bg-white/"]:hover {
+  background-color: rgba(30, 41, 59, 0.8) !important;
+}
+
+/* Accent translucent background overrides */
+.bg-indigo-50 {
+  background-color: rgba(99, 102, 241, 0.15) !important;
+  color: #a5b4fc !important;
+}
+
+.bg-purple-50 {
+  background-color: rgba(168, 85, 247, 0.15) !important;
+  color: #d8b4fe !important;
+}
+
+.bg-green-50, .bg-emerald-50 {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+  color: #6ee7b7 !important;
+}
+
+.bg-amber-50, .bg-yellow-50 {
+  background-color: rgba(245, 158, 11, 0.15) !important;
+  color: #fcd34d !important;
+}
+
+.bg-blue-50 {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  color: #93c5fd !important;
+}
+
+/* Badge and accent background overrides */
+.bg-indigo-100 {
+  background-color: rgba(99, 102, 241, 0.25) !important;
+  color: #c7d2fe !important;
+}
+
+.bg-purple-100 {
+  background-color: rgba(168, 85, 247, 0.25) !important;
+  color: #e9d5ff !important;
+}
+
+.bg-emerald-100, .bg-green-100 {
+  background-color: rgba(16, 185, 129, 0.25) !important;
+  color: #a7f3d0 !important;
+}
+
+.bg-amber-100, .bg-yellow-100 {
+  background-color: rgba(245, 158, 11, 0.25) !important;
+  color: #fde68a !important;
+}
+
+.bg-blue-100 {
+  background-color: rgba(59, 130, 246, 0.25) !important;
+  color: #bfdbfe !important;
+}
+
+.bg-red-100 {
+  background-color: rgba(239, 68, 68, 0.25) !important;
+  color: #fca5a5 !important;
+}
+
+/* Gradient overrides for dark canvas */
+[class*="from-indigo-50"], [class*="to-purple-50"], [class*="from-purple-50"], [class*="to-indigo-50"],
+[class*="from-emerald-50"], [class*="to-teal-50"] {
+  --tw-gradient-from: rgba(19, 27, 46, 0.9) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgba(15, 23, 42, 0.9) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+/* Borders */
+.border-gray-100, .border-gray-200, .border-gray-300, 
+.border-slate-100, .border-slate-200, .border-slate-300 {
+  border-color: rgba(255, 255, 255, 0.09) !important;
+}
+
+/* Typography Overrides */
+.text-gray-900, .text-slate-900 {
+  color: #f8fafc !important;
+}
+
+.text-gray-800, .text-slate-800 {
+  color: #f1f5f9 !important;
+}
+
+.text-gray-700, .text-slate-700 {
+  color: #e2e8f0 !important;
+}
+
+.text-gray-600, .text-slate-600 {
+  color: #cbd5e1 !important;
+}
+
+.text-gray-500, .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+.text-gray-400, .text-slate-400 {
+  color: #64748b !important;
+}
+
+.text-indigo-900, .text-indigo-950 {
+  color: #c7d2fe !important;
+}
+
+.text-purple-900, .text-purple-950 {
+  color: #e9d5ff !important;
+}
+
+.text-emerald-900, .text-emerald-950 {
+  color: #a7f3d0 !important;
+}
+
+.text-amber-900, .text-amber-950 {
+  color: #fde68a !important;
+}
+
+.text-blue-900, .text-blue-950 {
+  color: #bfdbfe !important;
+}
+
+/* Form Controls (Inputs, Textareas, Selects) */
+input:not([type="checkbox"]):not([type="radio"]), 
+textarea, 
+select {
+  background-color: #162032 !important;
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+input::placeholder, 
+textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* Modals & Dropdown Overrides */
+.shadow-lg, .shadow-xl, .shadow-2xl, .shadow-md {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Custom Sleek Dark Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0b0f19;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
 }

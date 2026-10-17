@@ -400,7 +400,7 @@ export default function Profile() {
           
           <div className="px-8 pb-8 relative">
             <div className="flex flex-col sm:flex-row justify-between sm:items-start -mt-14 mb-4 gap-4">
-              <div className="w-28 h-28 rounded-3xl bg-white p-1.5 shadow-xl">
+              <div className="w-28 h-28 rounded-3xl bg-slate-800 border-2 border-indigo-500/30 p-1.5 shadow-xl">
                 <div className="w-full h-full rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-indigo-700 flex items-center justify-center text-4xl font-black text-white shadow-inner">
                   {profileData.name?.charAt(0).toUpperCase() || 'R'}
                 </div>
@@ -422,9 +422,9 @@ export default function Profile() {
                       {/* PDF Resume Upload Button */}
                       <button
                         onClick={() => setIsResumeModalOpen(true)}
-                        className="px-4 py-2.5 bg-purple-50 text-purple-700 rounded-2xl font-bold hover:bg-purple-100 transition flex items-center text-xs border border-purple-200 cursor-pointer"
+                        className="px-4 py-2.5 bg-purple-500/20 text-purple-300 rounded-2xl font-bold hover:bg-purple-500/30 transition flex items-center text-xs border border-purple-500/30 cursor-pointer"
                       >
-                        <FiUpload className="w-4 h-4 mr-1.5 text-purple-600" />
+                        <FiUpload className="w-4 h-4 mr-1.5 text-purple-400" />
                         Upload PDF Resume
                       </button>
                     </>
@@ -432,7 +432,7 @@ export default function Profile() {
 
                   <button 
                     onClick={() => setIsEditing(true)}
-                    className="px-4 py-2.5 bg-indigo-50 text-indigo-600 rounded-2xl font-bold hover:bg-indigo-100 transition flex items-center text-xs border border-indigo-200 cursor-pointer"
+                    className="px-4 py-2.5 bg-indigo-500/20 text-indigo-300 rounded-2xl font-bold hover:bg-indigo-500/30 transition flex items-center text-xs border border-indigo-500/30 cursor-pointer"
                   >
                     <FiEdit2 className="w-4 h-4 mr-1.5" />
                     Edit Profile
@@ -445,7 +445,7 @@ export default function Profile() {
               <div className="space-y-6 max-w-3xl pt-2">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-gray-700 mb-1">Full Name / Display Name</label>
+                    <label className="block text-xs font-bold text-slate-300 mb-1">Full Name / Display Name</label>
                     <input
                       type="text"
                       value={profileData.name || ''}
@@ -454,18 +454,18 @@ export default function Profile() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-700 mb-1">Account Role</label>
+                    <label className="block text-xs font-bold text-slate-300 mb-1">Account Role</label>
                     <select
                       value={profileData.role || (isClient ? 'client' : 'freelancer')}
                       onChange={(e) => setProfileData({...profileData, role: e.target.value})}
-                      className="w-full px-3.5 py-2.5 text-xs glass-input rounded-xl font-bold bg-white text-gray-800"
+                      className="w-full px-3.5 py-2.5 text-xs glass-input rounded-xl font-bold bg-slate-800 text-white border border-slate-700"
                     >
                       <option value="client">Client (Hire Freelancers)</option>
                       <option value="freelancer">Freelancer (Find Work & Earn)</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-700 mb-1">GitHub Username (Optional)</label>
+                    <label className="block text-xs font-bold text-slate-300 mb-1">GitHub Username (Optional)</label>
                     <input
                       type="text"
                       placeholder="e.g. rishicloud08"
@@ -477,11 +477,11 @@ export default function Profile() {
                 </div>
 
                 {isFreelancer && (
-                  <div className="bg-amber-50/70 p-4 rounded-2xl border border-amber-200">
-                    <label className="block text-xs font-bold text-amber-900 mb-1">
+                  <div className="bg-amber-500/10 p-4 rounded-2xl border border-amber-500/20">
+                    <label className="block text-xs font-bold text-amber-300 mb-1">
                       ⭐ Self-Assessed Experience Level:
                     </label>
-                    <p className="text-[11px] text-amber-700 mb-2">
+                    <p className="text-[11px] text-amber-400/80 mb-2">
                       Click yellow stars to update your experience tier
                     </p>
                     <StarRating
@@ -494,7 +494,7 @@ export default function Profile() {
                 )}
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-300 mb-1">
                     {profileData.role === 'client' ? 'Client / Company Summary & Bio' : 'Professional Summary & Bio'}
                   </label>
                   <textarea
@@ -509,7 +509,7 @@ export default function Profile() {
                 {isFreelancer && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-bold text-gray-700 mb-1">Skills (comma separated)</label>
+                      <label className="block text-xs font-bold text-slate-300 mb-1">Skills (comma separated)</label>
                       <input
                         type="text"
                         value={Array.isArray(profileData.skills) ? profileData.skills.join(', ') : (profileData.skills || '')}
@@ -518,7 +518,7 @@ export default function Profile() {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-gray-700 mb-1">Hourly Rate in Rupees (₹/hr)</label>
+                      <label className="block text-xs font-bold text-slate-300 mb-1">Hourly Rate in Rupees (₹/hr)</label>
                       <input
                         type="number"
                         placeholder="e.g. 750"
@@ -531,16 +531,16 @@ export default function Profile() {
                 )}
 
                 {/* Google Pay / UPI Connection Setup (For both Client and Freelancer) */}
-                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-5 rounded-2xl border border-emerald-200 space-y-4">
+                <div className="bg-gradient-to-br from-emerald-950/60 to-teal-950/60 p-5 rounded-2xl border border-emerald-500/30 space-y-4">
                   <div className="flex items-center gap-2">
                     <span className="bg-emerald-600 text-white p-1.5 rounded-lg text-xs font-bold">
                       <FiSmartphone />
                     </span>
                     <div>
-                      <h4 className="text-xs font-bold text-emerald-950">
+                      <h4 className="text-xs font-bold text-emerald-300">
                         {profileData.role === 'client' ? "Client Google Pay & UPI Connected Account" : "Freelancer Google Pay & UPI Details"}
                       </h4>
-                      <p className="text-[11px] text-emerald-700">
+                      <p className="text-[11px] text-emerald-400/80">
                         {profileData.role === 'client' 
                           ? "Connect your Google Pay mobile & UPI ID for 1-click direct billing and transaction receipts."
                           : "Clients will scan your uploaded GPay QR code to send direct payments straight to your bank account."}
@@ -550,7 +550,7 @@ export default function Profile() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-bold text-emerald-900 mb-1">
+                      <label className="block text-xs font-bold text-emerald-300 mb-1">
                         Google Pay Mobile Number
                       </label>
                       <input
@@ -558,12 +558,12 @@ export default function Profile() {
                         placeholder="e.g. 9840827712"
                         value={profileData.gpayNumber || ''}
                         onChange={(e) => setProfileData({...profileData, gpayNumber: e.target.value})}
-                        className="w-full px-3 py-2 text-xs border border-emerald-300 rounded-xl bg-white focus:ring-2 focus:ring-emerald-500 outline-none"
+                        className="w-full px-3 py-2 text-xs border border-emerald-500/30 rounded-xl bg-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none text-white font-mono"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-emerald-900 mb-1">
+                      <label className="block text-xs font-bold text-emerald-300 mb-1">
                         UPI ID (VPA)
                       </label>
                       <input
@@ -571,19 +571,19 @@ export default function Profile() {
                         placeholder="e.g. yourname@okaxis"
                         value={profileData.upiId || ''}
                         onChange={(e) => setProfileData({...profileData, upiId: e.target.value})}
-                        className="w-full px-3 py-2 text-xs border border-emerald-300 rounded-xl bg-white focus:ring-2 focus:ring-emerald-500 outline-none"
+                        className="w-full px-3 py-2 text-xs border border-emerald-500/30 rounded-xl bg-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none text-white font-mono"
                       />
                     </div>
                   </div>
 
                   {isFreelancer && (
                     <div>
-                      <label className="block text-xs font-bold text-emerald-900 mb-2">
+                      <label className="block text-xs font-bold text-emerald-300 mb-2">
                         Upload GPay / PhonePe / Paytm QR Code Image
                       </label>
 
                       <div className="flex flex-col sm:flex-row items-center gap-4">
-                        <label className="cursor-pointer bg-white hover:bg-emerald-100 text-emerald-800 border-2 border-dashed border-emerald-300 px-4 py-3 rounded-xl text-xs font-bold flex items-center gap-2 transition-colors">
+                        <label className="cursor-pointer bg-slate-800 hover:bg-slate-700 text-emerald-300 border-2 border-dashed border-emerald-500/40 px-4 py-3 rounded-xl text-xs font-bold flex items-center gap-2 transition-colors">
                           <FiUpload className="text-base" />
                           <span>Select QR Code Image (PNG/JPG)</span>
                           <input 
@@ -595,18 +595,18 @@ export default function Profile() {
                         </label>
 
                         {qrPreview && (
-                          <div className="flex items-center gap-3 bg-white p-2 rounded-xl border border-emerald-200">
+                          <div className="flex items-center gap-3 bg-slate-800 p-2 rounded-xl border border-emerald-500/30">
                             <img 
                               src={qrPreview} 
                               alt="Freelancer GPay QR" 
-                              className="w-14 h-14 object-contain rounded-lg border border-gray-100" 
+                              className="w-14 h-14 object-contain rounded-lg bg-white p-1" 
                             />
                             <div>
-                              <span className="text-[11px] font-bold text-emerald-700 block">✓ QR Code Active</span>
+                              <span className="text-[11px] font-bold text-emerald-400 block">✓ QR Code Active</span>
                               <button
                                 type="button"
                                 onClick={handleRemoveQr}
-                                className="text-[10px] text-red-500 hover:text-red-700 flex items-center gap-1 font-semibold mt-1 cursor-pointer"
+                                className="text-[10px] text-red-400 hover:text-red-300 flex items-center gap-1 font-semibold mt-1 cursor-pointer"
                               >
                                 <FiTrash2 /> Remove QR
                               </button>
@@ -630,9 +630,9 @@ export default function Profile() {
             ) : (
               <div>
                 <div className="flex flex-wrap items-center gap-3 mb-2">
-                  <h1 className="text-2xl md:text-3xl font-black text-gray-900">{profileData.name}</h1>
+                  <h1 className="text-2xl md:text-3xl font-black text-white">{profileData.name}</h1>
                   <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
-                    isFreelancer ? 'bg-emerald-100 text-emerald-800' : 'bg-indigo-100 text-indigo-800'
+                    isFreelancer ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
                   }`}>
                     {profileData.role}
                   </span>
@@ -641,33 +641,33 @@ export default function Profile() {
                       href={`https://github.com/${profileData.githubUsername}`} 
                       target="_blank" 
                       rel="noreferrer" 
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-gray-700 hover:text-indigo-600 bg-white/80 px-3 py-1 rounded-xl border border-gray-200"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-300 hover:text-indigo-400 bg-slate-800 px-3 py-1 rounded-xl border border-slate-700"
                     >
                       <FiGithub /> github.com/{profileData.githubUsername} <FiExternalLink className="text-[10px]" />
                     </a>
                   )}
                 </div>
                 
-                <div className="flex flex-wrap items-center gap-5 text-gray-600 mb-6 text-xs md:text-sm">
-                  <div className="flex items-center gap-1.5"><FiMail className="text-indigo-500" /> {profileData.email}</div>
+                <div className="flex flex-wrap items-center gap-5 text-slate-400 mb-6 text-xs md:text-sm">
+                  <div className="flex items-center gap-1.5"><FiMail className="text-indigo-400" /> {profileData.email}</div>
                   
                   {isFreelancer && profileData.hourlyRate && (
-                    <div className="flex items-center gap-1.5 font-bold text-gray-900">
-                      <span className="text-emerald-600 font-black">₹</span> {profileData.hourlyRate}/hr
+                    <div className="flex items-center gap-1.5 font-bold text-white">
+                      <span className="text-emerald-400 font-black">₹</span> {profileData.hourlyRate}/hr
                     </div>
                   )}
 
                   {/* Yellow Star Rating View */}
                   {isFreelancer && (
-                    <div className="flex items-center gap-2 bg-amber-50 px-3 py-1 rounded-xl border border-amber-200">
-                      <span className="text-xs font-semibold text-amber-900">Experience Tier:</span>
+                    <div className="flex items-center gap-2 bg-amber-500/10 px-3 py-1 rounded-xl border border-amber-500/20">
+                      <span className="text-xs font-semibold text-amber-300">Experience Tier:</span>
                       <StarRating value={profileData.rating || 5} readOnly size="sm" showLabel />
                     </div>
                   )}
                 </div>
 
-                <div className="prose max-w-none text-gray-700 text-xs md:text-sm leading-relaxed mb-6 glass p-5 rounded-2xl border border-white/80">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                <div className="prose max-w-none text-slate-300 text-xs md:text-sm leading-relaxed mb-6 glass-dark p-5 rounded-2xl border border-slate-800">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
                     {isClient ? "Client / Company Summary & Bio" : "Professional Summary"}
                   </h3>
                   <p>{profileData.bio || (isClient ? "Verified Client on FreelanceHub hiring top technical talent." : "Full-stack software engineer specializing in scalable systems and reactive frontends.")}</p>
@@ -675,17 +675,17 @@ export default function Profile() {
 
                 {/* Verified AI Expert Badges */}
                 {isFreelancer && profileData.verifiedBadges?.length > 0 && (
-                  <div className="mb-6 p-5 bg-gradient-to-r from-amber-500/10 via-yellow-500/10 to-amber-500/10 rounded-2xl border border-amber-300/60">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-amber-900 mb-3 flex items-center gap-1.5">
-                      <FiAward className="text-yellow-600" /> Verified AI Expert Credentials
+                  <div className="mb-6 p-5 bg-gradient-to-r from-amber-500/10 via-yellow-500/10 to-amber-500/10 rounded-2xl border border-amber-500/30">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-amber-300 mb-3 flex items-center gap-1.5">
+                      <FiAward className="text-yellow-400" /> Verified AI Expert Credentials
                     </h3>
                     <div className="flex flex-wrap gap-2.5">
                       {profileData.verifiedBadges.map((badge, idx) => (
-                        <div key={idx} className="bg-white/90 px-3.5 py-2 rounded-xl border border-amber-300 flex items-center gap-2 shadow-xs">
+                        <div key={idx} className="bg-slate-800 px-3.5 py-2 rounded-xl border border-amber-500/30 flex items-center gap-2 shadow-xs">
                           <span className="text-base">🌟</span>
                           <div>
-                            <p className="text-xs font-black text-gray-900">{badge.skill}</p>
-                            <p className="text-[10px] text-amber-700 font-semibold">{badge.title} • Score: {badge.score}%</p>
+                            <p className="text-xs font-black text-white">{badge.skill}</p>
+                            <p className="text-[10px] text-amber-300 font-semibold">{badge.title} • Score: {badge.score}%</p>
                           </div>
                         </div>
                       ))}
@@ -697,8 +697,8 @@ export default function Profile() {
                 {isFreelancer && profileData.skills?.length > 0 && (
                   <div className="mb-6">
                     <div className="flex items-center justify-between mb-2.5">
-                      <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400">Extracted Skills & Tech Stack</h3>
-                      <span className="text-[11px] text-indigo-600 font-semibold">Click any skill to verify with AI Quiz ⚡</span>
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Extracted Skills & Tech Stack</h3>
+                      <span className="text-[11px] text-indigo-400 font-semibold">Click any skill to verify with AI Quiz ⚡</span>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {profileData.skills.map((skill, index) => {
@@ -709,8 +709,8 @@ export default function Profile() {
                             onClick={() => handleStartSkillQuiz(skill)}
                             className={`px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${
                               isVerified 
-                                ? 'bg-amber-100 text-amber-950 border-amber-300 hover:bg-amber-200' 
-                                : 'bg-white/80 text-indigo-700 border-indigo-100 hover:bg-indigo-50 hover:border-indigo-300 shadow-2xs'
+                                ? 'bg-amber-500/20 text-amber-300 border-amber-500/30 hover:bg-amber-500/30' 
+                                : 'bg-slate-800 text-indigo-300 border-slate-700 hover:bg-slate-700 hover:border-indigo-500/40'
                             }`}
                           >
                             <span>{skill}</span>
@@ -723,40 +723,40 @@ export default function Profile() {
                 )}
 
                 {/* Connected Google Pay & UPI Showcase Card (For both Client and Freelancer) */}
-                <div className="mb-6 p-5 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200">
+                <div className="mb-6 p-5 bg-gradient-to-br from-emerald-950/60 to-teal-950/60 rounded-2xl border border-emerald-500/30">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="bg-emerald-600 text-white p-1 rounded-md text-xs font-bold">
                           <FiSmartphone />
                         </span>
-                        <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-950">
+                        <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-300">
                           {isClient ? "Client Google Pay & UPI Connected Account" : "Freelancer Google Pay & UPI Details"}
                         </h3>
                         <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
-                          (profileData.gpayNumber || profileData.upiId) ? 'bg-emerald-200 text-emerald-900' : 'bg-gray-200 text-gray-700'
+                          (profileData.gpayNumber || profileData.upiId) ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-slate-800 text-slate-400 border border-slate-700'
                         }`}>
                           {(profileData.gpayNumber || profileData.upiId) ? '✓ Connected' : 'Not Connected'}
                         </span>
                       </div>
                       
-                      <div className="mt-2 text-xs space-y-1 text-emerald-900">
+                      <div className="mt-2 text-xs space-y-1 text-emerald-200">
                         <p>Linked GPay Number: <strong className="font-mono">{profileData.gpayNumber || (isClient ? 'Not linked (Click Edit Profile to add)' : 'Not set')}</strong></p>
                         <p>Linked UPI ID: <strong className="font-mono">{profileData.upiId || (isClient ? 'Not linked' : 'Not set')}</strong></p>
                       </div>
                     </div>
 
                     {profileData.upiQrCode ? (
-                      <div className="bg-white p-2 rounded-xl shadow-xs border border-emerald-200 text-center">
-                        <img src={profileData.upiQrCode} alt="GPay QR Code" className="w-20 h-20 object-contain mx-auto rounded-md" />
-                        <span className="text-[10px] font-bold text-emerald-700 block mt-1">✓ Active GPay QR</span>
+                      <div className="bg-slate-800 p-2.5 rounded-xl border border-emerald-500/30 text-center">
+                        <img src={profileData.upiQrCode} alt="GPay QR Code" className="w-20 h-20 object-contain mx-auto rounded-md bg-white p-1" />
+                        <span className="text-[10px] font-bold text-emerald-400 block mt-1">✓ Active GPay QR</span>
                       </div>
                     ) : (
-                      <div className="text-xs text-gray-400 bg-white/70 p-3 rounded-xl border border-dashed border-emerald-300 text-center">
-                        <p className="font-medium text-emerald-800">
+                      <div className="text-xs text-slate-400 bg-slate-900/60 p-3 rounded-xl border border-dashed border-emerald-500/30 text-center">
+                        <p className="font-medium text-emerald-300">
                           {(profileData.gpayNumber || profileData.upiId) ? 'Linked via UPI / Mobile' : 'No GPay Account Linked'}
                         </p>
-                        <p className="text-[10px] text-gray-500">
+                        <p className="text-[10px] text-slate-400">
                           {(profileData.gpayNumber || profileData.upiId) ? 'Ready for Instant Direct Google Pay Transfers' : 'Click Edit Profile to connect'}
                         </p>
                       </div>

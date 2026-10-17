@@ -195,14 +195,14 @@ export default function Wallet() {
         <div className="glass-card p-6 md:p-8 rounded-3xl flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="bg-emerald-600/10 text-emerald-700 border border-emerald-200 px-3 py-0.5 rounded-full text-xs font-black uppercase tracking-wider flex items-center gap-1">
+              <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-3 py-0.5 rounded-full text-xs font-black uppercase tracking-wider flex items-center gap-1">
                 <FiSmartphone /> Direct Google Pay & UPI Settlement
               </span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-black text-gray-900 mt-2">
+            <h1 className="text-2xl md:text-3xl font-black text-white mt-2">
               {isClient ? 'Client Direct Billing & Receipts' : 'Freelancer Direct Earnings & Invoices'}
             </h1>
-            <p className="text-gray-600 text-xs md:text-sm mt-1">
+            <p className="text-slate-400 text-xs md:text-sm mt-1">
               {isClient
                 ? 'Review verified direct Google Pay / UPI milestone receipts sent straight to freelancers.'
                 : 'Review direct UPI payments received into your bank account from clients.'}
@@ -296,13 +296,13 @@ export default function Wallet() {
           
           {/* Card 1: Total Settled via GPay */}
           <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
-            <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
               {isClient ? 'Total Paid Directly to Talent' : 'Total Direct Earnings (INR)'}
             </span>
-            <div className="text-3xl md:text-4xl font-black text-emerald-600 mt-2">
+            <div className="text-3xl md:text-4xl font-black text-emerald-400 mt-2">
               ₹{((isClient ? walletData?.totalPaid : walletData?.totalEarned) || 0).toLocaleString()}
             </div>
-            <p className="text-[11px] text-gray-500 font-semibold mt-2 flex items-center gap-1">
+            <p className="text-[11px] text-slate-400 font-semibold mt-2 flex items-center gap-1">
               ✓ Direct UPI / Google Pay transfers
             </p>
             <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl pointer-events-none"></div>
@@ -310,13 +310,13 @@ export default function Wallet() {
 
           {/* Card 2: Settlement Guarantee */}
           <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
-            <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
               Platform Commission Fee
             </span>
-            <div className="text-3xl md:text-4xl font-black text-indigo-900 mt-2">
+            <div className="text-3xl md:text-4xl font-black text-white mt-2">
               ₹0 (100% Free)
             </div>
-            <p className="text-[11px] text-indigo-600 font-semibold mt-2 flex items-center gap-1">
+            <p className="text-[11px] text-indigo-400 font-semibold mt-2 flex items-center gap-1">
               <FiSmartphone /> No intermediary fees or cuts taken
             </p>
             <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-indigo-500/10 rounded-full blur-xl pointer-events-none"></div>
@@ -326,12 +326,12 @@ export default function Wallet() {
 
         {/* Transactions Ledger */}
         <div className="glass-card p-6 md:p-8 rounded-3xl space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
             <div>
-              <h2 className="text-lg md:text-xl font-bold text-gray-900">
+              <h2 className="text-lg md:text-xl font-bold text-white">
                 Direct Google Pay & UPI Transactions Ledger
               </h2>
-              <p className="text-xs text-gray-500 mt-0.5">
+              <p className="text-xs text-slate-400 mt-0.5">
                 Verified history of direct payments, recipient UPI VPAs, and UTR transaction references.
               </p>
             </div>
@@ -340,7 +340,7 @@ export default function Wallet() {
               <button
                 type="button"
                 onClick={handleClearAllTransactions}
-                className="self-start sm:self-auto text-xs font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 px-3.5 py-1.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"
+                className="self-start sm:self-auto text-xs font-bold text-red-400 hover:text-red-300 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 px-3.5 py-1.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"
               >
                 <FiTrash2 className="text-sm" /> Clear All Records
               </button>
@@ -348,34 +348,34 @@ export default function Wallet() {
           </div>
 
           {(!walletData?.transactions || walletData.transactions.length === 0) ? (
-            <div className="text-center py-12 text-gray-400">
-              <FiClock className="w-12 h-12 mx-auto text-gray-300 mb-2" />
-              <p className="font-bold text-sm text-gray-600">No transactions recorded yet</p>
-              <p className="text-xs text-gray-400 mt-1 max-w-sm mx-auto">
+            <div className="text-center py-12 text-slate-400">
+              <FiClock className="w-12 h-12 mx-auto text-slate-600 mb-2" />
+              <p className="font-bold text-sm text-slate-300">No transactions recorded yet</p>
+              <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
                 {isClient
                   ? 'Pay for a project milestone in the Projects section to see real-time direct Google Pay receipts.'
                   : 'Receive direct Google Pay payments from clients upon delivering project milestones.'}
               </p>
             </div>
           ) : (
-            <div className="divide-y divide-gray-100">
+            <div className="divide-y divide-slate-800">
               {walletData.transactions.map((tx) => {
                 const isReleased = tx.status === 'released' || tx.status === 'funded';
                 return (
-                  <div key={tx._id} className="py-4.5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-gray-50/50 -mx-4 px-4 rounded-2xl transition-colors">
+                  <div key={tx._id} className="py-4.5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-800/50 -mx-4 px-4 rounded-2xl transition-colors">
                     <div className="flex items-center gap-3.5">
-                      <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-lg bg-emerald-100 text-emerald-600">
+                      <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-lg bg-emerald-500/20 text-emerald-400">
                         <FiSmartphone />
                       </div>
                       <div>
-                        <h4 className="font-bold text-gray-900 text-xs md:text-sm">
+                        <h4 className="font-bold text-white text-xs md:text-sm">
                           {tx.milestone?.title || 'Direct Project Milestone Payment'}
                         </h4>
-                        <p className="text-[11px] text-gray-500">
-                          Project: <strong>{tx.project?.title || 'Active Project'}</strong> • {isClient ? `Paid to: ${tx.payee?.name || 'Freelancer'}` : `Received from: ${tx.payer?.name || 'Client'}`}
+                        <p className="text-[11px] text-slate-400">
+                          Project: <strong className="text-slate-200">{tx.project?.title || 'Active Project'}</strong> • {isClient ? `Paid to: ${tx.payee?.name || 'Freelancer'}` : `Received from: ${tx.payer?.name || 'Client'}`}
                         </p>
                         {tx.upiId && (
-                          <p className="text-[10px] text-emerald-600 font-mono mt-0.5">
+                          <p className="text-[10px] text-emerald-400 font-mono mt-0.5">
                             UPI VPA: {tx.upiId} {tx.transactionRef && `• UTR: ${tx.transactionRef}`}
                           </p>
                         )}
@@ -384,19 +384,19 @@ export default function Wallet() {
 
                     <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6">
                       <div className="text-left sm:text-right">
-                        <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                        <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                           Direct GPay Paid
                         </span>
-                        <p className="text-[10px] text-gray-400 mt-0.5">
+                        <p className="text-[10px] text-slate-500 mt-0.5">
                           {new Date(tx.createdAt).toLocaleDateString()}
                         </p>
                       </div>
 
                       <div className="text-right min-w-[70px]">
-                        <span className="text-base font-black text-emerald-600">
+                        <span className="text-base font-black text-emerald-400">
                           ₹{Number(tx.amount).toLocaleString()}
                         </span>
-                        <p className="text-[10px] text-gray-400 uppercase font-semibold">
+                        <p className="text-[10px] text-slate-500 uppercase font-semibold">
                           Google Pay
                         </p>
                       </div>
@@ -407,7 +407,7 @@ export default function Wallet() {
                         onClick={() => handleDeleteTransaction(tx._id)}
                         disabled={deletingTxId === tx._id}
                         title="Delete transaction record"
-                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all cursor-pointer border border-transparent hover:border-red-200"
+                        className="p-2 text-slate-500 hover:text-red-400 hover:bg-red-500/20 rounded-xl transition-all cursor-pointer border border-transparent hover:border-red-500/30"
                       >
                         <FiTrash2 className="w-4 h-4" />
                       </button>

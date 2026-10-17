@@ -73,7 +73,7 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col font-sans text-gray-900">
+    <div className="min-h-screen bg-[#0b0f19] flex flex-col font-sans text-slate-100">
       <Navbar />
       
       <main className="flex-grow">
@@ -241,32 +241,32 @@ export default function Landing() {
         </section>
 
         {/* Trusted By */}
-        <section className="bg-gray-50 py-10 border-b border-gray-100">
+        <section className="bg-slate-900/60 py-10 border-b border-slate-800">
           <div className="container mx-auto px-4">
-            <p className="text-center text-sm font-semibold text-gray-400 tracking-widest uppercase mb-6">Trusted by innovative teams worldwide</p>
+            <p className="text-center text-sm font-semibold text-slate-400 tracking-widest uppercase mb-6">Trusted by innovative teams worldwide</p>
             <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-              <span className="text-2xl font-bold font-serif text-gray-800">Google</span>
-              <span className="text-2xl font-bold font-sans text-gray-800">Microsoft</span>
-              <span className="text-2xl font-bold font-sans tracking-tighter text-gray-800">Meta</span>
-              <span className="text-2xl font-bold font-sans lowercase text-gray-800">amazon</span>
-              <span className="text-2xl font-bold font-sans text-red-600 uppercase tracking-widest">Netflix</span>
+              <span className="text-2xl font-bold font-serif text-slate-400">Google</span>
+              <span className="text-2xl font-bold font-sans text-slate-400">Microsoft</span>
+              <span className="text-2xl font-bold font-sans tracking-tighter text-slate-400">Meta</span>
+              <span className="text-2xl font-bold font-sans lowercase text-slate-400">amazon</span>
+              <span className="text-2xl font-bold font-sans text-red-500 uppercase tracking-widest">Netflix</span>
             </div>
           </div>
         </section>
 
         {/* How It Works */}
-        <section className="py-24 bg-white">
+        <section className="py-24 bg-[#0d1424]">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-4 text-gray-900">How It Works</h2>
-              <p className="text-xl text-gray-500">Seamless process for both clients and freelancers</p>
+              <h2 className="text-4xl font-bold mb-4 text-white">How It Works</h2>
+              <p className="text-xl text-slate-400">Seamless process for both clients and freelancers</p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-16">
               {/* For Clients */}
-              <div className="bg-indigo-50/50 p-8 rounded-3xl border border-indigo-100 relative">
+              <div className="glass-card bg-slate-900/60 p-8 rounded-3xl border border-indigo-500/20 relative">
                 <div className="absolute -top-4 -left-4 bg-indigo-600 text-white px-4 py-1 rounded-full text-sm font-bold shadow-md">FOR CLIENTS</div>
-                <h3 className="text-2xl font-bold mb-8 text-indigo-900">Hire top talent easily</h3>
+                <h3 className="text-2xl font-bold mb-8 text-indigo-400">Hire top talent easily</h3>
                 <div className="space-y-8">
                   {[
                     { title: "Post Your Project", desc: "Share your requirements and goals in minutes." },
@@ -274,12 +274,12 @@ export default function Landing() {
                     { title: "Collaborate & Pay Directly", desc: "Manage work and pay directly via Google Pay." }
                   ].map((step, idx) => (
                     <div key={idx} className="flex gap-4 items-start">
-                      <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center font-bold text-indigo-600 text-xl shadow-sm border border-indigo-100 flex-shrink-0">
+                      <div className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center font-bold text-indigo-400 text-xl shadow-sm border border-slate-700 flex-shrink-0">
                         {idx + 1}
                       </div>
                       <div>
-                        <h4 className="text-lg font-bold text-gray-900 mb-1">{step.title}</h4>
-                        <p className="text-gray-600">{step.desc}</p>
+                        <h4 className="text-lg font-bold text-white mb-1">{step.title}</h4>
+                        <p className="text-slate-400">{step.desc}</p>
                       </div>
                     </div>
                   ))}
@@ -287,9 +287,9 @@ export default function Landing() {
               </div>
 
               {/* For Freelancers */}
-              <div className="bg-emerald-50/50 p-8 rounded-3xl border border-emerald-100 relative">
+              <div className="glass-card bg-slate-900/60 p-8 rounded-3xl border border-emerald-500/20 relative">
                 <div className="absolute -top-4 -left-4 bg-emerald-600 text-white px-4 py-1 rounded-full text-sm font-bold shadow-md">FOR FREELANCERS</div>
-                <h3 className="text-2xl font-bold mb-8 text-emerald-900">Find work you love</h3>
+                <h3 className="text-2xl font-bold mb-8 text-emerald-400">Find work you love</h3>
                 <div className="space-y-8">
                   {[
                     { title: "Create Your Profile", desc: "Highlight your skills, experience, and portfolio." },
@@ -297,12 +297,12 @@ export default function Landing() {
                     { title: "Deliver & Get Paid", desc: "Submit work and get paid securely and on time." }
                   ].map((step, idx) => (
                     <div key={idx} className="flex gap-4 items-start">
-                      <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center font-bold text-emerald-600 text-xl shadow-sm border border-emerald-100 flex-shrink-0">
+                      <div className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center font-bold text-emerald-400 text-xl shadow-sm border border-slate-700 flex-shrink-0">
                         {idx + 1}
                       </div>
                       <div>
-                        <h4 className="text-lg font-bold text-gray-900 mb-1">{step.title}</h4>
-                        <p className="text-gray-600">{step.desc}</p>
+                        <h4 className="text-lg font-bold text-white mb-1">{step.title}</h4>
+                        <p className="text-slate-400">{step.desc}</p>
                       </div>
                     </div>
                   ))}
@@ -313,11 +313,11 @@ export default function Landing() {
         </section>
 
         {/* Features */}
-        <section className="py-24 bg-gray-50 border-y border-gray-100">
+        <section className="py-24 bg-[#0b0f19] border-y border-slate-800">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16 max-w-3xl mx-auto">
-              <h2 className="text-4xl font-bold mb-4 text-gray-900">Why Choose FreelanceHub?</h2>
-              <p className="text-xl text-gray-500">Built with modern technology to ensure a safe, efficient, and productive environment for everyone.</p>
+              <h2 className="text-4xl font-bold mb-4 text-white">Why Choose FreelanceHub?</h2>
+              <p className="text-xl text-slate-400">Built with modern technology to ensure a safe, efficient, and productive environment for everyone.</p>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -329,12 +329,12 @@ export default function Landing() {
                 { icon: <FiZap />, title: "Smart Recommendations", desc: "Get AI insights on how to improve proposals or project descriptions." },
                 { icon: <FiStar />, title: "Transparent Reviews", desc: "Build a reputation based on verified feedback from completed projects." }
               ].map((feature, idx) => (
-                <div key={idx} className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 group">
-                  <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 text-2xl mb-6 group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-300">
+                <div key={idx} className="glass-card bg-slate-900/70 p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-800 group">
+                  <div className="w-14 h-14 bg-indigo-500/20 rounded-2xl flex items-center justify-center text-indigo-400 text-2xl mb-6 group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-300">
                     {feature.icon}
                   </div>
-                  <h3 className="text-xl font-bold mb-3 text-gray-900">{feature.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{feature.desc}</p>
+                  <h3 className="text-xl font-bold mb-3 text-white">{feature.title}</h3>
+                  <p className="text-slate-400 leading-relaxed">{feature.desc}</p>
                 </div>
               ))}
             </div>
@@ -342,7 +342,7 @@ export default function Landing() {
         </section>
 
         {/* Stats */}
-        <section className="py-20 bg-indigo-950 text-white">
+        <section className="py-20 bg-indigo-950/80 text-white border-b border-slate-800">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
               {[
@@ -361,14 +361,14 @@ export default function Landing() {
         </section>
 
         {/* CTA */}
-        <section className="py-24 bg-white text-center relative overflow-hidden">
+        <section className="py-24 bg-[#0d1424] text-center relative overflow-hidden">
           <div className="container mx-auto px-4 relative z-10">
-            <h2 className="text-4xl md:text-5xl font-bold mb-8 text-gray-900">Ready to Get Started?</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-8 text-white">Ready to Get Started?</h2>
             <div className="flex flex-col sm:flex-row justify-center gap-6 max-w-2xl mx-auto">
               <Link to="/register/client" className="flex-1 px-8 py-5 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg hover:bg-indigo-700 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 text-lg">
                 I'm a Client <FiArrowRight />
               </Link>
-              <Link to="/register/freelancer" className="flex-1 px-8 py-5 bg-white text-gray-900 font-bold rounded-2xl shadow-lg border-2 border-gray-100 hover:border-indigo-100 hover:bg-gray-50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 text-lg">
+              <Link to="/register/freelancer" className="flex-1 px-8 py-5 bg-slate-800 text-white font-bold rounded-2xl shadow-lg border-2 border-slate-700 hover:border-indigo-500 hover:bg-slate-700 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 text-lg">
                 I'm a Freelancer <FiArrowRight />
               </Link>
             </div>
@@ -377,7 +377,7 @@ export default function Landing() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-gray-400 py-12 border-t border-gray-800">
+      <footer className="bg-[#080b12] text-slate-400 py-12 border-t border-slate-800">
         <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2 text-white font-bold text-xl">
             <span className="w-8 h-8 rounded bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-sm shadow-lg">FH</span>

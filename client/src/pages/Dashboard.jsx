@@ -11,8 +11,8 @@ const StatCard = ({ icon: Icon, label, value, color, bgColor }) => (
   <div className="glass-card rounded-3xl p-6 relative overflow-hidden group">
     <div className="flex items-center justify-between relative z-10">
       <div>
-        <p className="text-xs font-bold uppercase tracking-wider text-gray-500">{label}</p>
-        <p className="text-2xl md:text-3xl font-black text-gray-900 mt-1">{value}</p>
+        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">{label}</p>
+        <p className="text-2xl md:text-3xl font-black text-white mt-1">{value}</p>
       </div>
       <div className={`w-12 h-12 ${bgColor} rounded-2xl flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform`}>
         <Icon className={`w-6 h-6 ${color}`} />
@@ -68,13 +68,13 @@ const Dashboard = () => {
       <div className="mb-8 glass-card rounded-3xl p-6 md:p-8 relative overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 relative z-10">
           <div>
-            <span className="text-xs font-black uppercase tracking-wider px-3 py-1 bg-indigo-600/10 text-indigo-700 rounded-full border border-indigo-200/50">
+            <span className="text-xs font-black uppercase tracking-wider px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-full border border-indigo-500/30">
               {user?.role === 'client' ? 'Client Command Center' : 'Freelancer Workspace'}
             </span>
-            <h1 className="text-2xl md:text-3xl font-black text-gray-900 mt-2">
+            <h1 className="text-2xl md:text-3xl font-black text-white mt-2">
               Welcome back, {user?.name?.split(' ')[0] || 'User'}! 👋
             </h1>
-            <p className="text-gray-600 text-xs md:text-sm mt-1 max-w-xl">
+            <p className="text-slate-400 text-xs md:text-sm mt-1 max-w-xl">
               {user?.role === 'client'
                 ? 'Manage your posted projects, fund milestones via GPay, and discover talent.'
                 : 'Explore client projects, submit proposals with your yellow star rating, and collaborate in Rupees (₹).'}
@@ -96,28 +96,28 @@ const Dashboard = () => {
         <>
           {/* Client Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <StatCard icon={FiBriefcase} label="Total Projects" value={projects.length} color="text-indigo-600" bgColor="bg-indigo-50" />
-            <StatCard icon={FiTrendingUp} label="Active In Progress" value={activeProjects.length} color="text-emerald-600" bgColor="bg-emerald-50" />
-            <StatCard icon={FiFileText} label="Open for Bids" value={openProjects.length} color="text-blue-600" bgColor="bg-blue-50" />
-            <StatCard icon={FiBriefcase} label="Billing Spent" value={`₹${(user?.balance || 0).toLocaleString()}`} color="text-indigo-600" bgColor="bg-indigo-50" />
+            <StatCard icon={FiBriefcase} label="Total Projects" value={projects.length} color="text-indigo-400" bgColor="bg-indigo-500/20" />
+            <StatCard icon={FiTrendingUp} label="Active In Progress" value={activeProjects.length} color="text-emerald-400" bgColor="bg-emerald-500/20" />
+            <StatCard icon={FiFileText} label="Open for Bids" value={openProjects.length} color="text-blue-400" bgColor="bg-blue-500/20" />
+            <StatCard icon={FiBriefcase} label="Billing Spent" value={`₹${(user?.balance || 0).toLocaleString()}`} color="text-indigo-400" bgColor="bg-indigo-500/20" />
           </div>
           
           {/* Recent Projects */}
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-gray-900">Recent Client Projects</h2>
-            <Link to="/projects" className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1">
+            <h2 className="text-lg font-bold text-white">Recent Client Projects</h2>
+            <Link to="/projects" className="text-xs font-bold text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
               View All <FiArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
           
           {projects.length === 0 ? (
             <div className="glass-card rounded-3xl p-12 text-center">
-              <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-indigo-100">
-                <FiBriefcase className="w-8 h-8 text-indigo-500" />
+              <div className="w-16 h-16 bg-indigo-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-indigo-500/20">
+                <FiBriefcase className="w-8 h-8 text-indigo-400" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900">No projects posted yet</h3>
-              <p className="text-xs text-gray-500 mt-1 mb-4">Post your first project in Rupees and let AI match top freelancers.</p>
-              <Link to="/projects" className="inline-flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-2xl text-xs font-bold hover:bg-indigo-700 transition-colors">
+              <h3 className="text-lg font-bold text-white">No projects posted yet</h3>
+              <p className="text-xs text-slate-400 mt-1 mb-4">Post your first project in Rupees and let AI match top freelancers.</p>
+              <Link to="/projects" className="inline-flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-2xl text-xs font-bold hover:bg-indigo-500 transition-colors">
                 <FiPlus /> Post a Project
               </Link>
             </div>
@@ -127,22 +127,22 @@ const Dashboard = () => {
                 <Link
                   key={project._id}
                   to={`/projects/${project._id}`}
-                  className="glass-card rounded-2xl p-5 flex items-center justify-between group block"
+                  className="glass-card rounded-2xl p-5 flex items-center justify-between group block border border-slate-800"
                 >
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors truncate text-sm">{project.title}</h3>
-                    <div className="flex items-center gap-3 mt-1.5 text-xs text-gray-500">
-                      <span className="flex items-center gap-1 font-bold text-gray-800">
+                    <h3 className="font-bold text-white group-hover:text-indigo-400 transition-colors truncate text-sm">{project.title}</h3>
+                    <div className="flex items-center gap-3 mt-1.5 text-xs text-slate-400">
+                      <span className="flex items-center gap-1 font-bold text-slate-200">
                         ₹{(project.budgetMin ?? 5000).toLocaleString()} - ₹{(project.budgetMax ?? 25000).toLocaleString()}
                       </span>
                       {project.duration && <span className="flex items-center gap-1"><FiClock className="w-3.5 h-3.5" />{project.duration}</span>}
                     </div>
                   </div>
                   <span className={`px-3 py-1 rounded-full text-xs font-bold capitalize ml-4 whitespace-nowrap ${
-                    project.status === 'open' ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' :
-                    project.status === 'in-progress' ? 'bg-blue-100 text-blue-700 border border-blue-200' :
-                    project.status === 'completed' ? 'bg-gray-100 text-gray-700' :
-                    'bg-red-100 text-red-700'
+                    project.status === 'open' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' :
+                    project.status === 'in-progress' ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30' :
+                    project.status === 'completed' ? 'bg-slate-800 text-slate-300' :
+                    'bg-red-500/20 text-red-300 border border-red-500/30'
                   }`}>{project.status}</span>
                 </Link>
               ))}
@@ -153,29 +153,29 @@ const Dashboard = () => {
         <>
           {/* Freelancer Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <StatCard icon={FiBriefcase} label="Active Gigs" value={activeProjects.length} color="text-emerald-600" bgColor="bg-emerald-50" />
-            <StatCard icon={FiFileText} label="Completed Projects" value={completedProjects.length} color="text-blue-600" bgColor="bg-blue-50" />
-            <StatCard icon={FiTrendingUp} label="Total Earnings" value={`₹${(user?.balance || 0).toLocaleString()}`} color="text-yellow-600" bgColor="bg-yellow-50" />
-            <StatCard icon={FiStar} label="Rating Tier" value={user?.rating ? `${user.rating.toFixed(1)} ★` : '5.0 ★'} color="text-purple-600" bgColor="bg-purple-50" />
+            <StatCard icon={FiBriefcase} label="Active Gigs" value={activeProjects.length} color="text-emerald-400" bgColor="bg-emerald-500/20" />
+            <StatCard icon={FiFileText} label="Completed Projects" value={completedProjects.length} color="text-blue-400" bgColor="bg-blue-500/20" />
+            <StatCard icon={FiTrendingUp} label="Total Earnings" value={`₹${(user?.balance || 0).toLocaleString()}`} color="text-amber-400" bgColor="bg-amber-500/20" />
+            <StatCard icon={FiStar} label="Rating Tier" value={user?.rating ? `${user.rating.toFixed(1)} ★` : '5.0 ★'} color="text-purple-400" bgColor="bg-purple-500/20" />
           </div>
 
           {/* Recommended Projects */}
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-gray-900">
+            <h2 className="text-lg font-bold text-white">
               {recommendations.some(r => r.score !== null) ? '🧠 AI Recommended Projects for You' : '📋 Open Client Projects'}
             </h2>
-            <Link to="/projects" className="text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1">
+            <Link to="/projects" className="text-xs font-bold text-emerald-400 hover:text-emerald-300 flex items-center gap-1">
               Browse All <FiArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
           
           {recommendations.length === 0 ? (
             <div className="glass-card rounded-3xl p-12 text-center">
-              <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-emerald-100">
-                <FiZap className="w-8 h-8 text-emerald-500" />
+              <div className="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-emerald-500/20">
+                <FiZap className="w-8 h-8 text-emerald-400" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900">No projects available right now</h3>
-              <p className="text-xs text-gray-500 mt-1">Check back later when clients post new opportunities.</p>
+              <h3 className="text-lg font-bold text-white">No projects available right now</h3>
+              <p className="text-xs text-slate-400 mt-1">Check back later when clients post new opportunities.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -185,26 +185,26 @@ const Dashboard = () => {
                   <Link
                     key={project?._id || idx}
                     to={`/projects/${project?._id}`}
-                    className="glass-card rounded-3xl flex flex-col group"
+                    className="glass-card rounded-3xl flex flex-col group border border-slate-800"
                   >
                     <div className="p-6 flex-1">
                       <div className="flex items-start justify-between gap-2 mb-2">
-                        <h3 className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors line-clamp-1 text-sm">{project?.title}</h3>
+                        <h3 className="font-bold text-white group-hover:text-emerald-400 transition-colors line-clamp-1 text-sm">{project?.title}</h3>
                         {rec.score !== null && <AIMatchBadge score={rec.score} />}
                       </div>
-                      <p className="text-xs text-gray-600 line-clamp-2 mb-3 leading-relaxed">{project?.description}</p>
+                      <p className="text-xs text-slate-400 line-clamp-2 mb-3 leading-relaxed">{project?.description}</p>
                       {project?.skills && (
                         <div className="flex flex-wrap gap-1.5">
                           {project.skills.slice(0, 3).map((skill, i) => (
-                            <span key={i} className="px-2 py-0.5 bg-white/80 text-emerald-700 rounded-md text-[11px] font-semibold border border-emerald-100">{skill}</span>
+                            <span key={i} className="px-2 py-0.5 bg-slate-800/80 text-emerald-300 rounded-md text-[11px] font-semibold border border-emerald-500/20">{skill}</span>
                           ))}
                         </div>
                       )}
-                      {rec.reason && <p className="mt-2 text-xs text-emerald-700 italic">💡 {rec.reason}</p>}
+                      {rec.reason && <p className="mt-2 text-xs text-emerald-400 italic">💡 {rec.reason}</p>}
                     </div>
-                    <div className="px-6 py-3.5 border-t border-white/50 flex items-center justify-between bg-white/40 rounded-b-3xl">
-                      <span className="text-xs font-black text-gray-900">₹{(project?.budgetMin ?? 5000).toLocaleString()} - ₹{(project?.budgetMax ?? 25000).toLocaleString()}</span>
-                      <span className="text-xs text-emerald-600 font-bold">Apply Now →</span>
+                    <div className="px-6 py-3.5 border-t border-slate-800 flex items-center justify-between bg-slate-900/60 rounded-b-3xl">
+                      <span className="text-xs font-black text-white">₹{(project?.budgetMin ?? 5000).toLocaleString()} - ₹{(project?.budgetMax ?? 25000).toLocaleString()}</span>
+                      <span className="text-xs text-emerald-400 font-bold group-hover:translate-x-1 transition-transform">Apply Now →</span>
                     </div>
                   </Link>
                 );

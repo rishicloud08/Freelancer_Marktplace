@@ -163,13 +163,13 @@ export default function Projects() {
   const getStatusBadge = (status) => {
     switch (status) {
       case 'open':
-        return <span className="bg-emerald-100/90 text-emerald-800 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider border border-emerald-300/60 shadow-xs">Open for Proposals</span>;
+        return <span className="bg-emerald-500/20 text-emerald-300 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider border border-emerald-500/30 shadow-xs">Open for Proposals</span>;
       case 'in-progress':
-        return <span className="bg-blue-100/90 text-blue-800 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider border border-blue-300/60 shadow-xs">In Progress</span>;
+        return <span className="bg-blue-500/20 text-blue-300 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider border border-blue-500/30 shadow-xs">In Progress</span>;
       case 'completed':
-        return <span className="bg-gray-100 text-gray-800 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider border border-gray-300">Completed</span>;
+        return <span className="bg-slate-800 text-slate-300 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider border border-slate-700">Completed</span>;
       default:
-        return <span className="bg-gray-100 text-gray-800 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider">{status}</span>;
+        return <span className="bg-slate-800 text-slate-300 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider">{status}</span>;
     }
   };
 
@@ -182,15 +182,15 @@ export default function Projects() {
           <div>
             <div className="flex items-center gap-2">
               <span className={`px-3 py-0.5 rounded-full text-xs font-black uppercase tracking-wider ${
-                user?.role === 'client' ? 'bg-indigo-600/10 text-indigo-700 border border-indigo-200' : 'bg-emerald-600/10 text-emerald-700 border border-emerald-200'
+                user?.role === 'client' ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
               }`}>
                 {user?.role === 'client' ? 'Client Workspace' : 'Freelancer Marketplace'}
               </span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-black text-gray-900 mt-2">
+            <h1 className="text-2xl md:text-3xl font-black text-white mt-2">
               {user?.role === 'client' ? 'My Posted Projects' : 'Explore Open Projects'}
             </h1>
-            <p className="text-gray-600 text-xs md:text-sm mt-1">
+            <p className="text-slate-400 text-xs md:text-sm mt-1">
               {user?.role === 'client' 
                 ? 'Create projects, auto-generate milestones with AI, and review proposals.'
                 : 'Browse client projects, view budget in Rupees (₹), and apply with your custom experience rating.'}
@@ -306,21 +306,21 @@ export default function Projects() {
 
               {/* AI Generated Milestones Preview */}
               {aiGeneratedMilestones.length > 0 && (
-                <div className="p-5 bg-gradient-to-br from-indigo-50/80 to-purple-50/80 rounded-3xl border border-indigo-200">
+                <div className="p-5 bg-indigo-950/40 rounded-3xl border border-indigo-500/30">
                   <div className="flex items-center gap-2 mb-3">
-                    <FiCpu className="text-indigo-600" />
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-indigo-950">
+                    <FiCpu className="text-indigo-400" />
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-indigo-300">
                       Auto-Generated Milestones (Will be created automatically upon posting)
                     </h4>
                   </div>
                   <div className="space-y-2.5">
                     {aiGeneratedMilestones.map((ms, index) => (
-                      <div key={index} className="bg-white/80 p-3 rounded-2xl border border-white/80 flex items-center justify-between text-xs">
+                      <div key={index} className="bg-slate-800/80 p-3 rounded-2xl border border-slate-700 flex items-center justify-between text-xs">
                         <div>
-                          <strong className="text-gray-900">{ms.title}</strong>
-                          <p className="text-gray-500 text-[11px] mt-0.5">{ms.description}</p>
+                          <strong className="text-white">{ms.title}</strong>
+                          <p className="text-slate-400 text-[11px] mt-0.5">{ms.description}</p>
                         </div>
-                        <span className="font-black text-indigo-900 text-sm whitespace-nowrap ml-4">
+                        <span className="font-black text-indigo-400 text-sm whitespace-nowrap ml-4">
                           ₹{Number(ms.amount).toLocaleString()}
                         </span>
                       </div>
@@ -333,7 +333,7 @@ export default function Projects() {
                 <button 
                   type="button" 
                   onClick={() => setShowCreateForm(false)} 
-                  className="px-5 py-2.5 rounded-xl text-gray-700 hover:bg-white/60 text-xs font-bold border border-gray-200 cursor-pointer"
+                  className="px-5 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800 text-xs font-bold border border-slate-700 cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -380,12 +380,12 @@ export default function Projects() {
             <LoadingSpinner />
           </div>
         ) : filteredProjects.length === 0 ? (
-          <div className="text-center p-16 glass-card rounded-3xl">
-            <div className="w-20 h-20 bg-indigo-50 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-indigo-100">
+          <div className="text-center p-16 glass-card rounded-3xl border border-slate-800">
+            <div className="w-20 h-20 bg-indigo-500/10 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-indigo-500/20">
               <FiBriefcase className="text-4xl text-indigo-400" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">No projects found</h3>
-            <p className="text-gray-500 max-w-md mx-auto text-xs">
+            <h3 className="text-xl font-bold text-white mb-2">No projects found</h3>
+            <p className="text-slate-400 max-w-md mx-auto text-xs">
               {user?.role === 'client' 
                 ? "You haven't posted any projects yet. Click 'Post New Project' to create your first listing and receive AI matches."
                 : "No client projects matching your search criteria. Check back soon for new opportunities posted by clients."}
@@ -404,37 +404,37 @@ export default function Projects() {
             {filteredProjects.map(project => (
               <div 
                 key={project._id} 
-                className="glass-card rounded-3xl p-6 flex flex-col justify-between group"
+                className="glass-card rounded-3xl p-6 flex flex-col justify-between group border border-slate-800 hover:border-indigo-500/40"
               >
                 <div>
                   {/* Top Status & Date */}
                   <div className="flex justify-between items-start mb-3 gap-2">
-                    <span className="text-xs text-gray-400 flex items-center gap-1 font-semibold">
-                      <FiCalendar className="w-3.5 h-3.5 text-indigo-500" />
+                    <span className="text-xs text-slate-400 flex items-center gap-1 font-semibold">
+                      <FiCalendar className="w-3.5 h-3.5 text-indigo-400" />
                       {new Date(project.createdAt).toLocaleDateString()}
                     </span>
                     {getStatusBadge(project.status || 'open')}
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-indigo-600 transition-colors line-clamp-2 mb-2">
+                  <h3 className="text-lg font-bold text-white group-hover:text-indigo-400 transition-colors line-clamp-2 mb-2">
                     {project.title}
                   </h3>
                   
                   {/* Description */}
-                  <p className="text-gray-600 text-xs mb-4 line-clamp-3 leading-relaxed">
+                  <p className="text-slate-300 text-xs mb-4 line-clamp-3 leading-relaxed">
                     {project.description}
                   </p>
                   
                   {/* Skills badges */}
                   <div className="flex flex-wrap gap-1.5 mb-5">
                     {(project.skills || []).slice(0, 4).map((skill, i) => (
-                      <span key={i} className="bg-white/80 text-indigo-700 text-xs px-2.5 py-1 rounded-xl font-bold border border-indigo-100 shadow-2xs">
+                      <span key={i} className="bg-slate-800 text-indigo-300 text-xs px-2.5 py-1 rounded-xl font-bold border border-indigo-500/20 shadow-2xs">
                         {skill}
                       </span>
                     ))}
                     {(project.skills?.length > 4) && (
-                      <span className="bg-gray-100/80 text-gray-600 text-xs px-2 py-1 rounded-xl font-medium">
+                      <span className="bg-slate-800/80 text-slate-400 text-xs px-2 py-1 rounded-xl font-medium">
                         +{project.skills.length - 4} more
                       </span>
                     )}
@@ -443,15 +443,15 @@ export default function Projects() {
 
                 {/* Footer Details & CTA in Rupees */}
                 <div>
-                  <div className="grid grid-cols-2 gap-2 text-xs text-gray-600 mb-4 pt-3 border-t border-white/60">
+                  <div className="grid grid-cols-2 gap-2 text-xs text-slate-400 mb-4 pt-3 border-t border-slate-800">
                     <div className="flex items-center gap-1">
-                      <span className="font-black text-emerald-600 text-sm">₹</span>
-                      <span className="font-black text-gray-900 text-xs">
+                      <span className="font-black text-emerald-400 text-sm">₹</span>
+                      <span className="font-black text-white text-xs">
                         {(project.budgetMin ?? 5000).toLocaleString()} - {(project.budgetMax ?? 25000).toLocaleString()}
                       </span>
                     </div>
                     <div className="flex items-center gap-1.5 justify-end">
-                      <FiClock className="text-gray-400" />
+                      <FiClock className="text-slate-400" />
                       <span className="truncate">{project.duration || '1-3 months'}</span>
                     </div>
                   </div>
@@ -461,7 +461,7 @@ export default function Projects() {
                       to={`/projects/${project._id}`}
                       className={`flex-1 text-center py-2.5 px-4 rounded-xl font-bold text-xs transition-all shadow-sm ${
                         user?.role === 'client'
-                          ? 'bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200'
+                          ? 'bg-indigo-500/20 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/30'
                           : 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-emerald-500/20'
                       }`}
                     >
@@ -473,7 +473,7 @@ export default function Projects() {
                         type="button"
                         onClick={(e) => handleDeleteProject(e, project._id)}
                         title="Delete project listing"
-                        className="p-2.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl border border-gray-200 hover:border-red-200 transition-colors cursor-pointer"
+                        className="p-2.5 text-slate-400 hover:text-red-400 hover:bg-red-500/20 rounded-xl border border-slate-700 hover:border-red-500/30 transition-colors cursor-pointer"
                       >
                         <FiTrash2 className="w-4 h-4" />
                       </button>

@@ -48,38 +48,38 @@ export default function NotificationDrawer({ isOpen, onClose, unreadCount = 0 })
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden">
-      <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity" onClick={onClose}></div>
+      <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-sm transition-opacity" onClick={onClose}></div>
 
       <div className="fixed inset-y-0 right-0 max-w-sm w-full flex pl-10">
-        <div className="w-full glass shadow-2xl border-l border-white/60 flex flex-col animate-in slide-in-from-right duration-200">
+        <div className="w-full glass-dark shadow-2xl border-l border-slate-800 flex flex-col animate-in slide-in-from-right duration-200">
           
           {/* Header */}
-          <div className="p-5 border-b border-white/60 flex items-center justify-between bg-white/50">
+          <div className="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
+              <div className="w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold">
                 <FiBell />
               </div>
               <div>
-                <h3 className="font-bold text-sm text-gray-900">Notifications</h3>
-                <p className="text-[10px] text-gray-500">{unreadCount > 0 ? `${unreadCount} unread alerts` : 'All caught up'}</p>
+                <h3 className="font-bold text-sm text-white">Notifications</h3>
+                <p className="text-[10px] text-slate-400">{unreadCount > 0 ? `${unreadCount} unread alerts` : 'All caught up'}</p>
               </div>
             </div>
 
-            <button onClick={onClose} className="p-1 text-gray-400 hover:text-gray-700 cursor-pointer">
+            <button onClick={onClose} className="p-1 text-slate-400 hover:text-white cursor-pointer">
               <FiX className="w-5 h-5" />
             </button>
           </div>
 
           {/* Filter Tabs */}
-          <div className="flex border-b border-white/40 bg-white/30 text-[11px] font-bold px-3">
+          <div className="flex border-b border-slate-800 bg-slate-900/40 text-[11px] font-bold px-3">
             {['all', 'payments', 'proposals'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setFilter(tab)}
                 className={`py-2.5 px-3 capitalize transition-colors cursor-pointer ${
                   filter === tab 
-                    ? 'border-b-2 border-indigo-600 text-indigo-600' 
-                    : 'text-gray-500 hover:text-gray-800'
+                    ? 'border-b-2 border-indigo-500 text-indigo-400' 
+                    : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
                 {tab}
@@ -96,15 +96,15 @@ export default function NotificationDrawer({ isOpen, onClose, unreadCount = 0 })
                 onClick={onClose}
                 className={`block p-3.5 rounded-2xl border transition-all ${
                   item.unread 
-                    ? 'bg-white shadow-xs border-indigo-100 hover:border-indigo-300' 
-                    : 'bg-white/40 border-white/60 hover:bg-white/70'
+                    ? 'bg-slate-800/80 shadow-sm border-indigo-500/40 hover:border-indigo-500' 
+                    : 'bg-slate-900/50 border-slate-800/80 hover:bg-slate-800/50'
                 }`}
               >
                 <div className="flex items-start gap-3">
                   <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-sm flex-shrink-0 ${
-                    item.type === 'payment' ? 'bg-emerald-50 text-emerald-600' :
-                    item.type === 'proposal' ? 'bg-purple-50 text-purple-600' :
-                    'bg-indigo-50 text-indigo-600'
+                    item.type === 'payment' ? 'bg-emerald-500/20 text-emerald-400' :
+                    item.type === 'proposal' ? 'bg-purple-500/20 text-purple-400' :
+                    'bg-indigo-500/20 text-indigo-400'
                   }`}>
                     {item.type === 'payment' ? <FiDollarSign /> :
                      item.type === 'proposal' ? <FiAward /> : <FiShield />}
@@ -112,10 +112,10 @@ export default function NotificationDrawer({ isOpen, onClose, unreadCount = 0 })
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <h4 className="font-bold text-xs text-gray-900 truncate">{item.title}</h4>
-                      <span className="text-[10px] text-gray-400">{item.time}</span>
+                      <h4 className="font-bold text-xs text-white truncate">{item.title}</h4>
+                      <span className="text-[10px] text-slate-400">{item.time}</span>
                     </div>
-                    <p className="text-[11px] text-gray-600 mt-0.5 line-clamp-2 leading-relaxed">{item.description}</p>
+                    <p className="text-[11px] text-slate-300 mt-0.5 line-clamp-2 leading-relaxed">{item.description}</p>
                   </div>
                 </div>
               </Link>
@@ -123,8 +123,8 @@ export default function NotificationDrawer({ isOpen, onClose, unreadCount = 0 })
           </div>
 
           {/* Footer */}
-          <div className="p-3 border-t border-white/60 bg-white/40 text-center">
-            <span className="text-[11px] font-bold text-indigo-600 hover:underline cursor-pointer">
+          <div className="p-3 border-t border-slate-800 bg-slate-900/60 text-center">
+            <span className="text-[11px] font-bold text-indigo-400 hover:text-indigo-300 hover:underline cursor-pointer">
               Mark all notifications as read
             </span>
           </div>
