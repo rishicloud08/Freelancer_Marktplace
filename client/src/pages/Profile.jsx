@@ -25,7 +25,8 @@ import {
   FiFolder,
   FiBookOpen,
   FiBriefcase,
-  FiFile
+  FiFile,
+  FiCode
 } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
