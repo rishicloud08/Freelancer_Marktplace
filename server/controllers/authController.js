@@ -14,8 +14,15 @@ export const register = async (req, res) => {
     if (userExists) {
       return res.status(400).json({ message: 'User already exists' });
     }
+    
+    // Ensure role is always valid enum ('client' or 'freelancer')
+    let validRole = role;
+    if (!validRole || (validRole !== 'client' && validRole !== 'freelancer')) {
+      validRole = (skills && skills.length > 0) ? 'freelancer' : 'client';
+    }
+
     const user = await User.create({
-      name, email, password, role, skills, bio, hourlyRate, portfolio, gpayNumber, upiId, upiQrCode, githubUsername, githubUrl, portfolioProjects, resumeData
+      name, email, password, role: validRole, skills, bio, hourlyRate, portfolio, gpayNumber, upiId, upiQrCode, githubUsername, githubUrl, portfolioProjects, resumeData
     });
     if (user) {
       const token = generateToken(user._id);

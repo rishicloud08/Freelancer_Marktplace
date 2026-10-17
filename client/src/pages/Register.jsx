@@ -7,7 +7,8 @@ import StarRating from '../components/StarRating';
 
 const Register = () => {
   const { role: urlRole } = useParams();
-  const [role, setRole] = useState(urlRole || null); // null = selection screen
+  const normalizedUrlRole = (urlRole === 'client' || urlRole === 'freelancer') ? urlRole : null;
+  const [role, setRole] = useState(normalizedUrlRole); // null = selection screen
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -39,19 +40,20 @@ const Register = () => {
     }
     setLoading(true);
     try {
+      const effectiveRole = (role === 'client' || role === 'freelancer') ? role : 'freelancer';
       const payload = {
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        role,
+        role: effectiveRole,
       };
-      if (role === 'freelancer') {
-        payload.skills = formData.skills.split(',').map(s => s.trim()).filter(Boolean);
+      if (effectiveRole === 'freelancer') {
+        payload.skills = formData.skills ? formData.skills.split(',').map(s => s.trim()).filter(Boolean) : [];
         payload.hourlyRate = Number(formData.hourlyRate) || 0;
         payload.bio = formData.bio;
         payload.rating = formData.experienceRating || 5;
       }
-      if (role === 'client' && formData.company) {
+      if (effectiveRole === 'client' && formData.company) {
         payload.bio = formData.company;
       }
       await register(payload);
