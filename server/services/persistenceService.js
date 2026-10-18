@@ -69,19 +69,9 @@ export const defaultProjects = [
     description: 'Looking for an expert full-stack developer to build a modern responsive web application with real-time updates and cloud deployment.',
     clientEmail: 'kesh@gmail.com',
     skills: ['React', 'Node.js', 'MongoDB', 'JavaScript'],
-    budgetMin: 30000,
-    budgetMax: 60000,
+    budgetMin: 50,
+    budgetMax: 100,
     duration: '3-4 weeks',
-    status: 'open'
-  },
-  {
-    title: 'Cloud Architecture & API Integration',
-    description: 'Need a skilled engineer to build secure RESTful APIs, integrate external cloud services, and optimize database queries.',
-    clientEmail: 'kesh@gmail.com',
-    skills: ['Node.js', 'Python', 'Cloud Architecture', 'REST APIs'],
-    budgetMin: 25000,
-    budgetMax: 50000,
-    duration: '2-3 weeks',
     status: 'open'
   }
 ];
@@ -236,13 +226,16 @@ export const syncDatabaseToPersistentState = async () => {
 // Ensure users and projects exist in MongoDB
 export const ensurePersistentDataInDB = async () => {
   try {
-    // Purge any John Client accounts from database
+    // Purge any John Client or temporary test accounts from database
     await User.deleteMany({
       $or: [
-        { email: { $in: ['john@gmail.com', 'john@example.com'] } },
+        { email: { $in: ['john@gmail.com', 'john@example.com', 'testfreelancer@test.com'] } },
         { name: { $regex: /john client/i } }
       ]
     });
+
+    // Purge unwanted default Cloud Architecture project
+    await Project.deleteMany({ title: 'Cloud Architecture & API Integration' });
 
     const state = getPersistentState();
     const rawUsers = [

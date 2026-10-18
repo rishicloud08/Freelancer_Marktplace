@@ -130,21 +130,6 @@
       "budgetMax": 100,
       "duration": "3-4 weeks",
       "status": "open"
-    },
-    {
-      "title": "Cloud Architecture & API Integration",
-      "description": "Need a skilled engineer to build secure RESTful APIs, integrate external cloud services, and optimize database queries.",
-      "clientEmail": "kesh@gmail.com",
-      "skills": [
-        "Node.js",
-        "Python",
-        "Cloud Architecture",
-        "REST APIs"
-      ],
-      "budgetMin": 25000,
-      "budgetMax": 50000,
-      "duration": "2-3 weeks",
-      "status": "open"
     }
   ]
 }

@@ -182,6 +182,9 @@ export const deleteProject = async (req, res) => {
     await Proposal.deleteMany({ project: project._id });
     await Project.findByIdAndDelete(req.params.id);
 
+    // Sync persistent state after deletion
+    await syncDatabaseToPersistentState();
+
     res.json({ message: 'Project deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
