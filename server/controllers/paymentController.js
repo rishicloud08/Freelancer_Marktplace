@@ -2,6 +2,7 @@ import Payment from '../models/Payment.js';
 import Milestone from '../models/Milestone.js';
 import User from '../models/User.js';
 import Project from '../models/Project.js';
+import { saveUserToPersistentState } from '../services/persistenceService.js';
 
 export const fundMilestone = async (req, res) => {
   try {
@@ -69,6 +70,7 @@ export const releasePayment = async (req, res) => {
     if (freelancer) {
       freelancer.balance = (freelancer.balance || 0) + payment.amount;
       await freelancer.save();
+      saveUserToPersistentState(freelancer);
     }
 
     // Auto-complete milestone & project

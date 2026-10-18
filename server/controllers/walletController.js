@@ -2,6 +2,7 @@ import User from '../models/User.js';
 import Payment from '../models/Payment.js';
 import Milestone from '../models/Milestone.js';
 import Project from '../models/Project.js';
+import { saveUserToPersistentState } from '../services/persistenceService.js';
 
 export const getWalletSummary = async (req, res) => {
   try {
@@ -66,6 +67,7 @@ export const requestWithdrawal = async (req, res) => {
     // Deduct from user balance
     user.balance -= withdrawAmount;
     await user.save();
+    saveUserToPersistentState(user);
 
     res.json({
       message: `Withdrawal request of ₹${withdrawAmount.toLocaleString()} to UPI/GPay (${upiId || gpayNumber || user.upiId || 'Linked GPay'}) initiated successfully!`,
@@ -90,6 +92,7 @@ export const depositFunds = async (req, res) => {
 
     user.balance = (user.balance || 0) + depositAmount;
     await user.save();
+    saveUserToPersistentState(user);
 
     res.json({
       message: `🎉 ₹${depositAmount.toLocaleString()} deposited into Account Credit successfully!`,
@@ -121,6 +124,7 @@ export const resetBalance = async (req, res) => {
 
     user.balance = 0;
     await user.save();
+    saveUserToPersistentState(user);
 
     res.json({
       message: 'Account balance reset to ₹0 successfully',
@@ -149,6 +153,7 @@ export const adjustBalance = async (req, res) => {
     }
 
     await user.save();
+    saveUserToPersistentState(user);
 
     res.json({
       message: `Account balance updated to ₹${user.balance.toLocaleString()}`,

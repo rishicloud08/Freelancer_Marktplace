@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
 import Milestone from '../models/Milestone.js';
 import Project from '../models/Project.js';
+import Payment from '../models/Payment.js';
+import User from '../models/User.js';
+import { saveUserToPersistentState } from '../services/persistenceService.js';
 import * as geminiService from '../services/geminiService.js';
 
 export const getMilestones = async (req, res) => {
@@ -107,6 +110,31 @@ export const updateMilestoneStatus = async (req, res) => {
 
     } else if (isClient && status === 'approved') {
       milestone.status = 'approved';
+
+      // Release any escrow payment funded for this milestone to the freelancer
+      try {
+        const payment = await Payment.findOne({ 
+          $or: [
+            { milestone: milestone._id, status: 'funded' },
+            { project: project._id, status: 'funded' }
+          ]
+        });
+        if (payment) {
+          payment.status = 'released';
+          await payment.save();
+          const payeeId = payment.payee || project.assignedFreelancer;
+          if (payeeId) {
+            const freelancer = await User.findById(payeeId);
+            if (freelancer) {
+              freelancer.balance = (freelancer.balance || 0) + payment.amount;
+              await freelancer.save();
+              saveUserToPersistentState(freelancer);
+            }
+          }
+        }
+      } catch (payErr) {
+        console.log('Payment auto-release note:', payErr.message);
+      }
     } else if (isClient && (status === 'in-progress' || status === 'pending')) {
        milestone.status = status;
     } else if (isClient && (amount !== undefined || title)) {
