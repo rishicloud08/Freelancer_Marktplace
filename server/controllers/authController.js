@@ -93,15 +93,9 @@ export const login = async (req, res) => {
       email: { $regex: new RegExp(`^${cleanEmail}$`, 'i') } 
     });
 
-    // If looking for Kesh or John Client
+    // Auto-fallback for Kesh client
     if (!user && (cleanEmail === 'kesh@gmail.com' || cleanEmail.includes('kesh'))) {
-      user = await User.findOne({ 
-        email: { $in: ['kesh@gmail.com', 'john@gmail.com', 'john@example.com'] } 
-      });
-    } else if (!user && (cleanEmail === 'john@gmail.com' || cleanEmail === 'john@example.com')) {
-      user = await User.findOne({ 
-        email: { $in: ['john@gmail.com', 'john@example.com', 'kesh@gmail.com'] } 
-      });
+      user = await User.findOne({ email: 'kesh@gmail.com' });
     }
 
     // If user not found, attempt auto-restore from persistent state
@@ -111,9 +105,7 @@ export const login = async (req, res) => {
         email: { $regex: new RegExp(`^${cleanEmail}$`, 'i') } 
       });
       if (!user && (cleanEmail === 'kesh@gmail.com' || cleanEmail.includes('kesh'))) {
-        user = await User.findOne({ 
-          email: { $in: ['kesh@gmail.com', 'john@gmail.com', 'john@example.com'] } 
-        });
+        user = await User.findOne({ email: 'kesh@gmail.com' });
       }
     }
 

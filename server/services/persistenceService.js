@@ -63,28 +63,6 @@ export const defaultClientKesh = {
   bio: 'Founder and Technical Product Lead at Tech Innovations Ltd. Hiring top full-stack and cloud software engineering talent.'
 };
 
-export const defaultClient = {
-  name: 'John Client',
-  email: 'john@example.com',
-  password: 'password123',
-  role: 'client',
-  balance: 50000,
-  rating: 5,
-  totalReviews: 4,
-  bio: 'Founder and Technical Product Lead at Tech Innovations Ltd. Hiring top full-stack and cloud software engineering talent.'
-};
-
-export const defaultClientGmail = {
-  name: 'John Client',
-  email: 'john@gmail.com',
-  password: 'password123',
-  role: 'client',
-  balance: 50000,
-  rating: 5,
-  totalReviews: 4,
-  bio: 'Founder and Technical Product Lead at Tech Innovations Ltd. Hiring top full-stack and cloud software engineering talent.'
-};
-
 export const defaultProjects = [
   {
     title: 'Full-Stack React & Node.js Web Application',
@@ -122,7 +100,7 @@ export const getPersistentState = () => {
     console.error('Error reading persistent state file:', err.message);
   }
   return {
-    users: [defaultFreelancer, defaultClient],
+    users: [defaultFreelancer, defaultClientKesh],
     projects: defaultProjects,
     proposals: []
   };
@@ -172,7 +150,7 @@ export const saveProjectToPersistentState = async (projectDoc) => {
     const state = getPersistentState();
     if (!Array.isArray(state.projects)) state.projects = [];
 
-    let clientEmail = 'john@example.com';
+    let clientEmail = 'kesh@gmail.com';
     if (projectDoc.client) {
       if (typeof projectDoc.client === 'object' && projectDoc.client.email) {
         clientEmail = projectDoc.client.email;
@@ -226,7 +204,7 @@ export const syncDatabaseToPersistentState = async () => {
     const cleanProjects = projects.map(p => ({
       title: p.title,
       description: p.description,
-      clientEmail: p.client?.email || 'john@example.com',
+      clientEmail: p.client?.email || 'kesh@gmail.com',
       assignedFreelancerEmail: p.assignedFreelancer?.email || null,
       skills: p.skills,
       budgetMin: p.budgetMin,
@@ -258,19 +236,27 @@ export const syncDatabaseToPersistentState = async () => {
 // Ensure users and projects exist in MongoDB
 export const ensurePersistentDataInDB = async () => {
   try {
+    // Purge any John Client accounts from database
+    await User.deleteMany({
+      $or: [
+        { email: { $in: ['john@gmail.com', 'john@example.com'] } },
+        { name: { $regex: /john client/i } }
+      ]
+    });
+
     const state = getPersistentState();
     const rawUsers = [
       ...(Array.isArray(state.users) ? state.users : []),
       defaultFreelancer,
-      defaultClientKesh,
-      defaultClient,
-      defaultClientGmail
+      defaultClientKesh
     ];
 
     const seenEmails = new Set();
     const usersToEnsure = [];
     for (const u of rawUsers) {
       const em = (u.email || '').trim().toLowerCase();
+      // Skip any john emails
+      if (em.includes('john') || (u.name && u.name.toLowerCase().includes('john'))) continue;
       if (em && !seenEmails.has(em)) {
         seenEmails.add(em);
         usersToEnsure.push({ ...u, email: em });
@@ -312,7 +298,7 @@ export const ensurePersistentDataInDB = async () => {
         const clientEmail = (projData.clientEmail || 'kesh@gmail.com').trim().toLowerCase();
         let clientDoc = emailToUserMap[clientEmail] || await User.findOne({ email: clientEmail });
         if (!clientDoc) {
-          clientDoc = emailToUserMap['kesh@gmail.com'] || emailToUserMap['john@gmail.com'] || emailToUserMap['john@example.com'] || await User.findOne({ role: 'client' });
+          clientDoc = emailToUserMap['kesh@gmail.com'] || await User.findOne({ role: 'client' });
         }
 
         if (clientDoc) {
@@ -336,7 +322,7 @@ export const ensurePersistentDataInDB = async () => {
           });
         }
       } else if (!existingProj.client) {
-        const defaultOwner = emailToUserMap['kesh@gmail.com'] || emailToUserMap['john@gmail.com'];
+        const defaultOwner = emailToUserMap['kesh@gmail.com'];
         if (defaultOwner) {
           existingProj.client = defaultOwner._id;
           await existingProj.save();
@@ -344,20 +330,19 @@ export const ensurePersistentDataInDB = async () => {
       }
     }
 
-    // Ensure existing projects with no client or john get assigned to kesh if kesh has none
+    // Ensure existing projects with no client get assigned to kesh
     const keshUser = emailToUserMap['kesh@gmail.com'] || await User.findOne({ email: 'kesh@gmail.com' });
     if (keshUser) {
-      const keshProjects = await Project.find({ client: keshUser._id });
-      if (keshProjects.length === 0) {
-        const otherProjects = await Project.find({});
-        for (const op of otherProjects) {
+      const allProjects = await Project.find({});
+      for (const op of allProjects) {
+        if (!op.client || op.client.toString() !== keshUser._id.toString()) {
           op.client = keshUser._id;
           await op.save();
         }
       }
     }
 
-    console.log('✅ Persistent user accounts (Rishi, Kesh & John Client) and projects verified in database.');
+    console.log('✅ Persistent user accounts (Rishi & Kesh) and projects verified in database.');
   } catch (err) {
     console.error('Error ensuring persistent data in DB:', err.message);
   }
