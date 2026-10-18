@@ -52,6 +52,17 @@ export const defaultFreelancer = {
   }
 };
 
+export const defaultClientKesh = {
+  name: 'Kesh',
+  email: 'kesh@gmail.com',
+  password: 'password123',
+  role: 'client',
+  balance: 50000,
+  rating: 5,
+  totalReviews: 5,
+  bio: 'Founder and Technical Product Lead at Tech Innovations Ltd. Hiring top full-stack and cloud software engineering talent.'
+};
+
 export const defaultClient = {
   name: 'John Client',
   email: 'john@example.com',
@@ -78,7 +89,7 @@ export const defaultProjects = [
   {
     title: 'Full-Stack React & Node.js Web Application',
     description: 'Looking for an expert full-stack developer to build a modern responsive web application with real-time updates and cloud deployment.',
-    clientEmail: 'john@example.com',
+    clientEmail: 'kesh@gmail.com',
     skills: ['React', 'Node.js', 'MongoDB', 'JavaScript'],
     budgetMin: 30000,
     budgetMax: 60000,
@@ -88,7 +99,7 @@ export const defaultProjects = [
   {
     title: 'Cloud Architecture & API Integration',
     description: 'Need a skilled engineer to build secure RESTful APIs, integrate external cloud services, and optimize database queries.',
-    clientEmail: 'john@example.com',
+    clientEmail: 'kesh@gmail.com',
     skills: ['Node.js', 'Python', 'Cloud Architecture', 'REST APIs'],
     budgetMin: 25000,
     budgetMax: 50000,
@@ -182,7 +193,10 @@ export const saveProjectToPersistentState = async (projectDoc) => {
       status: projectDoc.status || 'open'
     };
 
-    const existingIdx = state.projects.findIndex(p => p.title === projObj.title && p.clientEmail === clientEmail);
+    const existingIdx = state.projects.findIndex(p => 
+      (p.title === projObj.title && (!p.clientEmail || p.clientEmail === clientEmail)) ||
+      (p.title === projObj.title)
+    );
     if (existingIdx >= 0) {
       state.projects[existingIdx] = { ...state.projects[existingIdx], ...projObj };
     } else {
@@ -248,6 +262,7 @@ export const ensurePersistentDataInDB = async () => {
     const rawUsers = [
       ...(Array.isArray(state.users) ? state.users : []),
       defaultFreelancer,
+      defaultClientKesh,
       defaultClient,
       defaultClientGmail
     ];
@@ -294,10 +309,10 @@ export const ensurePersistentDataInDB = async () => {
     for (const projData of projectsToEnsure) {
       const existingProj = await Project.findOne({ title: projData.title });
       if (!existingProj) {
-        const clientEmail = (projData.clientEmail || 'john@gmail.com').trim().toLowerCase();
+        const clientEmail = (projData.clientEmail || 'kesh@gmail.com').trim().toLowerCase();
         let clientDoc = emailToUserMap[clientEmail] || await User.findOne({ email: clientEmail });
         if (!clientDoc) {
-          clientDoc = emailToUserMap['john@gmail.com'] || emailToUserMap['john@example.com'] || await User.findOne({ role: 'client' });
+          clientDoc = emailToUserMap['kesh@gmail.com'] || emailToUserMap['john@gmail.com'] || emailToUserMap['john@example.com'] || await User.findOne({ role: 'client' });
         }
 
         if (clientDoc) {
@@ -320,10 +335,29 @@ export const ensurePersistentDataInDB = async () => {
             assignedFreelancer: assignedFreelancerId
           });
         }
+      } else if (!existingProj.client) {
+        const defaultOwner = emailToUserMap['kesh@gmail.com'] || emailToUserMap['john@gmail.com'];
+        if (defaultOwner) {
+          existingProj.client = defaultOwner._id;
+          await existingProj.save();
+        }
       }
     }
 
-    console.log('✅ Persistent user accounts (Rishi & John Client) and projects verified in database.');
+    // Ensure existing projects with no client or john get assigned to kesh if kesh has none
+    const keshUser = emailToUserMap['kesh@gmail.com'] || await User.findOne({ email: 'kesh@gmail.com' });
+    if (keshUser) {
+      const keshProjects = await Project.find({ client: keshUser._id });
+      if (keshProjects.length === 0) {
+        const otherProjects = await Project.find({});
+        for (const op of otherProjects) {
+          op.client = keshUser._id;
+          await op.save();
+        }
+      }
+    }
+
+    console.log('✅ Persistent user accounts (Rishi, Kesh & John Client) and projects verified in database.');
   } catch (err) {
     console.error('Error ensuring persistent data in DB:', err.message);
   }

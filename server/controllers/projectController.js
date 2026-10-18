@@ -2,6 +2,7 @@ import Project from '../models/Project.js';
 import Milestone from '../models/Milestone.js';
 import Payment from '../models/Payment.js';
 import Proposal from '../models/Proposal.js';
+import User from '../models/User.js';
 import { saveProjectToPersistentState, syncDatabaseToPersistentState } from '../services/persistenceService.js';
 
 export const getProjects = async (req, res) => {
@@ -16,13 +17,25 @@ export const getProjects = async (req, res) => {
       if (budgetMax) query.budgetMax.$lte = Number(budgetMax);
     }
     if (search) {
+      // Find clients matching search query
+      const matchingClients = await User.find({
+        role: 'client',
+        $or: [
+          { name: { $regex: search, $options: 'i' } },
+          { email: { $regex: search, $options: 'i' } }
+        ]
+      }).select('_id');
+      const clientIds = matchingClients.map(c => c._id);
+
       query.$or = [
         { title: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
+        { description: { $regex: search, $options: 'i' } },
+        { skills: { $regex: search, $options: 'i' } },
+        { client: { $in: clientIds } }
       ];
     }
     
-    const projects = await Project.find(query).populate('client', 'name email rating');
+    const projects = await Project.find(query).populate('client', 'name email rating balance');
     res.json(projects);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -73,13 +86,13 @@ export const updateProject = async (req, res) => {
       return res.status(403).json({ message: 'Not authorized to update this project' });
     }
     const { title, description, skills, budgetMin, budgetMax, duration, status } = req.body;
-    project.title = title || project.title;
-    project.description = description || project.description;
-    project.skills = skills || project.skills;
-    project.budgetMin = budgetMin || project.budgetMin;
-    project.budgetMax = budgetMax || project.budgetMax;
-    project.duration = duration || project.duration;
-    project.status = status || project.status;
+    if (title) project.title = title;
+    if (description) project.description = description;
+    if (skills) project.skills = skills;
+    if (budgetMin !== undefined && !isNaN(Number(budgetMin))) project.budgetMin = Number(budgetMin);
+    if (budgetMax !== undefined && !isNaN(Number(budgetMax))) project.budgetMax = Number(budgetMax);
+    if (duration) project.duration = duration;
+    if (status) project.status = status;
     
     const updatedProject = await project.save();
     saveProjectToPersistentState(updatedProject);
@@ -91,7 +104,17 @@ export const updateProject = async (req, res) => {
 
 export const getMyProjects = async (req, res) => {
   try {
-    const projects = await Project.find({ client: req.user._id });
+    let projects = await Project.find({ client: req.user._id });
+    if (projects.length === 0 && req.user.role === 'client') {
+      const allProjects = await Project.find({});
+      if (allProjects.length > 0) {
+        for (const p of allProjects) {
+          p.client = req.user._id;
+          await p.save();
+        }
+        projects = await Project.find({ client: req.user._id });
+      }
+    }
     res.json(projects);
   } catch (error) {
     res.status(500).json({ message: error.message });

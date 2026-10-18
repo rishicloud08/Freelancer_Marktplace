@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import { AuthContext } from '../context/AuthContext';
 import api from '../services/api';
 import AIMatchBadge from '../components/AIMatchBadge';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { FiBriefcase, FiFileText, FiTrendingUp, FiPlus, FiArrowRight, FiClock, FiStar, FiZap } from 'react-icons/fi';
+import { FiBriefcase, FiFileText, FiTrendingUp, FiPlus, FiArrowRight, FiClock, FiStar, FiZap, FiSearch, FiUser } from 'react-icons/fi';
 
 const StatCard = ({ icon: Icon, label, value, color, bgColor }) => (
   <div className="glass-card rounded-3xl p-6 relative overflow-hidden group">
@@ -24,9 +24,11 @@ const StatCard = ({ icon: Icon, label, value, color, bgColor }) => (
 
 const Dashboard = () => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [quickSearch, setQuickSearch] = useState('');
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -81,13 +83,23 @@ const Dashboard = () => {
             </p>
           </div>
           {user?.role === 'client' ? (
-            <Link to="/projects" className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-2xl text-xs font-bold hover:shadow-lg hover:shadow-indigo-500/25 transition-all cursor-pointer">
-              <FiPlus className="w-4 h-4" /> Post New Project
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link to="/projects?tab=freelancers" className="inline-flex items-center gap-1.5 bg-purple-600/30 hover:bg-purple-600/50 text-purple-200 border border-purple-500/40 px-5 py-3 rounded-2xl text-xs font-bold transition-all cursor-pointer">
+                <FiSearch className="w-4 h-4" /> Find Freelancers
+              </Link>
+              <Link to="/projects" className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-2xl text-xs font-bold hover:shadow-lg hover:shadow-indigo-500/25 transition-all cursor-pointer">
+                <FiPlus className="w-4 h-4" /> Post New Project
+              </Link>
+            </div>
           ) : (
-            <Link to="/projects" className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-3 rounded-2xl text-xs font-bold hover:shadow-lg hover:shadow-emerald-500/25 transition-all cursor-pointer">
-              <FiZap className="w-4 h-4" /> Browse Projects
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link to="/projects?tab=clients" className="inline-flex items-center gap-1.5 bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-200 border border-indigo-500/40 px-5 py-3 rounded-2xl text-xs font-bold transition-all cursor-pointer">
+                <FiUser className="w-4 h-4" /> Search Clients
+              </Link>
+              <Link to="/projects" className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-3 rounded-2xl text-xs font-bold hover:shadow-lg hover:shadow-emerald-500/25 transition-all cursor-pointer">
+                <FiZap className="w-4 h-4" /> Browse Projects
+              </Link>
+            </div>
           )}
         </div>
       </div>
@@ -100,6 +112,43 @@ const Dashboard = () => {
             <StatCard icon={FiTrendingUp} label="Active In Progress" value={activeProjects.length} color="text-emerald-400" bgColor="bg-emerald-500/20" />
             <StatCard icon={FiFileText} label="Open for Bids" value={openProjects.length} color="text-blue-400" bgColor="bg-blue-500/20" />
             <StatCard icon={FiBriefcase} label="Billing Spent" value={`₹${(user?.balance || 0).toLocaleString()}`} color="text-indigo-400" bgColor="bg-indigo-500/20" />
+          </div>
+
+          {/* Quick Search Freelancers Widget */}
+          <div className="glass-card rounded-3xl p-6 mb-8 border border-purple-500/20 bg-gradient-to-r from-purple-900/20 via-slate-900/60 to-indigo-900/20">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <span className="text-[11px] font-black uppercase tracking-wider text-purple-400 bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20">
+                  ⚡ Talent Search Engine
+                </span>
+                <h3 className="text-lg font-black text-white mt-2">Search Registered Freelancers</h3>
+                <p className="text-xs text-slate-400 mt-0.5">Find developers by technical skills (React, Python, Node, Cloud) and inspect their resumes.</p>
+              </div>
+              <form 
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  navigate(`/projects?tab=freelancers&q=${encodeURIComponent(quickSearch)}`);
+                }}
+                className="flex items-center gap-2 max-w-md w-full"
+              >
+                <div className="relative flex-1">
+                  <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-purple-400" />
+                  <input
+                    type="text"
+                    placeholder="Search by skill (React, Python...) or name..."
+                    value={quickSearch}
+                    onChange={(e) => setQuickSearch(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl glass-input text-xs text-white placeholder-slate-400"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-xs rounded-xl shadow-md cursor-pointer whitespace-nowrap"
+                >
+                  Search Talent
+                </button>
+              </form>
+            </div>
           </div>
           
           {/* Recent Projects */}
@@ -157,6 +206,43 @@ const Dashboard = () => {
             <StatCard icon={FiFileText} label="Completed Projects" value={completedProjects.length} color="text-blue-400" bgColor="bg-blue-500/20" />
             <StatCard icon={FiTrendingUp} label="Total Earnings" value={`₹${(user?.balance || 0).toLocaleString()}`} color="text-amber-400" bgColor="bg-amber-500/20" />
             <StatCard icon={FiStar} label="Rating Tier" value={user?.rating ? `${user.rating.toFixed(1)} ★` : '5.0 ★'} color="text-purple-400" bgColor="bg-purple-500/20" />
+          </div>
+
+          {/* Quick Search Projects & Clients Widget */}
+          <div className="glass-card rounded-3xl p-6 mb-8 border border-emerald-500/20 bg-gradient-to-r from-emerald-900/20 via-slate-900/60 to-teal-900/20">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <span className="text-[11px] font-black uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                  ⚡ Client & Project Discovery
+                </span>
+                <h3 className="text-lg font-black text-white mt-2">Search Open Projects & Registered Clients</h3>
+                <p className="text-xs text-slate-400 mt-0.5">Explore open contracts with budgets in Rupees (₹) or search registered clients directly.</p>
+              </div>
+              <form 
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  navigate(`/projects?q=${encodeURIComponent(quickSearch)}`);
+                }}
+                className="flex items-center gap-2 max-w-md w-full"
+              >
+                <div className="relative flex-1">
+                  <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-emerald-400" />
+                  <input
+                    type="text"
+                    placeholder="Search by project title, skill or client..."
+                    value={quickSearch}
+                    onChange={(e) => setQuickSearch(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl glass-input text-xs text-white placeholder-slate-400"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-xs rounded-xl shadow-md cursor-pointer whitespace-nowrap"
+                >
+                  Search Work
+                </button>
+              </form>
+            </div>
           </div>
 
           {/* Recommended Projects */}

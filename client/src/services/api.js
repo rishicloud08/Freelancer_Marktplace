@@ -18,6 +18,7 @@ const api = {
     register: (data) => apiClient.post('/auth/register', data),
     getMe: () => apiClient.get('/auth/me'),
     updateProfile: (data) => apiClient.put('/auth/profile', data),
+    getUsers: (params) => apiClient.get('/auth/users', { params }),
   },
   projects: {
     getProjects: (params) => apiClient.get('/projects', { params }),

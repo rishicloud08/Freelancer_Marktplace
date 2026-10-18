@@ -40,7 +40,7 @@ export const createMilestone = async (req, res) => {
 
 export const updateMilestoneStatus = async (req, res) => {
   try {
-    const { status, repoUrl, demoUrl, deliverableNotes, projectId, project: pId } = req.body;
+    const { status, repoUrl, demoUrl, deliverableNotes, projectId, project: pId, amount, title } = req.body;
     let milestone;
     
     if (mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -76,6 +76,13 @@ export const updateMilestoneStatus = async (req, res) => {
       return res.status(403).json({ message: 'Not authorized' });
     }
 
+    if (isClient && amount !== undefined && !isNaN(Number(amount))) {
+      milestone.amount = Number(amount);
+    }
+    if (isClient && title) {
+      milestone.title = title;
+    }
+
     if (isFreelancer && (status === 'completed' || repoUrl || deliverableNotes)) {
       milestone.status = 'completed';
       milestone.completedAt = new Date();
@@ -102,6 +109,8 @@ export const updateMilestoneStatus = async (req, res) => {
       milestone.status = 'approved';
     } else if (isClient && (status === 'in-progress' || status === 'pending')) {
        milestone.status = status;
+    } else if (isClient && (amount !== undefined || title)) {
+       // Handled: Client updated milestone amount/title
     } else {
        return res.status(400).json({ message: 'Invalid status update for this role' });
     }

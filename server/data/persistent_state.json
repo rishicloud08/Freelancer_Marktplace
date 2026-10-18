@@ -3,7 +3,7 @@
     {
       "name": "Rishi kesh.V",
       "email": "rishikesh2006.gr@gmail.com",
-      "password": "$2a$10$9ILQZ6JBt3v4YjB5c9s0U.o0IGO4RnRWdfYPzwtCm1MVL9tluXcRS",
+      "password": "$2a$10$/ZtWwfnrycUzR0CJOlLKoeG9tKXK038Fvv3K/d5tS1jC6vyJUfuNK",
       "role": "freelancer",
       "skills": [
         "React",
@@ -89,7 +89,7 @@
       "totalReviews": 0,
       "verifiedBadges": [],
       "createdAt": "2026-10-17T06:31:25.240Z",
-      "updatedAt": "2026-10-17T06:33:33.740Z"
+      "updatedAt": "2026-10-18T14:50:42.479Z"
     },
     {
       "name": "John Client",
@@ -113,6 +113,29 @@
       "verifiedBadges": [],
       "createdAt": "2026-10-17T06:31:25.388Z",
       "updatedAt": "2026-10-17T06:46:49.271Z"
+    },
+    {
+      "name": "Kesh",
+      "email": "kesh@gmail.com",
+      "password": "$2a$10$fZt4KlEyNX3kxzKSYiVQVuYGBWmlGrWBtrgi19AIKJMrmO3onWHOO",
+      "role": "client",
+      "balance": 50000,
+      "bio": "Founder and Technical Product Lead at Tech Innovations Ltd. Hiring top full-stack and cloud software engineering talent.",
+      "resumeData": {
+        "summary": "",
+        "skills": [],
+        "education": [],
+        "experience": [],
+        "certifications": []
+      },
+      "skills": [],
+      "hourlyRate": 500,
+      "rating": 5,
+      "totalReviews": 5,
+      "portfolioProjects": [],
+      "verifiedBadges": [],
+      "createdAt": "2026-10-17T06:31:25.388Z",
+      "updatedAt": "2026-10-18T15:02:58.973Z"
     },
     {
       "name": "John Client",
@@ -142,20 +165,22 @@
     {
       "title": "Full-Stack React & Node.js Web Application",
       "description": "Looking for an expert full-stack developer to build a modern responsive web application with real-time updates and cloud deployment.",
+      "clientEmail": "kesh@gmail.com",
       "skills": [
         "React",
         "Node.js",
         "MongoDB",
         "JavaScript"
       ],
-      "budgetMin": 30000,
-      "budgetMax": 60000,
+      "budgetMin": 50,
+      "budgetMax": 100,
       "duration": "3-4 weeks",
       "status": "open"
     },
     {
       "title": "Cloud Architecture & API Integration",
       "description": "Need a skilled engineer to build secure RESTful APIs, integrate external cloud services, and optimize database queries.",
+      "clientEmail": "kesh@gmail.com",
       "skills": [
         "Node.js",
         "Python",

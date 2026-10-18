@@ -81,16 +81,28 @@ export default function Messages() {
       const list = Array.isArray(res.data) ? res.data : [];
       setConversations(list);
 
-      if (setInitialActive && list.length > 0) {
+      if (setInitialActive) {
         if (targetUserIdParam) {
           const target = list.find(c => (c._id === targetUserIdParam || c.user?._id === targetUserIdParam));
           if (target) {
             setActiveChat(target);
             return;
+          } else {
+            try {
+              const uRes = await api.auth.getUsers();
+              const found = (uRes.data || []).find(u => u._id === targetUserIdParam);
+              if (found) {
+                setActiveChat(found);
+                setConversations(prev => [found, ...prev.filter(c => (c._id || c.user?._id) !== targetUserIdParam)]);
+                return;
+              }
+            } catch (err) {
+              console.log('Target user lookup note:', err.message);
+            }
           }
         }
         
-        if (!activeChat) {
+        if (!activeChat && list.length > 0) {
           setActiveChat(list[0]);
         }
       }

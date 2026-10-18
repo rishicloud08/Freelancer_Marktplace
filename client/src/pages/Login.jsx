@@ -112,14 +112,31 @@ const Login = () => {
         <div className="glass-card bg-slate-900/90 py-8 px-6 shadow-2xl rounded-3xl border border-slate-800 sm:px-10">
           <form className="space-y-5" onSubmit={handleSubmit}>
             <div>
-              <label className="block text-sm font-medium text-slate-300">Email address</label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-sm font-medium text-slate-300">Email address</label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (isClient) {
+                      setEmail('kesh@gmail.com');
+                      setPassword('password123');
+                    } else {
+                      setEmail('rishikesh2006.gr@gmail.com');
+                      setPassword('password123');
+                    }
+                  }}
+                  className={`text-[11px] font-bold ${isClient ? 'text-indigo-400 hover:text-indigo-300' : 'text-emerald-400 hover:text-emerald-300'} cursor-pointer underline`}
+                >
+                  ⚡ Fill: {isClient ? 'kesh@gmail.com' : 'rishikesh2006.gr@gmail.com'}
+                </button>
+              </div>
               <input
                 type="email"
                 required
                 autoComplete="off"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder={isClient ? 'kesh@gmail.com' : 'rishikesh2006.gr@gmail.com'}
                 className="mt-1 block w-full px-3.5 py-2.5 bg-slate-800/80 text-white border border-slate-700 rounded-xl shadow-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>

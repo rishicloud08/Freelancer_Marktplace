@@ -44,6 +44,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
   const clientLinks = [
     { name: 'Dashboard', path: '/dashboard', icon: FiHome },
     { name: 'My Projects', path: '/projects', icon: FiBriefcase },
+    { name: 'Find Freelancers', path: '/projects?tab=freelancers', icon: FiSearch },
     { name: 'Messages', path: '/messages', icon: FiMessageSquare, badge: unreadCount },
     { name: 'Billing & Receipts', path: '/wallet', icon: FiShield },
     { name: 'Profile & Payment', path: '/profile', icon: FiUser },
@@ -52,6 +53,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
   const freelancerLinks = [
     { name: 'Dashboard', path: '/dashboard', icon: FiHome },
     { name: 'Browse Projects', path: '/projects', icon: FiSearch },
+    { name: 'Find Clients', path: '/projects?tab=clients', icon: FiBriefcase },
     { name: 'My Proposals', path: '/my-proposals', icon: FiFileText },
     { name: 'Messages', path: '/messages', icon: FiMessageSquare, badge: unreadCount },
     { name: 'Earnings & Invoices', path: '/wallet', icon: FiShield },
@@ -61,7 +63,10 @@ export default function Sidebar({ isOpen, setIsOpen }) {
   const links = user?.role === 'client' ? clientLinks : freelancerLinks;
 
   const NavLink = ({ link }) => {
-    const isActive = location.pathname === link.path;
+    const isExactMatch = link.path.includes('?') 
+      ? (location.pathname + location.search) === link.path 
+      : location.pathname === link.path && !location.search;
+    const isActive = isExactMatch;
     const Icon = link.icon;
     const badgeCount = link.badge || 0;
 

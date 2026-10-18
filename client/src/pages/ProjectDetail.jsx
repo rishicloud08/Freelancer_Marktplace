@@ -28,7 +28,8 @@ import {
   FiTrello,
   FiFileText,
   FiAlertTriangle,
-  FiTrash2
+  FiTrash2,
+  FiEdit2
 } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import DashboardLayout from '../components/DashboardLayout';
@@ -80,6 +81,17 @@ export default function ProjectDetail() {
     amount: '',
     dueDate: ''
   });
+
+  // Budget Estimation Edit State (Client)
+  const [isEditingBudget, setIsEditingBudget] = useState(false);
+  const [editBudgetMin, setEditBudgetMin] = useState('');
+  const [editBudgetMax, setEditBudgetMax] = useState('');
+  const [savingBudget, setSavingBudget] = useState(false);
+
+  // Milestone Budget Estimation Edit State (Client)
+  const [isEditingMilestoneAmount, setIsEditingMilestoneAmount] = useState(false);
+  const [editMilestoneAmount, setEditMilestoneAmount] = useState('');
+  const [savingMilestoneAmount, setSavingMilestoneAmount] = useState(false);
 
   // Deliverable Submission Modal State (Freelancer)
   const [selectedMilestoneForDelivery, setSelectedMilestoneForDelivery] = useState(null);
@@ -343,6 +355,83 @@ export default function ProjectDetail() {
     }
   };
 
+  // Client: Save Updated Project Budget Estimation
+  const handleSaveBudget = async (e) => {
+    e.preventDefault();
+    const minVal = Number(editBudgetMin);
+    const maxVal = Number(editBudgetMax);
+    if (isNaN(minVal) || isNaN(maxVal) || minVal <= 0 || maxVal <= 0) {
+      toast.error('Please enter valid budget amounts');
+      return;
+    }
+    if (minVal > maxVal) {
+      toast.error('Minimum budget cannot exceed maximum budget');
+      return;
+    }
+
+    setSavingBudget(true);
+    try {
+      await api.projects.updateProject(project._id, {
+        budgetMin: minVal,
+        budgetMax: maxVal
+      });
+
+      setProject(prev => ({
+        ...prev,
+        budgetMin: minVal,
+        budgetMax: maxVal
+      }));
+
+      // If milestone exists and is unfunded, update primary milestone amount if needed
+      if (milestones && milestones.length > 0) {
+        const primary = milestones[0];
+        if (primary && primary.status === 'pending') {
+          try {
+            await api.milestones.updateMilestoneStatus(primary._id, {
+              amount: maxVal,
+              projectId: project._id
+            });
+            setMilestones(prev => prev.map((m, idx) => idx === 0 ? { ...m, amount: maxVal } : m));
+          } catch (e) {
+            console.log('Milestone amount sync note:', e.message);
+          }
+        }
+      }
+
+      setIsEditingBudget(false);
+      toast.success('Budget estimation updated and saved successfully!');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to update budget estimation');
+    } finally {
+      setSavingBudget(false);
+    }
+  };
+
+  // Client: Save Updated Milestone Budget Estimation
+  const handleSaveMilestoneAmount = async (milestoneId) => {
+    const val = Number(editMilestoneAmount);
+    if (isNaN(val) || val <= 0) {
+      toast.error('Please enter a valid milestone amount');
+      return;
+    }
+
+    setSavingMilestoneAmount(true);
+    try {
+      await api.milestones.updateMilestoneStatus(milestoneId, {
+        amount: val,
+        projectId: project._id
+      });
+
+      setMilestones(prev => prev.map(m => (m._id === milestoneId ? { ...m, amount: val } : m)));
+      setIsEditingMilestoneAmount(false);
+      toast.success('Milestone budget estimation updated and saved successfully!');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to update milestone amount');
+    } finally {
+      setSavingMilestoneAmount(false);
+    }
+  };
+
   // Submit Milestone Deliverable & Run AI Quality Audit
   const handleSubmitDeliverable = async (e) => {
     e.preventDefault();
@@ -584,14 +673,80 @@ export default function ProjectDetail() {
             </div>
 
             {/* Budget Box in Rupees & Direct GPay Payment */}
-            <div className="bg-gradient-to-br from-indigo-950/60 to-purple-950/60 p-5 rounded-2xl border border-indigo-500/30 min-w-[240px] text-right shadow-md flex flex-col justify-between">
-              <div>
-                <span className="text-xs font-bold text-indigo-300 uppercase tracking-wider">Project Budget (INR)</span>
-                <div className="text-2xl font-black text-white mt-0.5">
-                  ₹{(project.budgetMin ?? 5000).toLocaleString()} - ₹{(project.budgetMax ?? 25000).toLocaleString()}
+            <div className="bg-gradient-to-br from-indigo-950/60 to-purple-950/60 p-5 rounded-2xl border border-indigo-500/30 min-w-[260px] text-right shadow-md flex flex-col justify-between">
+              {isEditingBudget ? (
+                <form onSubmit={handleSaveBudget} className="text-left bg-slate-900/95 p-4 rounded-xl border border-indigo-500/50 space-y-3 mb-2">
+                  <div className="flex items-center justify-between text-xs font-bold text-indigo-300 border-b border-slate-700 pb-1.5">
+                    <span>Edit Budget Estimation</span>
+                    <span className="text-[10px] text-emerald-400 font-semibold">Persisted in DB</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-[10px] text-slate-400 block font-semibold mb-0.5">Min Budget (₹)</label>
+                      <input
+                        type="number"
+                        min="10"
+                        required
+                        value={editBudgetMin}
+                        onChange={e => setEditBudgetMin(e.target.value)}
+                        className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white font-bold focus:outline-none focus:border-indigo-500"
+                        placeholder="5000"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-slate-400 block font-semibold mb-0.5">Max Budget (₹)</label>
+                      <input
+                        type="number"
+                        min="10"
+                        required
+                        value={editBudgetMax}
+                        onChange={e => setEditBudgetMax(e.target.value)}
+                        className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white font-bold focus:outline-none focus:border-indigo-500"
+                        placeholder="25000"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-end gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setIsEditingBudget(false)}
+                      className="px-2.5 py-1 text-slate-400 hover:text-white text-xs rounded-lg border border-slate-700 hover:bg-slate-800 cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={savingBudget}
+                      className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1 text-xs rounded-lg shadow-sm cursor-pointer disabled:opacity-50 flex items-center gap-1"
+                    >
+                      <FiCheck className="w-3 h-3" /> {savingBudget ? 'Saving...' : 'Save & Keep'}
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs font-bold text-indigo-300 uppercase tracking-wider">Project Budget (INR)</span>
+                    {isClientOwner && (
+                      <button
+                        onClick={() => {
+                          setEditBudgetMin(project.budgetMin ?? 5000);
+                          setEditBudgetMax(project.budgetMax ?? 25000);
+                          setIsEditingBudget(true);
+                        }}
+                        className="text-[11px] text-indigo-300 hover:text-white bg-indigo-500/20 hover:bg-indigo-500/40 px-2.5 py-0.5 rounded-lg border border-indigo-500/30 transition-all flex items-center gap-1 cursor-pointer font-bold"
+                        title="Edit Project Budget Estimation"
+                      >
+                        <FiEdit2 className="w-3 h-3" /> Edit
+                      </button>
+                    )}
+                  </div>
+                  <div className="text-2xl font-black text-white mt-0.5">
+                    ₹{(project.budgetMin ?? 5000).toLocaleString()} - ₹{(project.budgetMax ?? 25000).toLocaleString()}
+                  </div>
+                  <span className="text-[11px] text-slate-400 block mb-2">Direct UPI / GPay to Freelancer</span>
                 </div>
-                <span className="text-[11px] text-slate-400 block mb-2">Direct UPI / GPay to Freelancer</span>
-              </div>
+              )}
 
               {isClientOwner && milestones.length > 0 && (
                 <button
@@ -1296,11 +1451,56 @@ export default function ProjectDetail() {
                   </div>
 
                   {/* Milestone Amount & Status Badge */}
-                  <div className="bg-gradient-to-br from-indigo-50 to-purple-50 p-5 rounded-2xl border border-indigo-100 min-w-[240px] text-right">
-                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Milestone Amount</span>
-                    <div className="text-2xl md:text-3xl font-black text-indigo-900 mt-0.5">
-                      ₹{Number(primaryMilestone.amount || project.budgetMax || 15000).toLocaleString()}
+                  <div className="bg-gradient-to-br from-indigo-50 to-purple-50 p-5 rounded-2xl border border-indigo-100 min-w-[260px] text-right">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Milestone Amount</span>
+                      {isClientOwner && !isFunded && !isReleased && !isEditingMilestoneAmount && (
+                        <button
+                          onClick={() => {
+                            setEditMilestoneAmount(primaryMilestone.amount || project.budgetMax || 15000);
+                            setIsEditingMilestoneAmount(true);
+                          }}
+                          className="text-[11px] text-indigo-600 hover:text-indigo-800 bg-indigo-100 hover:bg-indigo-200 px-2 py-0.5 rounded-md font-bold transition-all flex items-center gap-1 cursor-pointer"
+                          title="Edit Milestone Estimation"
+                        >
+                          <FiEdit2 className="w-3 h-3" /> Edit
+                        </button>
+                      )}
                     </div>
+
+                    {isEditingMilestoneAmount ? (
+                      <div className="mt-2 space-y-2 text-left bg-white/90 p-3 rounded-xl border border-indigo-200">
+                        <label className="text-[10px] text-gray-500 block font-semibold">Estimated Amount (₹)</label>
+                        <input
+                          type="number"
+                          min="10"
+                          value={editMilestoneAmount}
+                          onChange={e => setEditMilestoneAmount(e.target.value)}
+                          className="w-full bg-white border border-indigo-300 rounded-lg px-2.5 py-1 text-sm font-bold text-indigo-900 focus:outline-none focus:border-indigo-600"
+                        />
+                        <div className="flex items-center justify-end gap-1.5 pt-1">
+                          <button
+                            type="button"
+                            onClick={() => setIsEditingMilestoneAmount(false)}
+                            className="px-2 py-1 text-gray-500 text-xs rounded-lg border border-gray-300 hover:bg-gray-100 cursor-pointer font-medium"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="button"
+                            disabled={savingMilestoneAmount}
+                            onClick={() => handleSaveMilestoneAmount(primaryMilestone._id)}
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-2.5 py-1 text-xs rounded-lg shadow-sm cursor-pointer disabled:opacity-50"
+                          >
+                            {savingMilestoneAmount ? 'Saving...' : 'Save'}
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-2xl md:text-3xl font-black text-indigo-900 mt-0.5">
+                        ₹{Number(primaryMilestone.amount || project.budgetMax || 15000).toLocaleString()}
+                      </div>
+                    )}
                     <div className="mt-2">
                       {isReleased ? (
                         <span className="bg-emerald-100 text-emerald-800 font-bold px-3 py-1 rounded-full text-xs border border-emerald-200 inline-flex items-center gap-1">
