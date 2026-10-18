@@ -3,7 +3,7 @@
     {
       "name": "Rishi kesh.V",
       "email": "rishikesh2006.gr@gmail.com",
-      "password": "$2a$10$/ZtWwfnrycUzR0CJOlLKoeG9tKXK038Fvv3K/d5tS1jC6vyJUfuNK",
+      "password": "$2a$10$/.tNl8/u9e/V2rHrv6A72ObPAmZKqxa/sIGCa6ChEhQL2Ev2YA00q",
       "role": "freelancer",
       "skills": [
         "React",
@@ -21,7 +21,7 @@
       "bio": "Full-Stack Software Engineer with expertise in React, Node.js, Python, Cloud Architecture, and modern web application development.",
       "githubUsername": "rishicloud08",
       "githubUrl": "https://github.com/rishicloud08",
-      "balance": 15000,
+      "balance": 0,
       "portfolioProjects": [
         {
           "title": "Freelancer AI Marketplace",
@@ -89,7 +89,7 @@
       "totalReviews": 0,
       "verifiedBadges": [],
       "createdAt": "2026-10-17T06:31:25.240Z",
-      "updatedAt": "2026-10-18T14:50:42.479Z"
+      "updatedAt": "2026-10-18T15:31:18.187Z"
     },
     {
       "name": "Kesh",

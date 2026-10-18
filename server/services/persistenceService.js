@@ -21,7 +21,7 @@ export const defaultFreelancer = {
   bio: 'Full-Stack Software Engineer with expertise in React, Node.js, Python, Cloud Architecture, and modern web application development.',
   githubUsername: 'rishicloud08',
   githubUrl: 'https://github.com/rishicloud08',
-  balance: 15000,
+  balance: 0,
   rating: 5,
   totalReviews: 6,
   portfolioProjects: [
@@ -277,7 +277,7 @@ export const ensurePersistentDataInDB = async () => {
         });
       } else {
         // Sync any updated fields like bio, balance, or rating
-        if (userData.balance !== undefined && (user.balance === undefined || user.balance === 0)) {
+        if (userData.balance !== undefined) {
           user.balance = userData.balance;
         }
         if (userData.bio && !user.bio) {
