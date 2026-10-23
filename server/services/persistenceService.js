@@ -49,7 +49,29 @@ export const defaultFreelancer = {
     ],
     certifications: ['Full Stack Web Developer Certification', 'Cloud & Software Engineering'],
     fileName: 'Rishikesh_Resume.pdf'
-  }
+  },
+  certificates: [
+    {
+      title: 'Full Stack Web Developer Certification',
+      issuer: 'Department of Computer Science & Engineering',
+      issueDate: '2024',
+      credentialId: 'FSWD-2024-8921',
+      credentialUrl: '',
+      skills: ['React', 'Node.js', 'MongoDB', 'JavaScript', 'Tailwind CSS'],
+      fileName: 'Full_Stack_Web_Developer_Certificate.pdf',
+      fileType: 'pdf'
+    },
+    {
+      title: 'Cloud Architecture & Software Engineering Specialist',
+      issuer: 'Cloud & Software Engineering Academy',
+      issueDate: '2023',
+      credentialId: 'CSES-2023-4512',
+      credentialUrl: '',
+      skills: ['Cloud Architecture', 'Python', 'REST APIs', 'Express.js', 'Docker'],
+      fileName: 'Cloud_Software_Engineering_Certificate.pdf',
+      fileType: 'pdf'
+    }
+  ]
 };
 
 export const defaultClientKesh = {
@@ -275,6 +297,9 @@ export const ensurePersistentDataInDB = async () => {
         }
         if (userData.bio && !user.bio) {
           user.bio = userData.bio;
+        }
+        if (userData.certificates && (!user.certificates || user.certificates.length === 0)) {
+          user.certificates = userData.certificates;
         }
         await user.save();
       }

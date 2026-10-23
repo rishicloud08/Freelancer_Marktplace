@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   FiX, 
   FiFileText, 
@@ -10,11 +10,17 @@ import {
   FiExternalLink, 
   FiShield, 
   FiCheck,
-  FiCode
+  FiCode,
+  FiEye,
+  FiDownload,
+  FiCalendar
 } from 'react-icons/fi';
 import StarRating from './StarRating';
+import CertificateViewModal from './CertificateViewModal';
 
 export default function FreelancerResumeModal({ freelancer, isOpen, onClose }) {
+  const [selectedCertForView, setSelectedCertForView] = useState(null);
+
   if (!isOpen || !freelancer) return null;
 
   const resume = freelancer.resumeData || {};
@@ -23,6 +29,7 @@ export default function FreelancerResumeModal({ freelancer, isOpen, onClose }) {
   const experience = resume.experience || [];
   const certifications = resume.certifications || [];
   const projects = freelancer.portfolioProjects || [];
+  const uploadedCertificates = Array.isArray(freelancer.certificates) ? freelancer.certificates : [];
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4">
@@ -37,13 +44,18 @@ export default function FreelancerResumeModal({ freelancer, isOpen, onClose }) {
             <FiX className="w-5 h-5" />
           </button>
           
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="bg-purple-500/20 text-purple-300 border border-purple-400/30 px-3 py-0.5 rounded-full text-[11px] font-black uppercase tracking-wider flex items-center gap-1">
               <FiFileText /> Verified Freelancer Resume
             </span>
             {resume.fileName && (
               <span className="bg-white/10 text-gray-300 px-2.5 py-0.5 rounded-full text-[10px] font-mono">
                 {resume.fileName}
+              </span>
+            )}
+            {uploadedCertificates.length > 0 && (
+              <span className="bg-amber-500/20 text-amber-300 border border-amber-400/30 px-2.5 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1">
+                <FiAward className="text-yellow-400" /> {uploadedCertificates.length} Verified Certificate{uploadedCertificates.length > 1 ? 's' : ''}
               </span>
             )}
           </div>
@@ -88,6 +100,83 @@ export default function FreelancerResumeModal({ freelancer, isOpen, onClose }) {
               {resume.summary || freelancer.bio || "Professional software engineer proficient in scalable applications and modern development."}
             </p>
           </div>
+
+          {/* UPLOADED CERTIFICATES & SKILL CREDENTIALS (VISIBLE TO CLIENTS) */}
+          {uploadedCertificates.length > 0 ? (
+            <div className="bg-gradient-to-r from-amber-950/40 via-yellow-950/30 to-slate-900/60 p-5 rounded-2xl border border-amber-500/30 space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+                  <FiAward className="text-yellow-400" /> Verified Skill Certificates & Credentials ({uploadedCertificates.length})
+                </h4>
+                <span className="text-[10px] text-amber-300/80 font-semibold bg-amber-500/20 px-2 py-0.5 rounded-full border border-amber-500/30">
+                  Client Verified Proofs
+                </span>
+              </div>
+
+              <div className="space-y-3">
+                {uploadedCertificates.map((cert, idx) => (
+                  <div 
+                    key={cert._id || idx} 
+                    className="p-4 rounded-xl bg-slate-800/90 border border-amber-500/30 hover:border-amber-400/60 transition-all shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                  >
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">📜</span>
+                        <h5 className="font-bold text-sm text-white">{cert.title}</h5>
+                      </div>
+                      
+                      <div className="flex flex-wrap items-center gap-2.5 text-xs text-amber-200/90">
+                        {cert.issuer && <span>Issued by: <strong>{cert.issuer}</strong></span>}
+                        {cert.issueDate && <span>• {cert.issueDate}</span>}
+                        {cert.credentialId && (
+                          <span className="bg-slate-900 px-2 py-0.5 rounded font-mono text-[10px] text-amber-300 border border-amber-500/20">
+                            ID: {cert.credentialId}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Demonstrated Skills */}
+                      {Array.isArray(cert.skills) && cert.skills.length > 0 && (
+                        <div className="flex flex-wrap gap-1 pt-1.5">
+                          {cert.skills.map((s, si) => (
+                            <span 
+                              key={si}
+                              className="text-[10px] font-bold bg-amber-500/20 text-amber-200 border border-amber-500/30 px-2 py-0.5 rounded-md"
+                            >
+                              ✓ {s}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedCertForView(cert)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                      >
+                        <FiEye /> View Certificate
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : certifications.length > 0 ? (
+            <div>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-purple-300 mb-2 flex items-center gap-1.5">
+                <FiAward className="text-purple-400" /> Certifications & Accreditations
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {certifications.map((cert, idx) => (
+                  <span key={idx} className="bg-purple-900/40 text-purple-200 border border-purple-400/30 px-3 py-1.5 rounded-xl text-xs font-semibold">
+                    📜 {cert}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ) : null}
 
           {/* Extracted Resume Skills */}
           <div>
@@ -152,22 +241,6 @@ export default function FreelancerResumeModal({ freelancer, isOpen, onClose }) {
             )}
           </div>
 
-          {/* Certifications */}
-          {certifications.length > 0 && (
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-purple-300 mb-2 flex items-center gap-1.5">
-                <FiAward className="text-purple-400" /> Certifications & Accreditations
-              </h4>
-              <div className="flex flex-wrap gap-2">
-                {certifications.map((cert, idx) => (
-                  <span key={idx} className="bg-purple-900/40 text-purple-200 border border-purple-400/30 px-3 py-1.5 rounded-xl text-xs font-semibold">
-                    📜 {cert}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
           {/* Portfolio Projects */}
           {projects.length > 0 && (
             <div>
@@ -212,6 +285,14 @@ export default function FreelancerResumeModal({ freelancer, isOpen, onClose }) {
         </div>
 
       </div>
+
+      {/* Embedded Certificate Viewer Modal */}
+      <CertificateViewModal
+        certificate={selectedCertForView}
+        isOpen={!!selectedCertForView}
+        onClose={() => setSelectedCertForView(null)}
+        recipientName={freelancer.name}
+      />
     </div>
   );
 }

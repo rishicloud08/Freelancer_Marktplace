@@ -46,7 +46,7 @@ export const getProject = async (req, res) => {
   try {
     const project = await Project.findById(req.params.id)
       .populate('client', 'name email rating')
-      .populate('assignedFreelancer', 'name email rating');
+      .populate('assignedFreelancer', 'name email rating skills certificates');
     if (!project) {
       return res.status(404).json({ message: 'Project not found' });
     }
@@ -161,7 +161,7 @@ export const resetProject = async (req, res) => {
     // Return populated reset project
     const updated = await Project.findById(project._id)
       .populate('client', 'name email')
-      .populate('assignedFreelancer', 'name email skills hourlyRate bio gpayNumber upiId');
+      .populate('assignedFreelancer', 'name email skills hourlyRate bio gpayNumber upiId certificates');
 
     res.json({
       message: 'Project lifecycle reset to Step 1 successfully!',

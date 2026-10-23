@@ -88,8 +88,61 @@
       "rating": 5,
       "totalReviews": 0,
       "verifiedBadges": [],
+      "certificates": [
+        {
+          "title": "AWS Certified Solutions Architect",
+          "issuer": "Amazon Web Services",
+          "issueDate": "2024",
+          "credentialId": "AWS-CSA-9912",
+          "skills": [
+            "Cloud Architecture",
+            "AWS",
+            "DevOps"
+          ],
+          "fileName": "aws_cert.pdf",
+          "fileType": "pdf",
+          "_id": "6adae2ae453bfcee88e5f6ef",
+          "uploadedAt": "2026-10-23T04:29:34.427Z"
+        },
+        {
+          "title": "Full Stack Web Developer Certification",
+          "issuer": "Department of Computer Science & Engineering",
+          "issueDate": "2024",
+          "credentialId": "FSWD-2024-8921",
+          "credentialUrl": "",
+          "skills": [
+            "React",
+            "Node.js",
+            "MongoDB",
+            "JavaScript",
+            "Tailwind CSS"
+          ],
+          "fileName": "Full_Stack_Web_Developer_Certificate.pdf",
+          "fileType": "pdf",
+          "uploadedAt": "2026-10-23T04:27:56.157Z",
+          "_id": "6adae24c453bfcee88e5f6c3"
+        },
+        {
+          "title": "Cloud Architecture & Software Engineering Specialist",
+          "issuer": "Cloud & Software Engineering Academy",
+          "issueDate": "2023",
+          "credentialId": "CSES-2023-4512",
+          "credentialUrl": "",
+          "skills": [
+            "Cloud Architecture",
+            "Python",
+            "REST APIs",
+            "Express.js",
+            "Docker"
+          ],
+          "fileName": "Cloud_Software_Engineering_Certificate.pdf",
+          "fileType": "pdf",
+          "uploadedAt": "2026-10-23T04:27:56.157Z",
+          "_id": "6adae24c453bfcee88e5f6c4"
+        }
+      ],
       "createdAt": "2026-10-17T06:31:25.240Z",
-      "updatedAt": "2026-10-18T15:31:18.187Z"
+      "updatedAt": "2026-10-23T04:29:34.430Z"
     },
     {
       "name": "Kesh",
@@ -112,7 +165,8 @@
       "portfolioProjects": [],
       "verifiedBadges": [],
       "createdAt": "2026-10-17T06:31:25.388Z",
-      "updatedAt": "2026-10-18T15:02:58.973Z"
+      "updatedAt": "2026-10-18T15:02:58.973Z",
+      "certificates": []
     }
   ],
   "projects": [

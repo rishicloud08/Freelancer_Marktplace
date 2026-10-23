@@ -19,7 +19,7 @@ const generateToken = (id) => {
 
 export const register = async (req, res) => {
   try {
-    const { name, email, password, role, skills, bio, hourlyRate, portfolio, gpayNumber, upiId, upiQrCode, githubUsername, githubUrl, portfolioProjects, resumeData } = req.body;
+    const { name, email, password, role, skills, bio, hourlyRate, portfolio, gpayNumber, upiId, upiQrCode, githubUsername, githubUrl, portfolioProjects, resumeData, certificates } = req.body;
     const cleanEmail = (email || '').trim().toLowerCase();
     
     let user = await User.findOne({ 
@@ -41,6 +41,7 @@ export const register = async (req, res) => {
       if (githubUrl) user.githubUrl = githubUrl;
       if (portfolioProjects) user.portfolioProjects = portfolioProjects;
       if (resumeData) user.resumeData = resumeData;
+      if (certificates) user.certificates = certificates;
 
       const updated = await user.save();
       saveUserToPersistentState(updated);
@@ -61,7 +62,7 @@ export const register = async (req, res) => {
     }
 
     user = await User.create({
-      name, email: cleanEmail, password, role: validRole, skills, bio, hourlyRate, portfolio, gpayNumber, upiId, upiQrCode, githubUsername, githubUrl, portfolioProjects, resumeData
+      name, email: cleanEmail, password, role: validRole, skills, bio, hourlyRate, portfolio, gpayNumber, upiId, upiQrCode, githubUsername, githubUrl, portfolioProjects, resumeData, certificates
     });
 
     if (user) {
@@ -183,6 +184,7 @@ export const updateProfile = async (req, res) => {
       if (req.body.githubUrl !== undefined) user.githubUrl = req.body.githubUrl;
       if (req.body.portfolioProjects !== undefined) user.portfolioProjects = req.body.portfolioProjects;
       if (req.body.resumeData !== undefined) user.resumeData = req.body.resumeData;
+      if (req.body.certificates !== undefined) user.certificates = req.body.certificates;
 
       if (req.body.password) {
         user.password = req.body.password;

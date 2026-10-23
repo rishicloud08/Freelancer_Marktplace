@@ -49,6 +49,20 @@ const userSchema = new mongoose.Schema({
     uploadedAt: { type: Date }
   },
 
+  // Uploaded Certificates & Skill Credentials
+  certificates: [{
+    title: { type: String, required: true },
+    issuer: { type: String },
+    issueDate: { type: String },
+    credentialId: { type: String },
+    credentialUrl: { type: String },
+    skills: [{ type: String }],
+    fileUrl: { type: String }, // Base64 data URI (image or PDF) or link
+    fileName: { type: String },
+    fileType: { type: String }, // 'image' | 'pdf'
+    uploadedAt: { type: Date, default: Date.now }
+  }],
+
   verifiedBadges: [{
     skill: { type: String, required: true },
     score: { type: Number, required: true },

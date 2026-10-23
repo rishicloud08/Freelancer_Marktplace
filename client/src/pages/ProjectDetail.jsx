@@ -1179,6 +1179,11 @@ export default function ProjectDetail() {
                                       ⭐ Verified AI Expert
                                     </span>
                                   )}
+                                  {Array.isArray(prop.freelancer?.certificates) && prop.freelancer.certificates.length > 0 && (
+                                    <span className="bg-amber-100 text-amber-900 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-300 flex items-center gap-1">
+                                      📜 {prop.freelancer.certificates.length} Certificate{prop.freelancer.certificates.length > 1 ? 's' : ''}
+                                    </span>
+                                  )}
                                 </div>
                                 <p className="text-xs text-gray-500">{prop.freelancer?.email}</p>
                               </div>

@@ -81,10 +81,10 @@ export const getProjectProposals = async (req, res) => {
     let proposals;
     if (isOwner) {
       proposals = await Proposal.find({ project: req.params.projectId })
-        .populate('freelancer', 'name email skills bio rating hourlyRate portfolio totalReviews resumeData portfolioProjects githubUsername githubUrl verifiedBadges upiQrCode gpayNumber upiId');
+        .populate('freelancer', 'name email skills bio rating hourlyRate portfolio totalReviews resumeData portfolioProjects githubUsername githubUrl verifiedBadges upiQrCode gpayNumber upiId certificates');
     } else {
       proposals = await Proposal.find({ project: req.params.projectId, freelancer: req.user._id })
-        .populate('freelancer', 'name email skills bio rating hourlyRate portfolio totalReviews resumeData portfolioProjects githubUsername githubUrl verifiedBadges upiQrCode gpayNumber upiId');
+        .populate('freelancer', 'name email skills bio rating hourlyRate portfolio totalReviews resumeData portfolioProjects githubUsername githubUrl verifiedBadges upiQrCode gpayNumber upiId certificates');
     }
     
     res.json(proposals);
