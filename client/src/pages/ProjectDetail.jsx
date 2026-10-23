@@ -135,20 +135,30 @@ export default function ProjectDetail() {
   }, [id]);
 
   useEffect(() => {
-    if (socket) {
-      socket.on('messageReceived', (message) => {
-        if (
-          selectedChatPartner && 
-          (message.sender === selectedChatPartner._id || message.receiver === selectedChatPartner._id)
-        ) {
-          setChatMessages(prev => [...prev, message]);
-        }
-      });
-    }
-    return () => {
-      if (socket) socket.off('messageReceived');
+    if (!socket) return;
+
+    const handleMessage = (message) => {
+      const sId = (message.sender?._id || message.sender)?.toString();
+      const rId = (message.receiver?._id || message.receiver)?.toString();
+      const partnerId = (selectedChatPartner?._id || selectedChatPartner)?.toString();
+      const myId = user?._id?.toString();
+
+      if (partnerId && (sId === partnerId || (sId === myId && rId === partnerId))) {
+        setChatMessages(prev => {
+          if (prev.some(m => m._id === message._id)) return prev;
+          return [...prev, message];
+        });
+      }
     };
-  }, [socket, selectedChatPartner]);
+
+    socket.on('messageReceived', handleMessage);
+    socket.on('messageSent', handleMessage);
+
+    return () => {
+      socket.off('messageReceived', handleMessage);
+      socket.off('messageSent', handleMessage);
+    };
+  }, [socket, selectedChatPartner, user]);
 
   useEffect(() => {
     chatMessagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -204,12 +214,12 @@ export default function ProjectDetail() {
     }
   };
 
-  // Fetch chat messages when chat partner is selected
+  // Fetch chat messages when chat partner is selected or when switching to messages tab
   useEffect(() => {
     if (selectedChatPartner?._id) {
       fetchProjectChat(selectedChatPartner._id);
     }
-  }, [selectedChatPartner]);
+  }, [selectedChatPartner, activeTab]);
 
   const fetchProjectChat = async (partnerId) => {
     setLoadingChat(true);
@@ -1860,7 +1870,8 @@ export default function ProjectDetail() {
                 </div>
               ) : (
                 chatMessages.map((msg, i) => {
-                  const isMine = msg.sender === user._id || msg.sender?._id === user._id;
+                  const senderId = (msg.sender?._id || msg.sender)?.toString();
+                  const isMine = senderId === user?._id?.toString();
                   return (
                     <div key={msg._id || i} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
                       <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-xs md:text-sm leading-relaxed ${

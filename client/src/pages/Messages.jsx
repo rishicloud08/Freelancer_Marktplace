@@ -55,20 +55,29 @@ export default function Messages() {
 
   useEffect(() => {
     if (socket) {
-      socket.on('messageReceived', (message) => {
-        const senderId = message.sender?._id || message.sender;
-        const activeUserId = activeChat?._id || activeChat?.user?._id;
+      const handleIncomingMessage = (message) => {
+        const senderId = (message.sender?._id || message.sender)?.toString();
+        const receiverId = (message.receiver?._id || message.receiver)?.toString();
+        const activeUserId = (activeChat?._id || activeChat?.user?._id)?.toString();
 
-        if (activeUserId && (senderId === activeUserId || message.receiver === activeUserId)) {
-          setMessages(prev => [...prev, message]);
+        if (activeUserId && (senderId === activeUserId || receiverId === activeUserId)) {
+          setMessages(prev => {
+            if (prev.some(m => m._id === message._id)) return prev;
+            return [...prev, message];
+          });
           api.messages.markAsRead(activeUserId).catch(() => {});
         }
         fetchConversations(false);
-      });
+      };
+
+      socket.on('messageReceived', handleIncomingMessage);
+      socket.on('messageSent', handleIncomingMessage);
+
+      return () => {
+        socket.off('messageReceived', handleIncomingMessage);
+        socket.off('messageSent', handleIncomingMessage);
+      };
     }
-    return () => {
-      if (socket) socket.off('messageReceived');
-    };
   }, [socket, activeChat]);
 
   useEffect(() => {
@@ -331,8 +340,8 @@ export default function Messages() {
                   </div>
                 ) : (
                   messages.map((msg, idx) => {
-                    const senderId = msg.sender?._id || msg.sender;
-                    const isSent = senderId === user._id;
+                    const senderId = (msg.sender?._id || msg.sender)?.toString();
+                    const isSent = senderId === user?._id?.toString();
 
                     return (
                       <div key={msg._id || idx} className={`flex ${isSent ? 'justify-end' : 'justify-start'}`}>
