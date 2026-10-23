@@ -44,6 +44,7 @@ import KanbanBoard from '../components/KanbanBoard';
 import ContractModal from '../components/ContractModal';
 import DisputeModal from '../components/DisputeModal';
 import FreelancerResumeModal from '../components/FreelancerResumeModal';
+import LiveMeetingRoom from '../components/LiveMeetingRoom';
 
 export default function ProjectDetail() {
   const { id } = useParams();
@@ -248,6 +249,34 @@ export default function ProjectDetail() {
     } catch (err) {
       toast.error('Failed to deliver message');
       setChatMessages(prev => prev.filter(m => m._id !== tempMsg._id));
+    }
+  };
+
+  const handleSendMeetingInviteToChat = async () => {
+    const targetPartner = selectedChatPartner || (user?.role === 'freelancer' ? project?.client : (project?.assignedFreelancer || proposals[0]?.freelancer));
+    if (!targetPartner?._id) {
+      toast.error('Please select a collaborator to send the meeting invite to.');
+      return;
+    }
+    const inviteText = `📹 I have joined the 1-Click Meeting Room for "${project.title}". Click "📹 1-Click Sync Call" above to join our live video & audio call now!`;
+    const tempMsg = {
+      _id: Date.now().toString(),
+      sender: user._id,
+      receiver: targetPartner._id,
+      content: inviteText,
+      createdAt: new Date().toISOString()
+    };
+    setChatMessages(prev => [...prev, tempMsg]);
+    try {
+      await api.messages.sendMessage({
+        receiverId: targetPartner._id,
+        receiver: targetPartner._id,
+        projectId: id,
+        content: inviteText
+      });
+      toast.success(`Meeting invitation sent to ${targetPartner.name} in chat!`);
+    } catch (err) {
+      toast.error('Failed to send invitation');
     }
   };
 
@@ -626,6 +655,18 @@ export default function ProjectDetail() {
                 <FiFileText /> Smart Contract SLA
               </button>
             )}
+
+            <button
+              type="button"
+              onClick={() => {
+                setActiveTab('messages');
+                setShowVideoCallRoom(true);
+              }}
+              className="bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 px-3.5 py-1.5 rounded-2xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+              title="Join Live Virtual Video & Audio Meeting"
+            >
+              <FiVideo className="text-emerald-400" /> 📹 Join Meeting
+            </button>
 
             <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
               project.status === 'open' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' :
@@ -1177,11 +1218,6 @@ export default function ProjectDetail() {
                                   {prop.freelancer?.verifiedBadges?.length > 0 && (
                                     <span className="bg-amber-100 text-amber-900 text-[10px] font-black px-2 py-0.5 rounded-full border border-amber-300">
                                       ⭐ Verified AI Expert
-                                    </span>
-                                  )}
-                                  {Array.isArray(prop.freelancer?.certificates) && prop.freelancer.certificates.length > 0 && (
-                                    <span className="bg-amber-100 text-amber-900 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-300 flex items-center gap-1">
-                                      📜 {prop.freelancer.certificates.length} Certificate{prop.freelancer.certificates.length > 1 ? 's' : ''}
                                     </span>
                                   )}
                                 </div>
@@ -1770,30 +1806,18 @@ export default function ProjectDetail() {
               </div>
             </div>
 
-            {/* Embedded Live Virtual Sync Call Frame */}
+            {/* Embedded Live Virtual Sync Call Room */}
             {showVideoCallRoom && (
               <div className="p-4 bg-slate-950 border-b border-white/10 animate-in fade-in duration-200">
-                <div className="flex items-center justify-between mb-3 text-white">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
-                    <span className="text-xs font-bold text-emerald-400">Live Secure Virtual Sync Room Active</span>
-                    <span className="text-[11px] text-gray-400 font-mono">({callRoomId})</span>
-                  </div>
-                  <button 
-                    onClick={() => setShowVideoCallRoom(false)}
-                    className="text-xs text-gray-400 hover:text-white cursor-pointer"
-                  >
-                    Close Call
-                  </button>
-                </div>
-                <div className="h-96 rounded-2xl overflow-hidden bg-slate-900 border border-white/20 relative">
-                  <iframe
-                    src={`https://meet.jit.si/${callRoomId}#config.prejoinPageEnabled=false&userInfo.displayName="${encodeURIComponent(user?.name || 'User')}"`}
-                    allow="camera; microphone; fullscreen; display-capture; autoplay"
-                    className="w-full h-full border-0"
-                    title="Live Meeting Room"
-                  />
-                </div>
+                <LiveMeetingRoom
+                  roomId={callRoomId}
+                  currentUser={user}
+                  collaboratorName={selectedChatPartner?.name || (user?.role === 'freelancer' ? project.client?.name : (project.assignedFreelancer?.name || 'Collaborator'))}
+                  collaboratorRole={user?.role === 'freelancer' ? 'Client' : 'Freelancer'}
+                  socket={socket}
+                  onClose={() => setShowVideoCallRoom(false)}
+                  onSendInviteToChat={handleSendMeetingInviteToChat}
+                />
               </div>
             )}
 

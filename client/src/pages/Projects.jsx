@@ -544,14 +544,6 @@ export default function Projects() {
                           </span>
                         )}
                       </div>
-
-                      {/* Verified Certificates Badge */}
-                      {Array.isArray(f.certificates) && f.certificates.length > 0 && (
-                        <div className="flex items-center gap-1.5 mb-4 bg-amber-500/10 border border-amber-500/25 px-2.5 py-1 rounded-xl text-[11px] text-amber-300 font-bold">
-                          <FiAward className="text-yellow-400 shrink-0" />
-                          <span>{f.certificates.length} Verified Certificate{f.certificates.length > 1 ? 's' : ''} Uploaded</span>
-                        </div>
-                      )}
                     </div>
 
                     {/* Footer Info & Actions */}
