@@ -103,7 +103,8 @@ export default function Messages() {
         }
         
         if (!activeChat && list.length > 0) {
-          setActiveChat(list[0]);
+          const unreadContact = list.find(c => (c.unreadCount || 0) > 0);
+          setActiveChat(unreadContact || list[0]);
         }
       }
     } catch (error) {
@@ -162,7 +163,10 @@ export default function Messages() {
 
   const filteredConversations = conversations.filter(conv => {
     const name = conv.name || conv.user?.name || '';
-    return name.toLowerCase().includes(searchTerm.toLowerCase());
+    const email = conv.email || conv.user?.email || '';
+    const role = conv.role || conv.user?.role || '';
+    const q = searchTerm.toLowerCase();
+    return name.toLowerCase().includes(q) || email.toLowerCase().includes(q) || role.toLowerCase().includes(q);
   });
 
   const activeUserName = activeChat?.name || activeChat?.user?.name || 'Collaborator';

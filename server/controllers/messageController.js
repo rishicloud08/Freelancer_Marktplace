@@ -43,27 +43,6 @@ export const sendMessage = async (req, res) => {
       return res.status(400).json({ message: 'Receiver and content are required' });
     }
 
-    // Restriction: Freelancers can only chat with clients if the client has accepted their proposal
-    if (req.user.role === 'freelancer') {
-      const isAssigned = await Project.exists({
-        client: receiverId,
-        assignedFreelancer: req.user._id
-      });
-
-      const acceptedProposal = await Proposal.findOne({
-        freelancer: req.user._id,
-        status: 'accepted'
-      }).populate('project');
-
-      const isAcceptedClient = acceptedProposal && acceptedProposal.project?.client?.toString() === receiverId.toString();
-
-      if (!isAssigned && !isAcceptedClient) {
-        return res.status(403).json({ 
-          message: 'You can only message clients who have accepted your proposal for their project.' 
-        });
-      }
-    }
-
     const message = new Message({
       sender: req.user._id,
       receiver: receiverId,
@@ -78,10 +57,11 @@ export const sendMessage = async (req, res) => {
       .populate('sender', 'name email role')
       .populate('receiver', 'name email role');
 
-    // If socket.io is available on req.app, emit real-time event
+    // If socket.io is available on req.app, emit real-time event to receiver and sender
     const io = req.app.get('io');
     if (io) {
       io.to(receiverId.toString()).emit('messageReceived', populated);
+      io.to(req.user._id.toString()).emit('messageSent', populated);
     }
 
     res.status(201).json(populated);
@@ -96,14 +76,23 @@ export const getConversations = async (req, res) => {
     const isFreelancer = req.user.role === 'freelancer';
     const userIds = new Set();
     
-    if (isFreelancer) {
-      // FREELANCER: Only show clients who have ACCEPTED this freelancer's proposal or assigned them
-      const acceptedProposals = await Proposal.find({ 
-        freelancer: userId, 
-        status: 'accepted' 
-      }).populate('project');
+    // 1. ALL users who have ANY message history with this user (sent or received)
+    const messages = await Message.find({
+      $or: [{ sender: userId }, { receiver: userId }]
+    });
+    messages.forEach(msg => {
+      const s = msg.sender?.toString();
+      const r = msg.receiver?.toString();
+      const otherId = s === userId.toString() ? r : s;
+      if (otherId && otherId !== userId.toString()) {
+        userIds.add(otherId);
+      }
+    });
 
-      acceptedProposals.forEach(pr => {
+    // 2. Project Connections (proposals, assigned projects, client owners)
+    if (isFreelancer) {
+      const myProposals = await Proposal.find({ freelancer: userId }).populate('project');
+      myProposals.forEach(pr => {
         if (pr.project?.client) {
           userIds.add(pr.project.client.toString());
         }
@@ -111,25 +100,13 @@ export const getConversations = async (req, res) => {
 
       const assignedProjects = await Project.find({ assignedFreelancer: userId });
       assignedProjects.forEach(p => {
-        if (p.client) {
-          userIds.add(p.client.toString());
-        }
+        if (p.client) userIds.add(p.client.toString());
       });
 
-      // Existing message history with authorized clients
-      const messages = await Message.find({
-        $or: [{ sender: userId }, { receiver: userId }]
-      });
-      messages.forEach(msg => {
-        const otherId = msg.sender.toString() === userId.toString() 
-          ? msg.receiver.toString() 
-          : msg.sender.toString();
-        if (userIds.has(otherId)) {
-          userIds.add(otherId);
-        }
-      });
+      // Always make registered clients discoverable
+      const allClients = await User.find({ role: 'client', _id: { $ne: userId } });
+      allClients.forEach(c => userIds.add(c._id.toString()));
     } else {
-      // CLIENT: Show freelancers whose proposals have been accepted or are assigned to their projects
       const clientProjects = await Project.find({ client: userId });
       const projectIds = clientProjects.map(p => p._id);
       
@@ -137,24 +114,20 @@ export const getConversations = async (req, res) => {
         if (p.assignedFreelancer) userIds.add(p.assignedFreelancer.toString());
       });
 
-      const acceptedProposals = await Proposal.find({ 
-        project: { $in: projectIds },
-        status: 'accepted'
-      });
-      acceptedProposals.forEach(pr => {
+      const projectProposals = await Proposal.find({ project: { $in: projectIds } });
+      projectProposals.forEach(pr => {
         if (pr.freelancer) userIds.add(pr.freelancer.toString());
       });
 
-      // Existing message history
-      const messages = await Message.find({
-        $or: [{ sender: userId }, { receiver: userId }]
-      });
-      messages.forEach(msg => {
-        const otherId = msg.sender.toString() === userId.toString() 
-          ? msg.receiver.toString() 
-          : msg.sender.toString();
-        userIds.add(otherId);
-      });
+      // Always make registered freelancers discoverable
+      const allFreelancers = await User.find({ role: 'freelancer', _id: { $ne: userId } });
+      allFreelancers.forEach(f => userIds.add(f._id.toString()));
+    }
+
+    // Fallback: If still empty, include all other registered users
+    if (userIds.size === 0) {
+      const allUsers = await User.find({ _id: { $ne: userId } });
+      allUsers.forEach(u => userIds.add(u._id.toString()));
     }
 
     if (userIds.size === 0) {
@@ -191,12 +164,13 @@ export const getConversations = async (req, res) => {
       })
     );
 
-    // Sort: users with unread messages first, then latest messages
+    // Sort: users with unread messages first, then latest messages, then alphabetical
     enrichedUsers.sort((a, b) => {
       if (b.unreadCount !== a.unreadCount) return b.unreadCount - a.unreadCount;
       const timeA = a.lastMessage ? new Date(a.lastMessage.createdAt).getTime() : 0;
       const timeB = b.lastMessage ? new Date(b.lastMessage.createdAt).getTime() : 0;
-      return timeB - timeA;
+      if (timeB !== timeA) return timeB - timeA;
+      return (a.name || '').localeCompare(b.name || '');
     });
 
     res.json(enrichedUsers);

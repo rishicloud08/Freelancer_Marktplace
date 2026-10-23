@@ -3,7 +3,7 @@
     {
       "name": "Rishi kesh.V",
       "email": "rishikesh2006.gr@gmail.com",
-      "password": "$2a$10$/.tNl8/u9e/V2rHrv6A72ObPAmZKqxa/sIGCa6ChEhQL2Ev2YA00q",
+      "password": "$2a$10$XSy2R8ZA0WzQdvt09VwmtOZ//sU2m0vOlrpFDQ5A8tGg1xoIddPHm",
       "role": "freelancer",
       "skills": [
         "React",
@@ -17,11 +17,13 @@
         "REST APIs",
         "Express.js"
       ],
-      "hourlyRate": 750,
       "bio": "Full-Stack Software Engineer with expertise in React, Node.js, Python, Cloud Architecture, and modern web application development.",
+      "hourlyRate": 750,
+      "rating": 5,
+      "totalReviews": 0,
+      "balance": 0,
       "githubUsername": "rishicloud08",
       "githubUrl": "https://github.com/rishicloud08",
-      "balance": 0,
       "portfolioProjects": [
         {
           "title": "Freelancer AI Marketplace",
@@ -85,19 +87,23 @@
         ],
         "fileName": "Rishikesh_Resume.pdf"
       },
-      "rating": 5,
-      "totalReviews": 0,
       "verifiedBadges": [],
       "createdAt": "2026-10-17T06:31:25.240Z",
-      "updatedAt": "2026-10-23T04:29:34.430Z"
+      "updatedAt": "2026-10-23T05:40:12.566Z",
+      "certificates": []
     },
     {
       "name": "Kesh",
       "email": "kesh@gmail.com",
-      "password": "$2a$10$fZt4KlEyNX3kxzKSYiVQVuYGBWmlGrWBtrgi19AIKJMrmO3onWHOO",
+      "password": "$2a$10$pYLqhoLc7k9UBLKWQ5TzFOfu6efrnX.KH8vOXwJcKlcvau8VKd.42",
       "role": "client",
-      "balance": 50000,
+      "skills": [],
       "bio": "Founder and Technical Product Lead at Tech Innovations Ltd. Hiring top full-stack and cloud software engineering talent.",
+      "hourlyRate": 500,
+      "rating": 5,
+      "totalReviews": 5,
+      "balance": 50000,
+      "portfolioProjects": [],
       "resumeData": {
         "summary": "",
         "skills": [],
@@ -105,14 +111,9 @@
         "experience": [],
         "certifications": []
       },
-      "skills": [],
-      "hourlyRate": 500,
-      "rating": 5,
-      "totalReviews": 5,
-      "portfolioProjects": [],
       "verifiedBadges": [],
       "createdAt": "2026-10-17T06:31:25.388Z",
-      "updatedAt": "2026-10-18T15:02:58.973Z",
+      "updatedAt": "2026-10-23T05:44:00.754Z",
       "certificates": []
     }
   ],
@@ -121,6 +122,7 @@
       "title": "Full-Stack React & Node.js Web Application",
       "description": "Looking for an expert full-stack developer to build a modern responsive web application with real-time updates and cloud deployment.",
       "clientEmail": "kesh@gmail.com",
+      "assignedFreelancerEmail": "rishikesh2006.gr@gmail.com",
       "skills": [
         "React",
         "Node.js",
@@ -130,7 +132,18 @@
       "budgetMin": 50,
       "budgetMax": 100,
       "duration": "3-4 weeks",
-      "status": "open"
+      "status": "in-progress"
+    }
+  ],
+  "proposals": [
+    {
+      "projectTitle": "Full-Stack React & Node.js Web Application",
+      "freelancerEmail": "rishikesh2006.gr@gmail.com",
+      "coverLetter": "I am interested to work and develop my skills\n",
+      "bidAmount": 50,
+      "estimatedDuration": "2-4 weeks",
+      "status": "accepted",
+      "aiMatchScore": 99
     }
   ]
 }
