@@ -15,8 +15,12 @@ const milestoneSchema = new mongoose.Schema({
   deliverableNotes: { type: String, default: '' },
   submittedAt: { type: Date },
   aiReviewScore: { type: Number, default: 0 },
+  aiReviewScoreOutOfTen: { type: Number, default: 0 },
   aiReviewFeedback: { type: String, default: '' },
-  aiReviewSecurityPassed: { type: Boolean, default: true }
+  aiReviewVerdict: { type: String, default: '' },
+  aiReviewSecurityPassed: { type: Boolean, default: true },
+  aiReviewBreakdown: { type: mongoose.Schema.Types.Mixed, default: {} },
+  aiReviewChecklist: { type: [String], default: [] }
 }, { timestamps: true });
 
 export default mongoose.model('Milestone', milestoneSchema);

@@ -79,8 +79,12 @@ export const inspectDeliverable = async (req, res) => {
     const audit = await geminiService.inspectMilestoneDeliverable(project, milestone, deliverable);
     
     milestone.aiReviewScore = audit.score;
+    milestone.aiReviewScoreOutOfTen = audit.scoreOutOfTen || Number((audit.score / 10).toFixed(1));
     milestone.aiReviewFeedback = audit.feedback;
+    milestone.aiReviewVerdict = audit.verdict;
     milestone.aiReviewSecurityPassed = audit.securityPassed;
+    milestone.aiReviewBreakdown = audit.breakdown;
+    milestone.aiReviewChecklist = audit.checklist;
     await milestone.save();
 
     res.json({ audit, milestone });

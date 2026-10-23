@@ -102,8 +102,12 @@ export const updateMilestoneStatus = async (req, res) => {
           deliverableNotes: milestone.deliverableNotes
         });
         milestone.aiReviewScore = audit.score;
+        milestone.aiReviewScoreOutOfTen = audit.scoreOutOfTen || Number((audit.score / 10).toFixed(1));
         milestone.aiReviewFeedback = audit.feedback;
+        milestone.aiReviewVerdict = audit.verdict;
         milestone.aiReviewSecurityPassed = audit.securityPassed;
+        milestone.aiReviewBreakdown = audit.breakdown;
+        milestone.aiReviewChecklist = audit.checklist;
       } catch (e) {
         console.log('Auto audit note:', e.message);
       }
